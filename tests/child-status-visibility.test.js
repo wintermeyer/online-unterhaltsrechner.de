@@ -16,6 +16,7 @@ async function testChildStatusVisibility() {
   // Launch browser in non-headless mode to see what's happening
   const browser = await puppeteer.launch({
     headless: 'new',
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
     // Remove this for production, useful for debugging
     // slowMo: 50
   });
