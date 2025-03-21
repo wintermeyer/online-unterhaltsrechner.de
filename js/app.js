@@ -378,6 +378,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     resultElements.vaterNettoVerfuegbar.textContent = formatNumber(Math.round(ergebnis.eltern.vater.nettoVerfuegbar));
     resultElements.mutterNettoVerfuegbar.textContent = formatNumber(Math.round(ergebnis.eltern.mutter.nettoVerfuegbar));
+    
+    // Make sure Euro symbols are displayed properly
+    if (typeof addEuroSymbol === 'function') {
+      addEuroSymbol();
+    }
   }
   
   /**
@@ -400,19 +405,24 @@ document.addEventListener('DOMContentLoaded', function() {
       const kindRow = document.createElement('div');
       kindRow.className = 'grid grid-cols-3 gap-4 items-center mb-2';
       kindRow.innerHTML = `
-        <div class="text-gray-700">Unterh. für Kind ${kindNummer} (${alter} J.)</div>
-        <div class="text-right px-2 py-1">${vaterZahlt > 0 ? formatNumber(vaterZahlt) : '⟸'}</div>
-        <div class="text-right px-2 py-1">${mutterZahlt > 0 ? formatNumber(mutterZahlt) : '⟸'}</div>
+        <div class="text-gray-700 font-medium">Unterh. für Kind ${kindNummer} (${alter} J.)</div>
+        <div class="text-right px-3 py-2 bg-white rounded shadow-sm font-mono">${vaterZahlt > 0 ? formatNumber(vaterZahlt) : '⟸'}</div>
+        <div class="text-right px-3 py-2 bg-white rounded shadow-sm font-mono">${mutterZahlt > 0 ? formatNumber(mutterZahlt) : '⟸'}</div>
       `;
       
       container.appendChild(kindRow);
     });
+    
+    // Make sure Euro symbols are displayed for dynamically created elements
+    if (typeof addEuroSymbol === 'function') {
+      addEuroSymbol();
+    }
   }
   
   /**
-   * Formatiert eine Zahl als lokalisierter String
+   * Formatiert eine Zahl als lokalisierter String mit €-Symbol
    */
   function formatNumber(num) {
-    return num.toLocaleString('de-DE');
+    return num.toLocaleString('de-DE') + ' €';
   }
 }); 
