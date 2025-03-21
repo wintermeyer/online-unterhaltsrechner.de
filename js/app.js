@@ -584,6 +584,31 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   /**
+   * Wendet Farbcodierung auf Geldbeträge an (rot für Zahlungen, grün für Erhalt)
+   * @param {HTMLElement} element - Das DOM-Element, das den Betrag anzeigt
+   * @param {number} amount - Der anzuzeigende Betrag
+   * @param {boolean} isPayment - Gibt an, ob es sich um eine Zahlung handelt (true = rot bei Wert > 0)
+   */
+  function applyMoneyColorCoding(element, amount, isPayment) {
+    // Betrag formatieren
+    const formattedAmount = amount.toLocaleString('de-DE');
+    element.textContent = formattedAmount;
+    
+    // Alle Farbklassen entfernen
+    element.classList.remove('text-red-600', 'text-green-600', 'font-bold');
+    
+    // Farbe anwenden basierend auf Betrag und Typ
+    if (amount > 0) {
+      // Zahlungen = rot, Erhalt = grün
+      if (isPayment) {
+        element.classList.add('text-red-600', 'font-bold');
+      } else {
+        element.classList.add('text-green-600', 'font-bold');
+      }
+    }
+  }
+
+  /**
    * Aktualisiert die Ergebnisanzeige
    */
   function updateResults(ergebnis) {
@@ -603,14 +628,21 @@ document.addEventListener('DOMContentLoaded', function() {
     resultElements.vaterNettoBerechnung.textContent = formatNumber(Math.round(ergebnis.eltern.vater.nettoBereinigt));
     resultElements.mutterNettoBerechnung.textContent = formatNumber(Math.round(ergebnis.eltern.mutter.nettoBereinigt));
     
-    resultElements.vaterZahltGesamt.textContent = formatNumber(Math.round(ergebnis.eltern.vater.zahlt));
-    resultElements.mutterZahltGesamt.textContent = formatNumber(Math.round(ergebnis.eltern.mutter.zahlt));
+    // Farbcodierte Geldwerte - Zahlungen sind rot, Erhalt ist grün
+    const vaterZahlt = Math.round(ergebnis.eltern.vater.zahlt);
+    const mutterZahlt = Math.round(ergebnis.eltern.mutter.zahlt);
+    applyMoneyColorCoding(resultElements.vaterZahltGesamt, vaterZahlt, true);
+    applyMoneyColorCoding(resultElements.mutterZahltGesamt, mutterZahlt, true);
     
-    resultElements.vaterErhaeltUnterhalt.textContent = formatNumber(Math.round(ergebnis.eltern.vater.erhaeltUnterhalt));
-    resultElements.mutterErhaeltUnterhalt.textContent = formatNumber(Math.round(ergebnis.eltern.mutter.erhaeltUnterhalt));
+    const vaterErhaeltUnterhalt = Math.round(ergebnis.eltern.vater.erhaeltUnterhalt);
+    const mutterErhaeltUnterhalt = Math.round(ergebnis.eltern.mutter.erhaeltUnterhalt);
+    applyMoneyColorCoding(resultElements.vaterErhaeltUnterhalt, vaterErhaeltUnterhalt, false);
+    applyMoneyColorCoding(resultElements.mutterErhaeltUnterhalt, mutterErhaeltUnterhalt, false);
     
-    resultElements.vaterErhaeltKindergeld.textContent = formatNumber(Math.round(ergebnis.eltern.vater.erhaeltKindergeld));
-    resultElements.mutterErhaeltKindergeld.textContent = formatNumber(Math.round(ergebnis.eltern.mutter.erhaeltKindergeld));
+    const vaterErhaeltKindergeld = Math.round(ergebnis.eltern.vater.erhaeltKindergeld);
+    const mutterErhaeltKindergeld = Math.round(ergebnis.eltern.mutter.erhaeltKindergeld);
+    applyMoneyColorCoding(resultElements.vaterErhaeltKindergeld, vaterErhaeltKindergeld, false);
+    applyMoneyColorCoding(resultElements.mutterErhaeltKindergeld, mutterErhaeltKindergeld, false);
     
     resultElements.vaterNettoVerfuegbar.textContent = formatNumber(Math.round(ergebnis.eltern.vater.nettoVerfuegbar));
     resultElements.mutterNettoVerfuegbar.textContent = formatNumber(Math.round(ergebnis.eltern.mutter.nettoVerfuegbar));
@@ -625,10 +657,33 @@ document.addEventListener('DOMContentLoaded', function() {
    * Aktualisiert die Zahlungen für die Kinder in der Ergebnistabelle
    */
   function updateKinderZahlungen(kinderErgebnisse) {
-    // Container leeren (außer der Header-Zeile)
+    // Container leeren und neuen Header erstellen
     const container = formElements.kinderZahlungenContainer;
-    const headerRow = container.querySelector('.grid-cols-3.gap-4.mb-3');
     container.innerHTML = '';
+    
+    // Create header row with color coding in the headers
+    const headerRow = document.createElement('div');
+    headerRow.className = 'grid grid-cols-3 gap-4 mb-3';
+    
+    // Empty first cell (for alignment with labels)
+    const emptyHeaderCell = document.createElement('div');
+    
+    // Vater header cell
+    const vaterHeaderCell = document.createElement('div');
+    vaterHeaderCell.className = 'text-center font-medium bg-blue-200 py-1 px-2 rounded text-blue-800';
+    vaterHeaderCell.textContent = 'Vater';
+    
+    // Mutter header cell
+    const mutterHeaderCell = document.createElement('div');
+    mutterHeaderCell.className = 'text-center font-medium bg-purple-200 py-1 px-2 rounded text-purple-800';
+    mutterHeaderCell.textContent = 'Mutter';
+    
+    // Add all cells to header row
+    headerRow.appendChild(emptyHeaderCell);
+    headerRow.appendChild(vaterHeaderCell);
+    headerRow.appendChild(mutterHeaderCell);
+    
+    // Add header row to container
     container.appendChild(headerRow);
     
     // Für jedes Kind eine Zeile erstellen
@@ -640,11 +695,40 @@ document.addEventListener('DOMContentLoaded', function() {
       
       const kindRow = document.createElement('div');
       kindRow.className = 'grid grid-cols-3 gap-4 items-center mb-2';
-      kindRow.innerHTML = `
-        <div class="text-gray-700 font-medium">Unterh. für Kind ${kindNummer} (${alter} J.)</div>
-        <div class="text-right px-3 py-2 bg-white rounded shadow-sm font-mono">${vaterZahlt > 0 ? formatNumber(vaterZahlt) : '⟸'}</div>
-        <div class="text-right px-3 py-2 bg-white rounded shadow-sm font-mono">${mutterZahlt > 0 ? formatNumber(mutterZahlt) : '⟸'}</div>
-      `;
+      
+      // Erstelle die Kindlabel-Zelle
+      const kindLabel = document.createElement('div');
+      kindLabel.className = 'text-gray-700 font-medium';
+      kindLabel.textContent = `Unterh. für Kind ${kindNummer} (${alter} J.)`;
+      
+      // Erstelle die Vater-Zelle mit Farbcodierung
+      const vaterCell = document.createElement('div');
+      vaterCell.className = 'text-right px-3 py-2 bg-white rounded shadow-sm font-mono';
+      if (vaterZahlt > 0) {
+        // Vater zahlt = rot (negativ)
+        vaterCell.textContent = formatNumber(vaterZahlt);
+        vaterCell.classList.add('text-red-600', 'font-bold'); 
+      } else {
+        // Vater zahlt nicht oder erhält
+        vaterCell.textContent = '-';
+      }
+      
+      // Erstelle die Mutter-Zelle mit Farbcodierung
+      const mutterCell = document.createElement('div');
+      mutterCell.className = 'text-right px-3 py-2 bg-white rounded shadow-sm font-mono';
+      if (mutterZahlt > 0) {
+        // Mutter zahlt = rot (negativ)
+        mutterCell.textContent = formatNumber(mutterZahlt);
+        mutterCell.classList.add('text-red-600', 'font-bold'); 
+      } else {
+        // Mutter zahlt nicht oder erhält
+        mutterCell.textContent = '-';
+      }
+      
+      // Füge alle Zellen zur Zeile hinzu
+      kindRow.appendChild(kindLabel);
+      kindRow.appendChild(vaterCell);
+      kindRow.appendChild(mutterCell);
       
       container.appendChild(kindRow);
     });
