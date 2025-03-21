@@ -7,23 +7,28 @@
   
   <!-- TailwindCSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style type="text/tailwindcss">
     @layer components {
       .form-input {
-        @apply block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 bg-white;
+        @apply block w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all;
       }
       .form-select {
-        @apply block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 bg-white;
+        @apply block w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all;
       }
       .btn {
-        @apply rounded-md shadow-sm px-4 py-2 text-white font-medium;
+        @apply rounded-md shadow-sm px-4 py-2 text-white font-medium transition-all duration-200;
       }
       .btn-blue {
         @apply bg-blue-600 hover:bg-blue-700;
       }
+      .btn-outline {
+        @apply border border-blue-600 text-blue-600 hover:bg-blue-50;
+      }
       .info-icon {
-        @apply ml-1 text-gray-500 cursor-pointer rounded-full inline-flex items-center justify-center;
+        @apply ml-1 text-gray-500 cursor-pointer rounded-full inline-flex items-center justify-center hover:text-blue-500 transition-colors;
       }
       .tab {
         @apply px-4 py-2 font-medium;
@@ -37,26 +42,54 @@
       .result-heading {
         @apply text-lg font-semibold mb-2;
       }
+      .collapsible-header {
+        @apply flex items-center justify-between cursor-pointer p-2 rounded hover:bg-blue-50 transition-colors;
+      }
+      .collapsible-content {
+        @apply overflow-hidden transition-all duration-300 ease-in-out max-h-0;
+      }
+      .collapsed .collapsible-content {
+        @apply max-h-0 opacity-0;
+      }
+      .expanded .collapsible-content {
+        @apply max-h-[800px] opacity-100;
+      }
+      .rotate-icon {
+        @apply transition-transform duration-300;
+      }
+      .collapsed .rotate-icon {
+        @apply transform rotate-0;
+      }
+      .expanded .rotate-icon {
+        @apply transform rotate-180;
+      }
     }
   </style>
 </head>
-<body class="bg-gray-100">
-  <header class="bg-blue-600 text-white p-4">
-    <h1 class="text-2xl font-bold">Thema Kindesunterhalt-Rechner</h1>
+<body class="bg-gray-100 font-sans">
+  <header class="bg-gradient-to-r from-blue-700 to-blue-500 text-white py-6 px-4 shadow-md">
+    <div class="container mx-auto max-w-6xl">
+      <h1 class="text-3xl font-bold flex items-center">
+        <i class="fas fa-calculator mr-3"></i>
+        Kindesunterhalt-Rechner
+      </h1>
+      <p class="mt-2 text-blue-100">Berechnen Sie schnell und einfach den gesetzlichen Kindesunterhalt</p>
+    </div>
   </header>
   
-  <main class="container mx-auto mt-4 px-4 max-w-6xl">
-    <div class="flex flex-col md:flex-row gap-4">
+  <main class="container mx-auto mt-8 px-4 max-w-6xl pb-12">
+    <div class="flex flex-col md:flex-row gap-6">
       <!-- Linke Spalte: Eingabeformular -->
-      <div class="w-full md:w-1/2 bg-white rounded-lg shadow-md p-4">
-        <h2 class="text-xl font-semibold text-gray-700 flex items-center mb-4">
+      <div class="w-full md:w-1/2 bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-800 flex items-center mb-6">
+          <i class="fas fa-edit mr-2 text-blue-600"></i>
           Kindesunterhalt berechnen
         </h2>
         
         <div class="mt-4">
           <label class="block text-gray-700 font-medium mb-2">Berechnung für</label>
           <div class="flex">
-            <select id="berechnungJahr" class="form-select">
+            <select id="berechnungJahr" class="form-select bg-blue-50">
               <option selected>2025</option>
               <option>2024</option>
               <option>2023</option>
@@ -65,16 +98,20 @@
         </div>
         
         <!-- Einkommen der Eltern -->
-        <div class="mt-6">
-          <div class="grid grid-cols-3 gap-4">
+        <div class="mt-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <div class="flex items-center mb-4">
+            <h3 class="text-lg font-medium text-gray-800"><i class="fas fa-users mr-2 text-blue-600"></i>Einkommen der Eltern</h3>
+          </div>
+
+          <div class="grid grid-cols-3 gap-4 mb-4">
             <div></div>
-            <div class="text-center font-medium">Vater</div>
-            <div class="text-center font-medium">Mutter</div>
+            <div class="text-center font-medium bg-blue-100 py-2 rounded-md">Vater</div>
+            <div class="text-center font-medium bg-purple-100 py-2 rounded-md">Mutter</div>
           </div>
           
           <div class="mt-4">
-            <div class="grid grid-cols-3 gap-4 items-center mb-3">
-              <label class="block text-gray-700">Netto aus Erwerbstätigkeit</label>
+            <div class="grid grid-cols-3 gap-4 items-center mb-4">
+              <label class="block text-gray-700 font-medium">Netto aus Erwerbstätigkeit</label>
               <div>
                 <input type="number" id="vaterNetto" class="form-input" value="2000">
               </div>
@@ -83,42 +120,66 @@
               </div>
             </div>
             
-            <div class="grid grid-cols-3 gap-4 items-center mb-3">
-              <label class="block text-gray-700">Sonstige Einkommen</label>
-              <div>
-                <input type="number" id="vaterSonstigesEinkommen" class="form-input" value="0">
+            <!-- Combined Collapsible Section for Additional Settings -->
+            <div class="mb-4 border-t pt-2 pb-1">
+              <div class="collapsible-header collapsed" data-target="weitere-einstellungen">
+                <label class="block text-gray-700 font-medium">Sonstige Einkommen, Wohnvorteil, Schulden</label>
+                <i class="fas fa-chevron-down text-gray-400 rotate-icon"></i>
               </div>
-              <div>
-                <input type="number" id="mutterSonstigesEinkommen" class="form-input" value="0">
-              </div>
-            </div>
-            
-            <div class="grid grid-cols-3 gap-4 items-center mb-3">
-              <label class="block text-gray-700">Wohnvorteil</label>
-              <div>
-                <input type="number" id="vaterWohnvorteil" class="form-input" value="0">
-              </div>
-              <div>
-                <input type="number" id="mutterWohnvorteil" class="form-input" value="0">
-              </div>
-            </div>
-            
-            <div class="grid grid-cols-3 gap-4 items-center mb-3">
-              <label class="block text-gray-700">Aufwand Schulden</label>
-              <div>
-                <input type="number" id="vaterSchulden" class="form-input" value="0">
-              </div>
-              <div>
-                <input type="number" id="mutterSchulden" class="form-input" value="0">
+              <div class="collapsible-content mt-2">
+                <!-- Sonstige Einkommen -->
+                <div class="mb-4">
+                  <h4 class="font-medium text-gray-700 mb-2">Sonstige Einkommen</h4>
+                  <div class="text-xs text-gray-500 mb-2">Weitere Einkünfte wie Kapitalerträge, Mieteinnahmen, etc.</div>
+                  <div class="grid grid-cols-3 gap-4">
+                    <div></div>
+                    <div>
+                      <input type="number" id="vaterSonstigesEinkommen" class="form-input" value="0">
+                    </div>
+                    <div>
+                      <input type="number" id="mutterSonstigesEinkommen" class="form-input" value="0">
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Wohnvorteil -->
+                <div class="mb-4 border-t pt-3">
+                  <h4 class="font-medium text-gray-700 mb-2">Wohnvorteil</h4>
+                  <div class="text-xs text-gray-500 mb-2">Mietersparnis durch Wohneigentum</div>
+                  <div class="grid grid-cols-3 gap-4">
+                    <div></div>
+                    <div>
+                      <input type="number" id="vaterWohnvorteil" class="form-input" value="0">
+                    </div>
+                    <div>
+                      <input type="number" id="mutterWohnvorteil" class="form-input" value="0">
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Aufwand Schulden -->
+                <div class="mb-2 border-t pt-3">
+                  <h4 class="font-medium text-gray-700 mb-2">Aufwand Schulden</h4>
+                  <div class="text-xs text-gray-500 mb-2">Abzugsfähige Schuldverpflichtungen</div>
+                  <div class="grid grid-cols-3 gap-4">
+                    <div></div>
+                    <div>
+                      <input type="number" id="vaterSchulden" class="form-input" value="0">
+                    </div>
+                    <div>
+                      <input type="number" id="mutterSchulden" class="form-input" value="0">
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
         
         <!-- Kinder -->
-        <div class="mt-6">
+        <div class="mt-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
           <div class="flex items-center mb-4">
-            <h3 class="text-lg font-medium text-gray-700">Kinder</h3>
+            <h3 class="text-lg font-medium text-gray-800"><i class="fas fa-child mr-2 text-blue-600"></i>Kinder</h3>
           </div>
           
           <!-- Kinder-Container -->
@@ -187,17 +248,26 @@
                 </div>
               </div>
               
-              <div class="grid grid-cols-3 gap-4 items-center mb-3">
-                <label class="block text-gray-700">Einkommen aus Job/Ausb.</label>
-                <div class="col-span-2">
-                  <input type="number" id="kind1Einkommen" class="form-input kind-einkommen" value="0">
+              <!-- Combined Child Income Section -->
+              <div class="mb-3 border-t pt-2">
+                <div class="collapsible-header collapsed" data-target="kind1-einkommen-combined">
+                  <label class="block text-gray-700 font-medium">Einkommen des Kindes</label>
+                  <i class="fas fa-chevron-down text-gray-400 rotate-icon"></i>
                 </div>
-              </div>
-              
-              <div class="grid grid-cols-3 gap-4 items-center mb-3">
-                <label class="block text-gray-700">Sonstiges Einkommen</label>
-                <div class="col-span-2">
-                  <input type="number" id="kind1SonstigesEinkommen" class="form-input kind-sonstiges-einkommen" value="0">
+                <div class="collapsible-content mt-2">
+                  <!-- Einkommen aus Job/Ausbildung -->
+                  <div class="mb-4">
+                    <h4 class="font-medium text-gray-700 mb-1">Einkommen aus Job/Ausb.</h4>
+                    <div class="mb-2 text-xs text-gray-500">Einkünfte des Kindes aus Arbeit oder Ausbildung</div>
+                    <input type="number" id="kind1Einkommen" class="form-input kind-einkommen" value="0">
+                  </div>
+                  
+                  <!-- Sonstiges Einkommen -->
+                  <div class="pt-2">
+                    <h4 class="font-medium text-gray-700 mb-1">Sonstiges Einkommen</h4>
+                    <div class="mb-2 text-xs text-gray-500">Weitere Einkünfte des Kindes (z.B. Kapitalerträge)</div>
+                    <input type="number" id="kind1SonstigesEinkommen" class="form-input kind-sonstiges-einkommen" value="0">
+                  </div>
                 </div>
               </div>
               
@@ -215,18 +285,21 @@
           
           <!-- Weiteres Kind Button -->
           <div class="mt-4">
-            <button id="addChildBtn" type="button" class="w-full py-2 text-center border rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100">
-              + Weiteres Kind hinzufügen
+            <button id="addChildBtn" type="button" class="w-full py-2 text-center border rounded-md bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors flex items-center justify-center">
+              <i class="fas fa-plus-circle mr-2"></i> Weiteres Kind hinzufügen
             </button>
           </div>
         </div>
       </div>
       
       <!-- Rechte Spalte: Ergebnisse -->
-      <div class="w-full md:w-1/2 bg-white rounded-lg shadow-md p-4">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-semibold text-gray-700">Berechnung</h2>
-          <button id="closeResult" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+      <div class="w-full md:w-1/2 bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+            <i class="fas fa-calculator mr-2 text-blue-600"></i>
+            Berechnung
+          </h2>
+          <button id="closeResult" class="text-gray-500 hover:text-gray-700 text-2xl hover:rotate-90 transition-transform duration-300">&times;</button>
         </div>
         
         <div id="ergebnisContainer">
@@ -305,5 +378,98 @@
   <!-- Lade JavaScript -->
   <script src="js/unterhalt.js"></script>
   <script src="js/app.js"></script>
+  
+  <!-- Collapsible Sections Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize all collapsible sections to be collapsed by default
+      document.querySelectorAll('.collapsible-header').forEach(header => {
+        const content = header.nextElementSibling;
+        if (content && content.classList.contains('collapsible-content')) {
+          content.style.maxHeight = '0px';
+          content.style.opacity = '0';
+        }
+        
+        // Add click event listeners
+        header.addEventListener('click', function() {
+          const isCollapsed = this.classList.contains('collapsed');
+          const content = this.nextElementSibling;
+          
+          // Toggle the collapsed/expanded state
+          if (isCollapsed) {
+            this.classList.remove('collapsed');
+            this.classList.add('expanded');
+            if (content && content.classList.contains('collapsible-content')) {
+              content.style.maxHeight = content.scrollHeight + 'px';
+              content.style.opacity = '1';
+            }
+          } else {
+            this.classList.remove('expanded');
+            this.classList.add('collapsed');
+            if (content && content.classList.contains('collapsible-content')) {
+              content.style.maxHeight = '0px';
+              content.style.opacity = '0';
+            }
+          }
+        });
+      });
+      
+      // Function to handle new children being added
+      function setupNewChildCollapsibles() {
+        const observer = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+              // Check if any new child sections were added
+              mutation.addedNodes.forEach(node => {
+                if (node.nodeType === 1 && node.classList.contains('kind-element')) {
+                  // Setup collapsible headers in the new child
+                  const headers = node.querySelectorAll('.collapsible-header');
+                  headers.forEach(header => {
+                    // Initialize to collapsed state
+                    const content = header.nextElementSibling;
+                    if (content && content.classList.contains('collapsible-content')) {
+                      content.style.maxHeight = '0px';
+                      content.style.opacity = '0';
+                    }
+                    
+                    // Add click event listener
+                    header.addEventListener('click', function() {
+                      const isCollapsed = this.classList.contains('collapsed');
+                      const content = this.nextElementSibling;
+                      
+                      if (isCollapsed) {
+                        this.classList.remove('collapsed');
+                        this.classList.add('expanded');
+                        if (content && content.classList.contains('collapsible-content')) {
+                          content.style.maxHeight = content.scrollHeight + 'px';
+                          content.style.opacity = '1';
+                        }
+                      } else {
+                        this.classList.remove('expanded');
+                        this.classList.add('collapsed');
+                        if (content && content.classList.contains('collapsible-content')) {
+                          content.style.maxHeight = '0px';
+                          content.style.opacity = '0';
+                        }
+                      }
+                    });
+                  });
+                }
+              });
+            }
+          });
+        });
+        
+        // Start observing the container for new children
+        const kinderContainer = document.getElementById('kinderContainer');
+        if (kinderContainer) {
+          observer.observe(kinderContainer, { childList: true });
+        }
+      }
+      
+      // Setup observer for new children
+      setupNewChildCollapsibles();
+    });
+  </script>
 </body>
 </html> 
