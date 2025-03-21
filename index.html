@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kindesunterhalt-Rechner</title>
+  
+  <!-- TailwindCSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style type="text/tailwindcss">
+    @layer components {
+      .form-input {
+        @apply block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 bg-white;
+      }
+      .form-select {
+        @apply block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 bg-white;
+      }
+      .btn {
+        @apply rounded-md shadow-sm px-4 py-2 text-white font-medium;
+      }
+      .btn-blue {
+        @apply bg-blue-600 hover:bg-blue-700;
+      }
+      .info-icon {
+        @apply ml-1 text-gray-500 cursor-pointer rounded-full inline-flex items-center justify-center;
+      }
+      .tab {
+        @apply px-4 py-2 font-medium;
+      }
+      .tab-active {
+        @apply bg-blue-600 text-white;
+      }
+      .result-box {
+        @apply rounded-md border p-4 bg-white;
+      }
+      .result-heading {
+        @apply text-lg font-semibold mb-2;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <header class="bg-blue-600 text-white p-4">
+    <h1 class="text-2xl font-bold">Thema Kindesunterhalt-Rechner</h1>
+  </header>
+  
+  <main class="container mx-auto mt-4 px-4 max-w-6xl">
+    <div class="flex flex-col md:flex-row gap-4">
+      <!-- Linke Spalte: Eingabeformular -->
+      <div class="w-full md:w-1/2 bg-white rounded-lg shadow-md p-4">
+        <h2 class="text-xl font-semibold text-gray-700 flex items-center mb-4">
+          Kindesunterhalt berechnen
+        </h2>
+        
+        <div class="mt-4">
+          <label class="block text-gray-700 font-medium mb-2">Berechnung für</label>
+          <div class="flex">
+            <select id="berechnungJahr" class="form-select">
+              <option selected>2025</option>
+              <option>2024</option>
+              <option>2023</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Einkommen der Eltern -->
+        <div class="mt-6">
+          <div class="grid grid-cols-3 gap-4">
+            <div></div>
+            <div class="text-center font-medium">Vater</div>
+            <div class="text-center font-medium">Mutter</div>
+          </div>
+          
+          <div class="mt-4">
+            <div class="grid grid-cols-3 gap-4 items-center mb-3">
+              <label class="block text-gray-700">Netto aus Erwerbstätigkeit</label>
+              <div>
+                <input type="number" id="vaterNetto" class="form-input" value="2000">
+              </div>
+              <div>
+                <input type="number" id="mutterNetto" class="form-input" value="0">
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-4 items-center mb-3">
+              <label class="block text-gray-700">Sonstige Einkommen</label>
+              <div>
+                <input type="number" id="vaterSonstigesEinkommen" class="form-input" value="0">
+              </div>
+              <div>
+                <input type="number" id="mutterSonstigesEinkommen" class="form-input" value="0">
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-4 items-center mb-3">
+              <label class="block text-gray-700">Wohnvorteil</label>
+              <div>
+                <input type="number" id="vaterWohnvorteil" class="form-input" value="0">
+              </div>
+              <div>
+                <input type="number" id="mutterWohnvorteil" class="form-input" value="0">
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-4 items-center mb-3">
+              <label class="block text-gray-700">Aufwand Schulden</label>
+              <div>
+                <input type="number" id="vaterSchulden" class="form-input" value="0">
+              </div>
+              <div>
+                <input type="number" id="mutterSchulden" class="form-input" value="0">
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Kinder -->
+        <div class="mt-6">
+          <div class="flex items-center mb-4">
+            <h3 class="text-lg font-medium text-gray-700">Kinder</h3>
+          </div>
+          
+          <!-- Kinder-Container -->
+          <div id="kinderContainer">
+            <!-- Kind 1 -->
+            <div id="kind1" class="border rounded-md p-4 mt-4 bg-gray-50 kind-element" data-kind-nummer="1">
+              <div class="flex justify-between items-center mb-3">
+                <h4 class="font-medium text-gray-700">Kind 1</h4>
+                <button type="button" class="remove-kind-btn text-gray-400 hidden">&times;</button>
+              </div>
+              
+              <div class="grid grid-cols-3 gap-4 items-center mb-3">
+                <label class="block text-gray-700">Alter</label>
+                <div class="col-span-2">
+                  <select id="kind1Alter" class="form-select kind-alter">
+                    <option>0</option>
+                    <option selected>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                    <option>13</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                    <option>17</option>
+                    <option>18</option>
+                    <option>19</option>
+                    <option>20</option>
+                    <option>21</option>
+                    <option>22</option>
+                    <option>23</option>
+                    <option>24</option>
+                    <option>25</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-3 gap-4 items-center mb-3">
+                <label class="block text-gray-700">Lebensmittelpunkt</label>
+                <div class="col-span-2">
+                  <select id="kind1Lebensmittelpunkt" class="form-select kind-lebensmittelpunkt">
+                    <option>Vater</option>
+                    <option selected>Mutter</option>
+                    <option>Je 50%</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-3 gap-4 items-center mb-3">
+                <label class="block text-gray-700">Status</label>
+                <div class="col-span-2">
+                  <select id="kind1Status" class="form-select kind-status">
+                    <option selected>Schüler</option>
+                    <option>Student</option>
+                    <option>Azubi</option>
+                    <option>Berufstätig</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-3 gap-4 items-center mb-3">
+                <label class="block text-gray-700">Einkommen aus Job/Ausb.</label>
+                <div class="col-span-2">
+                  <input type="number" id="kind1Einkommen" class="form-input kind-einkommen" value="0">
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-3 gap-4 items-center mb-3">
+                <label class="block text-gray-700">Sonstiges Einkommen</label>
+                <div class="col-span-2">
+                  <input type="number" id="kind1SonstigesEinkommen" class="form-input kind-sonstiges-einkommen" value="0">
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-3 gap-4 items-center mb-3 kindergeld-container">
+                <label class="block text-gray-700">Kindergeld geht an</label>
+                <div class="col-span-2">
+                  <div class="flex">
+                    <button type="button" class="w-1/2 py-2 text-center border rounded-l-md kindergeld-vater" data-value="Vater">Vater</button>
+                    <button type="button" class="w-1/2 py-2 text-center border rounded-r-md border-l-0 kindergeld-mutter" data-value="Mutter">Mutter</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Weiteres Kind Button -->
+          <div class="mt-4">
+            <button id="addChildBtn" type="button" class="w-full py-2 text-center border rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100">
+              + Weiteres Kind hinzufügen
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Rechte Spalte: Ergebnisse -->
+      <div class="w-full md:w-1/2 bg-white rounded-lg shadow-md p-4">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold text-gray-700">Berechnung</h2>
+          <button id="closeResult" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+        </div>
+        
+        <div id="ergebnisContainer">
+          <!-- Ergebnisse werden hier dynamisch eingefügt -->
+          <div class="mb-6">
+            <div class="grid grid-cols-3 gap-4 mb-3">
+              <div></div>
+              <div class="text-center font-medium">Vater</div>
+              <div class="text-center font-medium">Mutter</div>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-4 items-center mb-2">
+              <div class="text-gray-700">Bereinigtes Netto</div>
+              <div id="vaterNettoBereinigt" class="text-right px-2 py-1">1 900</div>
+              <div id="mutterNettoBereinigt" class="text-right px-2 py-1">3 850</div>
+            </div>
+          </div>
+          
+          <div id="kinderZahlungenContainer" class="mb-6">
+            <div class="grid grid-cols-3 gap-4 mb-3">
+              <div></div>
+              <div class="text-center font-medium">Vater zahlt</div>
+              <div class="text-center font-medium">Mutter zahlt</div>
+            </div>
+            
+            <!-- Kinder Zahlungen werden hier dynamisch eingefügt -->
+            <div class="grid grid-cols-3 gap-4 items-center mb-2">
+              <div class="text-gray-700">Unterh. für Kind 1 (14 J.)</div>
+              <div id="vaterZahltKind1" class="text-right px-2 py-1">⟸</div>
+              <div id="mutterZahltKind1" class="text-right px-2 py-1">704</div>
+            </div>
+          </div>
+          
+          <div class="mb-6">
+            <div class="grid grid-cols-3 gap-4 mb-3">
+              <div></div>
+              <div class="text-center font-medium">Vater</div>
+              <div class="text-center font-medium">Mutter</div>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-4 items-center mb-2">
+              <div class="text-gray-700">Bereinigtes Netto</div>
+              <div id="vaterNettoBerechnung" class="text-right px-2 py-1">1 900</div>
+              <div id="mutterNettoBerechnung" class="text-right px-2 py-1">3 850</div>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-4 items-center mb-2">
+              <div class="text-gray-700">− Unterh. zu zahlen</div>
+              <div id="vaterZahltGesamt" class="text-right px-2 py-1">0</div>
+              <div id="mutterZahltGesamt" class="text-right px-2 py-1">1 272</div>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-4 items-center mb-2">
+              <div class="text-gray-700">+ Unterh. zu erhalten</div>
+              <div id="vaterErhaeltUnterhalt" class="text-right px-2 py-1">1 272</div>
+              <div id="mutterErhaeltUnterhalt" class="text-right px-2 py-1">0</div>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-4 items-center mb-2">
+              <div class="text-gray-700">+ Kinderg. zu erhalten</div>
+              <div id="vaterErhaeltKindergeld" class="text-right px-2 py-1">255</div>
+              <div id="mutterErhaeltKindergeld" class="text-right px-2 py-1">255</div>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-4 items-center mb-2 border-t pt-2">
+              <div class="text-gray-700 font-medium">= Netto zur Verfügung</div>
+              <div id="vaterNettoVerfuegbar" class="text-right px-2 py-1 font-bold">3 427</div>
+              <div id="mutterNettoVerfuegbar" class="text-right px-2 py-1 font-bold">2 833</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Lade JavaScript -->
+  <script src="js/unterhalt.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html> 
