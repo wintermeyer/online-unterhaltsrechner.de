@@ -114,18 +114,28 @@
           </div>
           
           <div class="mt-4">
-            <div class="grid grid-cols-3 gap-4 items-center mb-4">
-              <label class="block text-gray-700 font-medium">Netto aus Erwerbstätigkeit</label>
+            <div class="grid grid-cols-3 gap-4 mb-4">
+              <div>
+                <label class="block text-gray-700 font-medium">Netto aus Erwerbstätigkeit</label>
+              </div>
               <div>
                 <div class="flex">
-                  <input type="number" id="vaterNetto" class="form-input flex-grow" value="2000">
+                  <input type="number" id="vaterNetto" class="form-input flex-grow" value="2000" autofocus>
                   <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+                </div>
+                <div id="vaterEinkommensgruppe" class="text-xs text-gray-500 mt-1 hidden">
+                  <div class="font-medium">Einkommensgruppe:</div>
+                  <div class="tabelle-value"></div>
                 </div>
               </div>
               <div>
                 <div class="flex">
                   <input type="number" id="mutterNetto" class="form-input flex-grow" value="0">
                   <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+                </div>
+                <div id="mutterEinkommensgruppe" class="text-xs text-gray-500 mt-1 hidden">
+                  <div class="font-medium">Einkommensgruppe:</div>
+                  <div class="tabelle-value"></div>
                 </div>
               </div>
             </div>

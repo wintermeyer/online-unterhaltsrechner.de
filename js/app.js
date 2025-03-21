@@ -15,11 +15,13 @@ document.addEventListener('DOMContentLoaded', function() {
     vaterSonstigesEinkommen: document.getElementById('vaterSonstigesEinkommen'),
     vaterWohnvorteil: document.getElementById('vaterWohnvorteil'),
     vaterSchulden: document.getElementById('vaterSchulden'),
+    vaterEinkommensgruppe: document.getElementById('vaterEinkommensgruppe'),
     
     mutterNetto: document.getElementById('mutterNetto'),
     mutterSonstigesEinkommen: document.getElementById('mutterSonstigesEinkommen'),
     mutterWohnvorteil: document.getElementById('mutterWohnvorteil'),
     mutterSchulden: document.getElementById('mutterSchulden'),
+    mutterEinkommensgruppe: document.getElementById('mutterEinkommensgruppe'),
     
     // Kinder-Container
     kinderContainer: document.getElementById('kinderContainer'),
@@ -88,8 +90,82 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
+  /**
+   * Zeigt die Einkommensgruppe für einen Elternteil an
+   * @param {string} elternteil - 'vater' oder 'mutter'
+   * @param {number} wert - Der eingegebene Nettowert
+   */
+  function zeigeEinkommensgruppe(elternteil, wert) {
+    const infoElement = formElements[elternteil + 'Einkommensgruppe'];
+    if (!infoElement || !wert || wert <= 0) {
+      if (infoElement) {
+        infoElement.style.display = 'none';
+      }
+      return;
+    }
+    
+    // Finde die passende Einkommensgruppe
+    const gruppe = findEinkommensgruppe(wert);
+    if (!gruppe) {
+      infoElement.style.display = 'none';
+      return;
+    }
+    
+    // Anzeigen des Elements
+    infoElement.style.display = 'block';
+    
+    // Formatiere die Anzeige
+    const valueDiv = infoElement.querySelector('.tabelle-value');
+    if (!valueDiv) return;
+    
+    let gruppenInfo = '';
+    if (gruppe.min && gruppe.max) {
+      gruppenInfo = `${gruppe.min} € - ${gruppe.max} €`;
+    } else if (gruppe.max) {
+      gruppenInfo = `bis ${gruppe.max} €`;
+    } else if (gruppe.min) {
+      gruppenInfo = `ab ${gruppe.min} €`;
+    }
+    
+    valueDiv.innerText = gruppenInfo;
+  }
+  
+  /**
+   * Findet die passende Einkommensgruppe für einen Wert
+   * @param {number} wert - Der zu prüfende Wert
+   * @returns {Object} Die passende Einkommensgruppe oder null
+   */
+  function findEinkommensgruppe(wert) {
+    if (!wert || isNaN(wert)) return null;
+    
+    const einkommensGruppen = unterhaltRechner.duesseldorferTabelle.einkommensGruppen;
+    return einkommensGruppen.find(gruppe => {
+      if (gruppe.min && gruppe.max) {
+        return wert >= gruppe.min && wert <= gruppe.max;
+      } else if (gruppe.max) {
+        return wert <= gruppe.max;
+      } else if (gruppe.min) {
+        return wert >= gruppe.min;
+      }
+      return false;
+    });
+  }
+  
   // Event-Listener für alle Inputs
   addInputListeners();
+  
+  // Event-Listener für Elterneinkommen, um Einkommensgruppen anzuzeigen
+  formElements.vaterNetto.addEventListener('input', function() {
+    zeigeEinkommensgruppe('vater', parseFloat(this.value));
+  });
+  
+  formElements.mutterNetto.addEventListener('input', function() {
+    zeigeEinkommensgruppe('mutter', parseFloat(this.value));
+  });
+  
+  // Initial die Einkommensgruppen anzeigen
+  zeigeEinkommensgruppe('vater', parseFloat(formElements.vaterNetto.value));
+  zeigeEinkommensgruppe('mutter', parseFloat(formElements.mutterNetto.value));
   
   // "Weiteres Kind" Button
   formElements.addChildBtn.addEventListener('click', addNewChild);
