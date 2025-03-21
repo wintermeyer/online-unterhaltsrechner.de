@@ -56,6 +56,38 @@ document.addEventListener('DOMContentLoaded', function() {
   // Counter für Kinder-IDs
   let kinderCount = 1;
   
+  // Funktion zum korrekten Nummerieren der Kinder
+  function updateChildrenNumbering() {
+    const kindElements = document.querySelectorAll('.kind-element');
+    
+    // Setze die korrekte Anzahl
+    kinderCount = kindElements.length;
+    
+    // Nummeriere alle Kinder neu
+    kindElements.forEach((kindElement, index) => {
+      const number = index + 1;
+      kindElement.dataset.kindNummer = number;
+      kindElement.id = `kind${number}`;
+      
+      // Update heading
+      const heading = kindElement.querySelector('h4');
+      if (heading) {
+        heading.textContent = `Kind ${number}`;
+      }
+      
+      // Update IDs von Eingabefeldern wenn nötig
+      const ageSelect = kindElement.querySelector('.kind-alter');
+      if (ageSelect) {
+        ageSelect.id = `kind${number}Alter`;
+      }
+      
+      const lebensmittelpunktSelect = kindElement.querySelector('.kind-lebensmittelpunkt');
+      if (lebensmittelpunktSelect) {
+        lebensmittelpunktSelect.id = `kind${number}Lebensmittelpunkt`;
+      }
+    });
+  }
+  
   // Event-Listener für alle Inputs
   addInputListeners();
   
@@ -159,6 +191,10 @@ document.addEventListener('DOMContentLoaded', function() {
    * Fügt ein neues Kind hinzu
    */
   function addNewChild() {
+    // Aktualisiere die Anzahl basierend auf vorhandenen Kindern
+    updateChildrenNumbering();
+    
+    // Inkrementiere für das neue Kind
     kinderCount++;
     
     // Generiere Altersoptionen von 0-25
@@ -277,6 +313,9 @@ document.addEventListener('DOMContentLoaded', function() {
         removeBtn.classList.add('hidden');
       }
     }
+    
+    // Alle Kinder neu nummerieren
+    updateChildrenNumbering();
     
     // Neu berechnen
     calculateUnterhalt();
