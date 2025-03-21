@@ -43,7 +43,7 @@
         @apply text-lg font-semibold mb-2;
       }
       .collapsible-header {
-        @apply flex items-center justify-between cursor-pointer p-2 rounded hover:bg-blue-50 transition-colors;
+        @apply flex items-center justify-between cursor-pointer rounded hover:bg-blue-50 transition-colors;
       }
       .collapsible-content {
         @apply overflow-hidden transition-all duration-300 ease-in-out max-h-0;
@@ -62,6 +62,9 @@
       }
       .expanded .rotate-icon {
         @apply transform rotate-180;
+      }
+      .hidden-age-dependent {
+        display: none !important;
       }
     }
   </style>
@@ -91,8 +94,6 @@
           <div class="flex">
             <select id="berechnungJahr" class="form-select bg-blue-50">
               <option selected>2025</option>
-              <option>2024</option>
-              <option>2023</option>
             </select>
           </div>
         </div>
@@ -122,7 +123,7 @@
             
             <!-- Combined Collapsible Section for Additional Settings -->
             <div class="mb-4 border-t pt-2 pb-1">
-              <div class="collapsible-header collapsed" data-target="weitere-einstellungen">
+              <div class="collapsible-header collapsed pl-0" data-target="weitere-einstellungen">
                 <label class="block text-gray-700 font-medium">Sonstige Einkommen, Wohnvorteil, Schulden</label>
                 <i class="fas fa-chevron-down text-gray-400 rotate-icon"></i>
               </div>
@@ -236,7 +237,7 @@
                 </div>
               </div>
               
-              <div class="grid grid-cols-3 gap-4 items-center mb-3">
+              <div class="grid grid-cols-3 gap-4 items-center mb-3 child-status-container">
                 <label class="block text-gray-700">Status</label>
                 <div class="col-span-2">
                   <select id="kind1Status" class="form-select kind-status">
@@ -250,13 +251,13 @@
               
               <!-- Combined Child Income Section -->
               <div class="mb-3 border-t pt-2">
-                <div class="collapsible-header collapsed" data-target="kind1-einkommen-combined">
+                <div class="collapsible-header collapsed pl-0" data-target="kind1-einkommen-combined">
                   <label class="block text-gray-700 font-medium">Einkommen des Kindes</label>
                   <i class="fas fa-chevron-down text-gray-400 rotate-icon"></i>
                 </div>
                 <div class="collapsible-content mt-2">
                   <!-- Einkommen aus Job/Ausbildung -->
-                  <div class="mb-4">
+                  <div class="mb-4 job-income-container hidden-age-dependent">
                     <h4 class="font-medium text-gray-700 mb-1">Einkommen aus Job/Ausb.</h4>
                     <div class="mb-2 text-xs text-gray-500">Einkünfte des Kindes aus Arbeit oder Ausbildung</div>
                     <input type="number" id="kind1Einkommen" class="form-input kind-einkommen" value="0">
@@ -381,7 +382,98 @@
   
   <!-- Collapsible Sections Script -->
   <script>
+    // Function to check if child status should be shown based on age
+    function updateChildStatusVisibility() {
+      document.querySelectorAll('.kind-element').forEach((kindElement, index) => {
+        const kindNumber = index + 1;
+        const ageSelect = document.getElementById(`kind${kindNumber}Alter`);
+        const statusContainer = kindElement.querySelector('.child-status-container');
+        const jobIncomeContainer = kindElement.querySelector('.job-income-container');
+        const einkommenCollapsible = kindElement.querySelector('[data-target$="-einkommen-combined"]');
+        const einkommenContent = einkommenCollapsible ? einkommenCollapsible.nextElementSibling : null;
+
+        if (ageSelect) {
+          const selectedAge = parseInt(ageSelect.value, 10);
+          
+          // Handle age-dependent elements
+          if (selectedAge >= 14) {
+            // Show elements for children 14 and older
+            if (statusContainer) {
+              statusContainer.classList.remove('hidden-age-dependent');
+              statusContainer.style.display = '';
+            }
+            if (jobIncomeContainer) {
+              jobIncomeContainer.classList.remove('hidden-age-dependent');
+              jobIncomeContainer.style.display = '';
+              
+              // Auto expand the collapsible section when job income becomes visible
+              if (einkommenCollapsible && einkommenContent) {
+                // Only if it was previously collapsed
+                if (einkommenCollapsible.classList.contains('collapsed')) {
+                  // Remove collapsed and add expanded
+                  einkommenCollapsible.classList.remove('collapsed');
+                  einkommenCollapsible.classList.add('expanded');
+                  
+                  // Show the content
+                  einkommenContent.style.maxHeight = einkommenContent.scrollHeight + 'px';
+                  einkommenContent.style.opacity = '1';
+                }
+              }
+            }
+          } else {
+            // Hide elements for children under 14
+            if (statusContainer) {
+              statusContainer.classList.add('hidden-age-dependent');
+              statusContainer.style.display = 'none';
+            }
+            if (jobIncomeContainer) {
+              jobIncomeContainer.classList.add('hidden-age-dependent');
+              jobIncomeContainer.style.display = 'none';
+            }
+          }
+        }
+      });
+      
+      // Explicitly check the first child on page load
+      const firstChildAge = document.getElementById('kind1Alter');
+      const firstChildStatus = document.querySelector('.child-status-container');
+      const firstChildJobIncome = document.querySelector('.job-income-container');
+      const firstEinkommenCollapsible = document.querySelector('[data-target="kind1-einkommen-combined"]');
+      const firstEinkommenContent = firstEinkommenCollapsible ? firstEinkommenCollapsible.nextElementSibling : null;
+      
+      if (firstChildAge) {
+        const age = parseInt(firstChildAge.value, 10);
+        if (age < 14) {
+          // Hide elements for first child if under 14
+          if (firstChildStatus) {
+            firstChildStatus.classList.add('hidden-age-dependent');
+            firstChildStatus.style.display = 'none';
+          }
+          if (firstChildJobIncome) {
+            firstChildJobIncome.classList.add('hidden-age-dependent');
+            firstChildJobIncome.style.display = 'none';
+          }
+        } else {
+          // For children 14 and older, expand the income section if needed
+          if (firstChildJobIncome && firstEinkommenCollapsible && firstEinkommenContent) {
+            firstEinkommenCollapsible.classList.remove('collapsed');
+            firstEinkommenCollapsible.classList.add('expanded');
+            firstEinkommenContent.style.maxHeight = firstEinkommenContent.scrollHeight + 'px';
+            firstEinkommenContent.style.opacity = '1';
+          }
+        }
+      }
+    }
+    
     document.addEventListener('DOMContentLoaded', function() {
+      // Initialize child status visibility based on age
+      updateChildStatusVisibility();
+      
+      // Add event listeners for age select changes
+      document.querySelectorAll('.kind-alter').forEach(ageSelect => {
+        ageSelect.addEventListener('change', updateChildStatusVisibility);
+      });
+      
       // Initialize all collapsible sections to be collapsed by default
       document.querySelectorAll('.collapsible-header').forEach(header => {
         const content = header.nextElementSibling;
@@ -417,6 +509,19 @@
       // Function to handle new children being added
       function setupNewChildCollapsibles() {
         const observer = new MutationObserver(function(mutations) {
+          // Check for new child elements being added
+          if (mutations.some(mutation => mutation.addedNodes.length > 0)) {
+            // Update status visibility for all children after DOM changes
+            updateChildStatusVisibility();
+            
+            // Add event listeners to new age selects
+            document.querySelectorAll('.kind-alter').forEach(ageSelect => {
+              // Remove existing listeners to prevent duplicates
+              ageSelect.removeEventListener('change', updateChildStatusVisibility);
+              // Add the listener
+              ageSelect.addEventListener('change', updateChildStatusVisibility);
+            });
+          }
           mutations.forEach(function(mutation) {
             if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
               // Check if any new child sections were added
