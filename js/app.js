@@ -591,7 +591,7 @@ document.addEventListener('DOMContentLoaded', function() {
    */
   function applyMoneyColorCoding(element, amount, isPayment) {
     // Betrag formatieren
-    const formattedAmount = amount.toLocaleString('de-DE');
+    const formattedAmount = amount.toLocaleString('de-DE') + ' €';
     element.textContent = formattedAmount;
     
     // Alle Farbklassen entfernen
@@ -614,7 +614,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateResults(ergebnis) {
     // Formatierungsfunktion für Zahlen
     const formatNumber = (num) => {
-      return num.toLocaleString('de-DE');
+      return num.toLocaleString('de-DE') + ' €';
     };
     
     // Netto

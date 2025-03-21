@@ -337,14 +337,18 @@
   <script>
     // Function to add euro symbol to numeric values
     function addEuroSymbol() {
-      // Select all monetary value elements in the result section
-      const monetaryElements = document.querySelectorAll('#ergebnisContainer [id^="vater"], #ergebnisContainer [id^="mutter"], #ergebnisContainer .text-right.px-3');
+      // Select all potential monetary values in the result section with a more comprehensive selector
+      const monetaryElements = document.querySelectorAll('#ergebnisContainer [id^="vater"], #ergebnisContainer [id^="mutter"], #ergebnisContainer .text-right.px-3, .bg-white.rounded.shadow-sm.font-mono, .text-red-600, .text-green-600');
       
       monetaryElements.forEach(element => {
         const text = element.textContent.trim();
-        // Skip elements that aren't displaying monetary values (like arrows)
-        if (text !== '⟸' && !text.includes('€') && !isNaN(text.replace(/\s/g, ''))) {
-          element.textContent = text + ' €';
+        // Skip elements that aren't displaying monetary values (like arrows or dashes)
+        if (text !== '⟸' && text !== '-' && !text.includes('€') && text.length > 0) {
+          // Try to parse the value as a number (for German locale)
+          const cleanText = text.replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+          if (!isNaN(cleanText)) {
+            element.textContent = text + ' €';
+          }
         }
       });
     }
