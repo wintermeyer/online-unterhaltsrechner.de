@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
   };
   
   // Counter für Kinder-IDs
-  let kinderCount = 1;
+  let kinderCount = 0;
   
   // Funktion zum korrekten Nummerieren der Kinder
   function updateChildrenNumbering() {
@@ -91,14 +91,23 @@ document.addEventListener('DOMContentLoaded', function() {
   // Event-Listener für alle Inputs
   addInputListeners();
   
-  // Kindergeld-Toggle für erstes Kind
-  setupKindergeldToggle(document.querySelector('#kind1'));
-  
   // "Weiteres Kind" Button
   formElements.addChildBtn.addEventListener('click', addNewChild);
   
-  // Initiales Berechnen mit Default-Werten
-  calculateUnterhalt();
+  // Erstes Kind automatisch hinzufügen
+  addNewChild();
+  
+  // Dafür sorgen, dass das erste Kind nicht entfernt werden kann
+  const firstChild = document.getElementById('kind1');
+  if (firstChild) {
+    const removeBtn = firstChild.querySelector('.remove-kind-btn');
+    if (removeBtn) {
+      removeBtn.classList.add('hidden');
+    }
+  }
+  
+  // Initialisiere alle ausklappbaren Elemente auf der Seite
+  setupCollapsibleHeaders();
   
   /**
    * Fügt Event-Listener für Input-Änderungen hinzu
@@ -154,6 +163,99 @@ document.addEventListener('DOMContentLoaded', function() {
       removeBtn.addEventListener('click', function() {
         removeChild(kindElement);
       });
+    }
+    
+    // Nach dem Hinzufügen eines neuen Kindes, alle Collapsible-Header neu initialisieren
+    setupCollapsibleHeaders();
+  }
+  
+  /**
+   * Initialisiert alle ausklappbaren Elemente auf der Seite
+   */
+  function setupCollapsibleHeaders() {
+    // Entferne alle bestehenden Event-Listener, indem wir erst alle Ereignisse entfernen
+    document.querySelectorAll('.collapsible-header').forEach(header => {
+      header.removeEventListener('click', handleCollapsibleClick);
+    });
+    document.querySelectorAll('.rotate-icon').forEach(icon => {
+      icon.removeEventListener('click', handleIconClick);
+    });
+    
+    // Neue Event-Listener hinzufügen
+    document.querySelectorAll('.collapsible-header').forEach(header => {
+      // Initialen Zustand setzen
+      if (!header.classList.contains('collapsed') && !header.classList.contains('expanded')) {
+        header.classList.add('collapsed');
+      }
+      
+      const content = document.getElementById(header.dataset.target) || header.nextElementSibling;
+      if (content) {
+        if (header.classList.contains('collapsed')) {
+          content.style.maxHeight = '0px';
+          content.style.opacity = '0';
+        } else {
+          content.style.maxHeight = content.scrollHeight + 'px';
+          content.style.opacity = '1';
+        }
+      }
+      
+      // Click-Ereignis für Header hinzufügen
+      header.addEventListener('click', handleCollapsibleClick);
+    });
+    
+    // Für alle Icons separate Event-Listener hinzufügen
+    document.querySelectorAll('.rotate-icon').forEach(icon => {
+      icon.addEventListener('click', handleIconClick);
+    });
+  }
+  
+  /**
+   * Behandelt Klicks auf die Überschriften der ausklappbaren Elemente
+   */
+  function handleCollapsibleClick(event) {
+    // Verhindern, dass Klicks auf Icons hier behandelt werden
+    if (event.target.classList.contains('rotate-icon')) {
+      return;
+    }
+    
+    const header = this;
+    toggleCollapsible(header);
+  }
+  
+  /**
+   * Behandelt Klicks auf die Icons der ausklappbaren Elemente
+   */
+  function handleIconClick(event) {
+    event.stopPropagation();
+    const header = this.closest('.collapsible-header');
+    if (header) {
+      toggleCollapsible(header);
+    }
+  }
+  
+  /**
+   * Schaltet ein ausklappbares Element zwischen ausgeklappt und eingeklappt um
+   */
+  function toggleCollapsible(header) {
+    const content = document.getElementById(header.dataset.target) || header.nextElementSibling;
+    const isCollapsed = header.classList.contains('collapsed');
+    
+    if (isCollapsed) {
+      // Ausklappen
+      header.classList.remove('collapsed');
+      header.classList.add('expanded');
+      if (content) {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        content.style.opacity = '1';
+      }
+    } else {
+      // Einklappen
+      header.classList.remove('expanded');
+      header.classList.add('collapsed');
+      if (content) {
+        content.style.maxHeight = '0px';
+        content.style.opacity = '0';
+      }
     }
   }
   
@@ -237,7 +339,17 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
       </div>
       
-      <div class="grid grid-cols-3 gap-4 items-center mb-3">
+      <div class="grid grid-cols-3 gap-4 items-center mb-3 kindergeld-container">
+        <label class="block text-gray-700">Kindergeld geht an</label>
+        <div class="col-span-2">
+          <div class="flex">
+            <button type="button" class="w-1/2 py-2 text-center border rounded-l-md kindergeld-vater" data-value="Vater">Vater</button>
+            <button type="button" class="w-1/2 py-2 text-center border rounded-r-md border-l-0 kindergeld-mutter" data-value="Mutter">Mutter</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-3 gap-4 items-center mb-3 child-status-container">
         <label class="block text-gray-700">Status</label>
         <div class="col-span-2">
           <select id="kind${kinderCount}Status" class="form-select kind-status">
@@ -249,35 +361,36 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
       </div>
       
-      <div class="grid grid-cols-3 gap-4 items-center mb-3">
-        <label class="block text-gray-700">Einkommen aus Job/Ausb.</label>
-        <div class="col-span-2">
-          <div class="flex">
-            <input type="number" id="kind${kinderCount}Einkommen" class="form-input kind-einkommen flex-grow" value="0">
-            <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+      <!-- Combined Child Income Section -->
+      <div class="mb-3 border-t pt-2">
+        <div class="collapsible-header collapsed pl-0" data-target="kind${kinderCount}-einkommen-combined">
+          <label class="block text-gray-700 font-medium">Einkommen des Kindes</label>
+          <i class="fas fa-chevron-down text-gray-400 rotate-icon"></i>
+        </div>
+        <div id="kind${kinderCount}-einkommen-combined" class="collapsible-content mt-2">
+          <!-- Einkommen aus Job/Ausbildung -->
+          <div class="mb-4 job-income-container">
+            <h4 class="font-medium text-gray-700 mb-1">Einkommen aus Job/Ausb.</h4>
+            <div class="mb-2 text-xs text-gray-500">Einkünfte des Kindes aus Arbeit oder Ausbildung</div>
+            <div class="flex">
+              <input type="number" id="kind${kinderCount}Einkommen" class="form-input kind-einkommen flex-grow" value="0">
+              <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+            </div>
+          </div>
+          
+          <!-- Sonstiges Einkommen -->
+          <div class="pt-2">
+            <h4 class="font-medium text-gray-700 mb-1">Sonstiges Einkommen</h4>
+            <div class="mb-2 text-xs text-gray-500">Weitere Einkünfte des Kindes (z.B. Kapitalerträge)</div>
+            <div class="flex">
+              <input type="number" id="kind${kinderCount}SonstigesEinkommen" class="form-input kind-sonstiges-einkommen flex-grow" value="0">
+              <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+            </div>
           </div>
         </div>
       </div>
       
-      <div class="grid grid-cols-3 gap-4 items-center mb-3">
-        <label class="block text-gray-700">Sonstiges Einkommen</label>
-        <div class="col-span-2">
-          <div class="flex">
-            <input type="number" id="kind${kinderCount}SonstigesEinkommen" class="form-input kind-sonstiges-einkommen flex-grow" value="0">
-            <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="grid grid-cols-3 gap-4 items-center mb-3 kindergeld-container">
-        <label class="block text-gray-700">Kindergeld geht an</label>
-        <div class="col-span-2">
-          <div class="flex">
-            <button type="button" class="w-1/2 py-2 text-center border rounded-l-md kindergeld-vater" data-value="Vater">Vater</button>
-            <button type="button" class="w-1/2 py-2 text-center border rounded-r-md border-l-0 kindergeld-mutter" data-value="Mutter">Mutter</button>
-          </div>
-        </div>
-      </div>
+
     `;
     
     // Kind-Element hinzufügen
@@ -300,6 +413,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Neu berechnen
     calculateUnterhalt();
+    
+    // Keine Sichtbarkeitsanpassung mehr nötig, da alle Felder immer sichtbar sind
   }
   
   /**

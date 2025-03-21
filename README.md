@@ -98,6 +98,48 @@ Für eine vollständig angepasste Integration können Sie auch die HTML-Struktur
 
 Der Rechner funktioniert in allen modernen Browsern (Chrome, Firefox, Safari, Edge).
 
+## Testen
+
+Das Projekt verfügt über eine umfangreiche Testsuite, um die Funktionalität zu überprüfen und Regressionen zu vermeiden. Die Tests basieren auf Puppeteer für die Browser-Automatisierung.
+
+### Voraussetzungen
+
+- Node.js installiert
+- Puppeteer und andere Abhängigkeiten installiert (`npm install`)
+
+### Tests ausführen
+
+#### Alle Tests ausführen
+
+```bash
+node tests/run-tests.js
+```
+
+Dieser Befehl führt alle Testfälle aus und gibt eine Zusammenfassung der Ergebnisse aus.
+
+#### Einzelne Tests ausführen
+
+Um einen bestimmten Test auszuführen:
+
+```bash
+node tests/[testname].test.js
+```
+
+Beispiel:
+
+```bash
+node tests/child-status-visibility.test.js
+```
+
+### Verfügbare Tests
+
+- `child-status-visibility.test.js` - Prüft, ob die Statusfelder für Kinder unabhängig vom Alter immer sichtbar sind
+- `collapsible.test.js` - Testet die Funktionalität der ausklappbaren Abschnitte
+- `second-child-label-click.test.js` - Prüft das Klickverhalten bei Labels für das zweite Kind
+- `child-income.test.js` - Testet die Funktionalität des Einkommensbereichs für Kinder
+- `child-income-text-click.test.js` - Prüft das Klickverhalten bei Einkommens-Textlabels
+- `initial-status-visibility.test.js` - Testet die anfängliche Sichtbarkeit der Statusfelder
+
 ## Lizenz
 
 Frei zur Verwendung für private und kommerzielle Zwecke. 

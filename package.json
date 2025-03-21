@@ -1,0 +1,15 @@
+{
+  "name": "online-unterhaltsrechner",
+  "version": "1.0.0",
+  "description": "Online Kindesunterhalt-Rechner",
+  "main": "index.html",
+  "scripts": {
+    "test": "node tests/run-tests.js",
+    "test:collapsible": "node tests/collapsible.test.js",
+    "serve": "http-server -p 8080"
+  },
+  "dependencies": {
+    "puppeteer": "^22.8.2",
+    "http-server": "^14.1.1"
+  }
+}

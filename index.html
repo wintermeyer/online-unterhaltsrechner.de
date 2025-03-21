@@ -68,9 +68,7 @@
       .expanded .rotate-icon {
         @apply transform rotate-180;
       }
-      .hidden-age-dependent {
-        display: none !important;
-      }
+
     }
   </style>
 </head>
@@ -138,7 +136,7 @@
                 <label class="block text-gray-700 font-medium">Sonstige Einkommen, Wohnvorteil, Schulden</label>
                 <i class="fas fa-chevron-down text-gray-400 rotate-icon"></i>
               </div>
-              <div class="collapsible-content mt-2">
+              <div id="weitere-einstellungen" class="collapsible-content mt-2">
                 <!-- Sonstige Einkommen -->
                 <div class="mb-4">
                   <h4 class="font-medium text-gray-700 mb-2">Sonstige Einkommen</h4>
@@ -214,109 +212,7 @@
           
           <!-- Kinder-Container -->
           <div id="kinderContainer">
-            <!-- Kind 1 -->
-            <div id="kind1" class="border rounded-md p-4 mt-4 bg-gray-50 kind-element" data-kind-nummer="1">
-              <div class="flex justify-between items-center mb-3">
-                <h4 class="font-medium text-gray-700">Kind 1</h4>
-                <button type="button" class="remove-kind-btn text-gray-400 hidden">&times;</button>
-              </div>
-              
-              <div class="grid grid-cols-3 gap-4 items-center mb-3">
-                <label class="block text-gray-700">Alter</label>
-                <div class="col-span-2">
-                  <select id="kind1Alter" class="form-select kind-alter">
-                    <option>0</option>
-                    <option selected>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                    <option>8</option>
-                    <option>9</option>
-                    <option>10</option>
-                    <option>11</option>
-                    <option>12</option>
-                    <option>13</option>
-                    <option>14</option>
-                    <option>15</option>
-                    <option>16</option>
-                    <option>17</option>
-                    <option>18</option>
-                    <option>19</option>
-                    <option>20</option>
-                    <option>21</option>
-                    <option>22</option>
-                    <option>23</option>
-                    <option>24</option>
-                    <option>25</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="grid grid-cols-3 gap-4 items-center mb-3">
-                <label class="block text-gray-700">Lebensmittelpunkt</label>
-                <div class="col-span-2">
-                  <select id="kind1Lebensmittelpunkt" class="form-select kind-lebensmittelpunkt">
-                    <option>Vater</option>
-                    <option selected>Mutter</option>
-                    <option>Je 50%</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="grid grid-cols-3 gap-4 items-center mb-3 child-status-container">
-                <label class="block text-gray-700">Status</label>
-                <div class="col-span-2">
-                  <select id="kind1Status" class="form-select kind-status">
-                    <option selected>Schüler</option>
-                    <option>Student</option>
-                    <option>Azubi</option>
-                    <option>Berufstätig</option>
-                  </select>
-                </div>
-              </div>
-              
-              <!-- Combined Child Income Section -->
-              <div class="mb-3 border-t pt-2">
-                <div class="collapsible-header collapsed pl-0" data-target="kind1-einkommen-combined">
-                  <label class="block text-gray-700 font-medium">Einkommen des Kindes</label>
-                  <i class="fas fa-chevron-down text-gray-400 rotate-icon"></i>
-                </div>
-                <div class="collapsible-content mt-2">
-                  <!-- Einkommen aus Job/Ausbildung -->
-                  <div class="mb-4 job-income-container hidden-age-dependent">
-                    <h4 class="font-medium text-gray-700 mb-1">Einkommen aus Job/Ausb.</h4>
-                    <div class="mb-2 text-xs text-gray-500">Einkünfte des Kindes aus Arbeit oder Ausbildung</div>
-                    <div class="flex">
-                      <input type="number" id="kind1Einkommen" class="form-input kind-einkommen flex-grow" value="0">
-                      <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
-                    </div>
-                  </div>
-                  
-                  <!-- Sonstiges Einkommen -->
-                  <div class="pt-2">
-                    <h4 class="font-medium text-gray-700 mb-1">Sonstiges Einkommen</h4>
-                    <div class="mb-2 text-xs text-gray-500">Weitere Einkünfte des Kindes (z.B. Kapitalerträge)</div>
-                    <div class="flex">
-                      <input type="number" id="kind1SonstigesEinkommen" class="form-input kind-sonstiges-einkommen flex-grow" value="0">
-                      <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="grid grid-cols-3 gap-4 items-center mb-3 kindergeld-container">
-                <label class="block text-gray-700">Kindergeld geht an</label>
-                <div class="col-span-2">
-                  <div class="flex">
-                    <button type="button" class="w-1/2 py-2 text-center border rounded-l-md kindergeld-vater" data-value="Vater">Vater</button>
-                    <button type="button" class="w-1/2 py-2 text-center border rounded-r-md border-l-0 kindergeld-mutter" data-value="Mutter">Mutter</button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <!-- Children will be added dynamically via JavaScript -->
           </div>
           
           <!-- Weiteres Kind Button -->
@@ -443,88 +339,7 @@
       });
     }
     
-    // Function to check if child status should be shown based on age
-    function updateChildStatusVisibility() {
-      document.querySelectorAll('.kind-element').forEach((kindElement, index) => {
-        const kindNumber = index + 1;
-        const ageSelect = document.getElementById(`kind${kindNumber}Alter`);
-        const statusContainer = kindElement.querySelector('.child-status-container');
-        const jobIncomeContainer = kindElement.querySelector('.job-income-container');
-        const einkommenCollapsible = kindElement.querySelector('[data-target$="-einkommen-combined"]');
-        const einkommenContent = einkommenCollapsible ? einkommenCollapsible.nextElementSibling : null;
-
-        if (ageSelect) {
-          const selectedAge = parseInt(ageSelect.value, 10);
-          
-          // Handle age-dependent elements
-          if (selectedAge >= 14) {
-            // Show elements for children 14 and older
-            if (statusContainer) {
-              statusContainer.classList.remove('hidden-age-dependent');
-              statusContainer.style.display = '';
-            }
-            if (jobIncomeContainer) {
-              jobIncomeContainer.classList.remove('hidden-age-dependent');
-              jobIncomeContainer.style.display = '';
-              
-              // Auto expand the collapsible section when job income becomes visible
-              if (einkommenCollapsible && einkommenContent) {
-                // Only if it was previously collapsed
-                if (einkommenCollapsible.classList.contains('collapsed')) {
-                  // Remove collapsed and add expanded
-                  einkommenCollapsible.classList.remove('collapsed');
-                  einkommenCollapsible.classList.add('expanded');
-                  
-                  // Show the content
-                  einkommenContent.style.maxHeight = einkommenContent.scrollHeight + 'px';
-                  einkommenContent.style.opacity = '1';
-                }
-              }
-            }
-          } else {
-            // Hide elements for children under 14
-            if (statusContainer) {
-              statusContainer.classList.add('hidden-age-dependent');
-              statusContainer.style.display = 'none';
-            }
-            if (jobIncomeContainer) {
-              jobIncomeContainer.classList.add('hidden-age-dependent');
-              jobIncomeContainer.style.display = 'none';
-            }
-          }
-        }
-      });
-      
-      // Explicitly check the first child on page load
-      const firstChildAge = document.getElementById('kind1Alter');
-      const firstChildStatus = document.querySelector('.child-status-container');
-      const firstChildJobIncome = document.querySelector('.job-income-container');
-      const firstEinkommenCollapsible = document.querySelector('[data-target="kind1-einkommen-combined"]');
-      const firstEinkommenContent = firstEinkommenCollapsible ? firstEinkommenCollapsible.nextElementSibling : null;
-      
-      if (firstChildAge) {
-        const age = parseInt(firstChildAge.value, 10);
-        if (age < 14) {
-          // Hide elements for first child if under 14
-          if (firstChildStatus) {
-            firstChildStatus.classList.add('hidden-age-dependent');
-            firstChildStatus.style.display = 'none';
-          }
-          if (firstChildJobIncome) {
-            firstChildJobIncome.classList.add('hidden-age-dependent');
-            firstChildJobIncome.style.display = 'none';
-          }
-        } else {
-          // For children 14 and older, expand the income section if needed
-          if (firstChildJobIncome && firstEinkommenCollapsible && firstEinkommenContent) {
-            firstEinkommenCollapsible.classList.remove('collapsed');
-            firstEinkommenCollapsible.classList.add('expanded');
-            firstEinkommenContent.style.maxHeight = firstEinkommenContent.scrollHeight + 'px';
-            firstEinkommenContent.style.opacity = '1';
-          }
-        }
-      }
-    }
+    // No age-dependent visibility function needed
     
     // Global function to ensure Euro symbols are displayed correctly after any calculation
 function ensureEuroSymbols() {
@@ -534,16 +349,140 @@ function ensureEuroSymbols() {
   }, 10);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-      // Initialize child status visibility based on age
-      updateChildStatusVisibility();
+// Handle cases where DOMContentLoaded may have already fired
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  console.log('Document already loaded, running initialization directly');
+  setTimeout(function() {
+    console.log('Running delayed initialization');
+    if (typeof window.updateChildStatusVisibility === 'function') {
+      window.updateChildStatusVisibility();
+    } else {
+      console.error('updateChildStatusVisibility not available in setTimeout');
+    }
+    
+    // As a backup, manually check each child and apply visibility rules
+    document.querySelectorAll('.kind-element').forEach((kindElement) => {
+      const ageSelect = kindElement.querySelector('.kind-alter');
+      const statusContainer = kindElement.querySelector('.child-status-container');
+      const jobIncomeContainer = kindElement.querySelector('.job-income-container');
       
-      // Add euro symbol to monetary values
-      addEuroSymbol();
+      if (ageSelect && statusContainer) {
+        const age = parseInt(ageSelect.value, 10);
+        console.log('Backup check - child age:', age);
+        
+        if (age >= 14) {
+          // Show status field for age 14+ (including age 18)
+          statusContainer.classList.remove('hidden-age-dependent');
+          statusContainer.style.display = 'grid';
+          console.log('Backup system showing status field for age', age);
+          
+          // Also handle job income container
+          if (jobIncomeContainer) {
+            jobIncomeContainer.classList.remove('hidden-age-dependent');
+            jobIncomeContainer.style.display = 'grid';
+          }
+        }
+      }
+    });
+    
+    // Add specific event listeners to handle age changes
+    document.querySelectorAll('.kind-alter').forEach((ageSelect) => {
+      ageSelect.addEventListener('change', function() {
+        console.log('Age select changed to:', this.value);
+        
+        // Get the current kind element
+        const kindElement = this.closest('.kind-element');
+        if (kindElement) {
+          const kindNumber = kindElement.getAttribute('data-kind-nummer');
+          console.log(`Processing change for Kind ${kindNumber}`);
+          
+          // Direct DOM manipulation for immediate feedback
+          const statusContainer = kindElement.querySelector('.child-status-container');
+          const jobIncomeContainer = kindElement.querySelector('.job-income-container');
+          const age = parseInt(this.value, 10);
+          
+          if (age >= 14) {
+            console.log(`Kind ${kindNumber} is ${age} years old - showing status field`);
+            if (statusContainer) {
+              statusContainer.classList.remove('hidden-age-dependent');
+              statusContainer.style.display = 'grid';
+              console.log('Status container display set to:', statusContainer.style.display);
+            } else {
+              console.warn('Status container not found for Kind', kindNumber);
+            }
+            
+            if (jobIncomeContainer) {
+              jobIncomeContainer.classList.remove('hidden-age-dependent');
+              jobIncomeContainer.style.display = 'grid';
+            }
+          } else {
+            console.log(`Kind ${kindNumber} is ${age} years old - hiding status field`);
+            if (statusContainer) {
+              statusContainer.style.display = 'none';
+              statusContainer.classList.add('hidden-age-dependent');
+            }
+            
+            if (jobIncomeContainer) {
+              jobIncomeContainer.style.display = 'none';
+              jobIncomeContainer.classList.add('hidden-age-dependent');
+            }
+          }
+        }
+        
+        // Also call the global function for complete updates
+        if (typeof window.updateChildStatusVisibility === 'function') {
+          window.updateChildStatusVisibility();
+        }
+      });
+    });
+  }, 100);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM fully loaded, initializing visibility and components...');
+      
+      // Run initialization with a slight delay to ensure DOM is fully processed
+      setTimeout(function() {
+        console.log('Running delayed DOMContentLoaded initialization');
+        
+        // Initialize child status visibility based on age
+        if (typeof window.updateChildStatusVisibility === 'function') {
+          window.updateChildStatusVisibility();
+        }
+        
+        // Add euro symbol to monetary values
+        addEuroSymbol();
+        
+        // Special check for age 18 (bug fix)
+        document.querySelectorAll('.kind-element').forEach((kindElement) => {
+          const ageSelect = kindElement.querySelector('.kind-alter');
+          const statusContainer = kindElement.querySelector('.child-status-container');
+          const jobIncomeContainer = kindElement.querySelector('.job-income-container');
+          
+          if (ageSelect && statusContainer) {
+            const age = parseInt(ageSelect.value, 10);
+            console.log('DOMContentLoaded check - child age:', age);
+            
+            if (age >= 14) {
+              // Show status field for age 14+ (including age 18)
+              statusContainer.classList.remove('hidden-age-dependent');
+              statusContainer.style.display = 'grid';
+              console.log('DOMContentLoaded showing status field for age', age);
+              
+              // Also handle job income container
+              if (jobIncomeContainer) {
+                jobIncomeContainer.classList.remove('hidden-age-dependent');
+                jobIncomeContainer.style.display = 'grid';
+              }
+            }
+          }
+        });
+      }, 150);
       
       // Add event listeners for age select changes
       document.querySelectorAll('.kind-alter').forEach(ageSelect => {
         ageSelect.addEventListener('change', function() {
+          console.log('Age changed to:', this.value);
           updateChildStatusVisibility();
           ensureEuroSymbols();
         });
@@ -551,35 +490,55 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Initialize all collapsible sections to be collapsed by default
       document.querySelectorAll('.collapsible-header').forEach(header => {
+        // Add collapsed class to header
+        header.classList.add('collapsed');
+        
         const content = header.nextElementSibling;
         if (content && content.classList.contains('collapsible-content')) {
           content.style.maxHeight = '0px';
           content.style.opacity = '0';
         }
         
-        // Add click event listeners
-        header.addEventListener('click', function() {
-          const isCollapsed = this.classList.contains('collapsed');
-          const content = this.nextElementSibling;
-          
-          // Toggle the collapsed/expanded state
-          if (isCollapsed) {
-            this.classList.remove('collapsed');
-            this.classList.add('expanded');
-            if (content && content.classList.contains('collapsible-content')) {
-              content.style.maxHeight = content.scrollHeight + 'px';
-              content.style.opacity = '1';
-            }
-          } else {
-            this.classList.remove('expanded');
-            this.classList.add('collapsed');
-            if (content && content.classList.contains('collapsible-content')) {
-              content.style.maxHeight = '0px';
-              content.style.opacity = '0';
-            }
+        // Add click event listeners for the header
+        header.addEventListener('click', function(e) {
+          // Only handle clicks directly on the header element, not child elements
+          if (e.target === this) {
+            toggleCollapsible(this);
           }
         });
+        
+        // Add separate click handler for the icon
+        const icon = header.querySelector('.rotate-icon');
+        if (icon) {
+          icon.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent parent header handler from firing
+            toggleCollapsible(header);
+          });
+        }
       });
+      
+      // Function to toggle collapsible elements
+      function toggleCollapsible(header) {
+        const isCollapsed = header.classList.contains('collapsed');
+        const content = header.nextElementSibling;
+          
+        // Toggle the collapsed/expanded state
+        if (isCollapsed) {
+          header.classList.remove('collapsed');
+          header.classList.add('expanded');
+          if (content && content.classList.contains('collapsible-content')) {
+            content.style.maxHeight = content.scrollHeight + 'px';
+            content.style.opacity = '1';
+          }
+        } else {
+          header.classList.remove('expanded');
+          header.classList.add('collapsed');
+          if (content && content.classList.contains('collapsible-content')) {
+            content.style.maxHeight = '0px';
+            content.style.opacity = '0';
+          }
+        }
+      }
       
       // Function to handle new children being added
       function setupNewChildCollapsibles() {
@@ -595,12 +554,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add event listeners to new age selects
             document.querySelectorAll('.kind-alter').forEach(ageSelect => {
               // Remove existing listeners to prevent duplicates
-              ageSelect.removeEventListener('change', updateChildStatusVisibility);
               ageSelect.removeEventListener('change', ensureEuroSymbols);
               
               // Add the listeners
               ageSelect.addEventListener('change', function() {
-                updateChildStatusVisibility();
                 ensureEuroSymbols();
               });
             });
@@ -620,26 +577,45 @@ document.addEventListener('DOMContentLoaded', function() {
                       content.style.opacity = '0';
                     }
                     
-                    // Add click event listener
-                    header.addEventListener('click', function() {
-                      const isCollapsed = this.classList.contains('collapsed');
-                      const content = this.nextElementSibling;
+                    // Create a toggle function that can be reused for both header and label clicks
+                    const toggleCollapsibleContent = function(headerElement) {
+                      const isCollapsed = headerElement.classList.contains('collapsed');
+                      const content = headerElement.nextElementSibling;
                       
                       if (isCollapsed) {
-                        this.classList.remove('collapsed');
-                        this.classList.add('expanded');
+                        headerElement.classList.remove('collapsed');
+                        headerElement.classList.add('expanded');
                         if (content && content.classList.contains('collapsible-content')) {
                           content.style.maxHeight = content.scrollHeight + 'px';
                           content.style.opacity = '1';
                         }
                       } else {
-                        this.classList.remove('expanded');
-                        this.classList.add('collapsed');
+                        headerElement.classList.remove('expanded');
+                        headerElement.classList.add('collapsed');
                         if (content && content.classList.contains('collapsible-content')) {
                           content.style.maxHeight = '0px';
                           content.style.opacity = '0';
                         }
                       }
+                    };
+                      
+                    // Add click event listener to the header
+                    header.addEventListener('click', function(e) {
+                      // Only process if the click was directly on the header (not bubbled from label)
+                      if (e.target === this) {
+                        toggleCollapsibleContent(this);
+                      }
+                    });
+                    
+                    // Also add click handler to the label inside the header
+                    const label = header.querySelector('label');
+                    if (label) {
+                      label.addEventListener('click', function(e) {
+                        // Stop event from bubbling to prevent double-triggering
+                        e.stopPropagation();
+                        toggleCollapsibleContent(header);
+                      });
+                    }
                     });
                   });
                 }
@@ -699,5 +675,8 @@ document.addEventListener('DOMContentLoaded', function() {
       addEuroToChildInputs();
     });
   </script>
+  
+  <!-- Test script für Collapsible-Funktionalität -->
+  <!-- Test script removed -->
 </body>
 </html> 
