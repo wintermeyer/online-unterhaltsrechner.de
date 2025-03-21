@@ -252,14 +252,20 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="grid grid-cols-3 gap-4 items-center mb-3">
         <label class="block text-gray-700">Einkommen aus Job/Ausb.</label>
         <div class="col-span-2">
-          <input type="number" id="kind${kinderCount}Einkommen" class="form-input kind-einkommen" value="0">
+          <div class="flex">
+            <input type="number" id="kind${kinderCount}Einkommen" class="form-input kind-einkommen flex-grow" value="0">
+            <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+          </div>
         </div>
       </div>
       
       <div class="grid grid-cols-3 gap-4 items-center mb-3">
         <label class="block text-gray-700">Sonstiges Einkommen</label>
         <div class="col-span-2">
-          <input type="number" id="kind${kinderCount}SonstigesEinkommen" class="form-input kind-sonstiges-einkommen" value="0">
+          <div class="flex">
+            <input type="number" id="kind${kinderCount}SonstigesEinkommen" class="form-input kind-sonstiges-einkommen flex-grow" value="0">
+            <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+          </div>
         </div>
       </div>
       

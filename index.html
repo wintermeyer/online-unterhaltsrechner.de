@@ -119,10 +119,16 @@
             <div class="grid grid-cols-3 gap-4 items-center mb-4">
               <label class="block text-gray-700 font-medium">Netto aus Erwerbstätigkeit</label>
               <div>
-                <input type="number" id="vaterNetto" class="form-input" value="2000">
+                <div class="flex">
+                  <input type="number" id="vaterNetto" class="form-input flex-grow" value="2000">
+                  <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+                </div>
               </div>
               <div>
-                <input type="number" id="mutterNetto" class="form-input" value="0">
+                <div class="flex">
+                  <input type="number" id="mutterNetto" class="form-input flex-grow" value="0">
+                  <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+                </div>
               </div>
             </div>
             
@@ -140,10 +146,16 @@
                   <div class="grid grid-cols-3 gap-4">
                     <div></div>
                     <div>
-                      <input type="number" id="vaterSonstigesEinkommen" class="form-input" value="0">
+                      <div class="flex">
+                        <input type="number" id="vaterSonstigesEinkommen" class="form-input flex-grow" value="0">
+                        <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+                      </div>
                     </div>
                     <div>
-                      <input type="number" id="mutterSonstigesEinkommen" class="form-input" value="0">
+                      <div class="flex">
+                        <input type="number" id="mutterSonstigesEinkommen" class="form-input flex-grow" value="0">
+                        <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -155,10 +167,16 @@
                   <div class="grid grid-cols-3 gap-4">
                     <div></div>
                     <div>
-                      <input type="number" id="vaterWohnvorteil" class="form-input" value="0">
+                      <div class="flex">
+                        <input type="number" id="vaterWohnvorteil" class="form-input flex-grow" value="0">
+                        <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+                      </div>
                     </div>
                     <div>
-                      <input type="number" id="mutterWohnvorteil" class="form-input" value="0">
+                      <div class="flex">
+                        <input type="number" id="mutterWohnvorteil" class="form-input flex-grow" value="0">
+                        <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -170,10 +188,16 @@
                   <div class="grid grid-cols-3 gap-4">
                     <div></div>
                     <div>
-                      <input type="number" id="vaterSchulden" class="form-input" value="0">
+                      <div class="flex">
+                        <input type="number" id="vaterSchulden" class="form-input flex-grow" value="0">
+                        <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+                      </div>
                     </div>
                     <div>
-                      <input type="number" id="mutterSchulden" class="form-input" value="0">
+                      <div class="flex">
+                        <input type="number" id="mutterSchulden" class="form-input flex-grow" value="0">
+                        <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -265,14 +289,20 @@
                   <div class="mb-4 job-income-container hidden-age-dependent">
                     <h4 class="font-medium text-gray-700 mb-1">Einkommen aus Job/Ausb.</h4>
                     <div class="mb-2 text-xs text-gray-500">Einkünfte des Kindes aus Arbeit oder Ausbildung</div>
-                    <input type="number" id="kind1Einkommen" class="form-input kind-einkommen" value="0">
+                    <div class="flex">
+                      <input type="number" id="kind1Einkommen" class="form-input kind-einkommen flex-grow" value="0">
+                      <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+                    </div>
                   </div>
                   
                   <!-- Sonstiges Einkommen -->
                   <div class="pt-2">
                     <h4 class="font-medium text-gray-700 mb-1">Sonstiges Einkommen</h4>
                     <div class="mb-2 text-xs text-gray-500">Weitere Einkünfte des Kindes (z.B. Kapitalerträge)</div>
-                    <input type="number" id="kind1SonstigesEinkommen" class="form-input kind-sonstiges-einkommen" value="0">
+                    <div class="flex">
+                      <input type="number" id="kind1SonstigesEinkommen" class="form-input kind-sonstiges-einkommen flex-grow" value="0">
+                      <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -633,6 +663,40 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('change', ensureEuroSymbols);
         input.addEventListener('input', ensureEuroSymbols);
       });
+      
+      // Add Euro symbols to existing child input fields
+      function addEuroToChildInputs() {
+        // Find all existing child monetary input fields
+        const existingChildInputs = document.querySelectorAll('.kind-einkommen, .kind-sonstiges-einkommen');
+        
+        existingChildInputs.forEach(input => {
+          // If input is not already in a flex container with Euro symbol
+          if (!input.parentElement.classList.contains('flex')) {
+            const containerDiv = input.parentElement;
+            
+            // Create flex container
+            const flexDiv = document.createElement('div');
+            flexDiv.className = 'flex';
+            
+            // Modify input
+            input.classList.add('flex-grow');
+            containerDiv.innerHTML = '';
+            flexDiv.appendChild(input);
+            
+            // Create Euro symbol div
+            const euroDiv = document.createElement('div');
+            euroDiv.className = 'bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md';
+            euroDiv.textContent = '€';
+            flexDiv.appendChild(euroDiv);
+            
+            // Add flex container to original container
+            containerDiv.appendChild(flexDiv);
+          }
+        });
+      }
+      
+      // Run this when page loads
+      addEuroToChildInputs();
     });
   </script>
 </body>
