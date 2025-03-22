@@ -4,7 +4,15 @@
  * Diese Datei enthält den Code für die Benutzeroberfläche und 
  * verbindet das UI mit der Berechnungslogik in unterhalt.js
  */
+
+// Import the language system - will be used once modules are set up
+// import { initLanguage } from './translations/index.js';
+
 document.addEventListener('DOMContentLoaded', function() {
+  // Initialize language system if it exists
+  if (typeof initLanguage === 'function') {
+    initLanguage();
+  }
   // Instanz der Unterhalt-Klasse erstellen
   const unterhaltRechner = new Unterhalt();
   
@@ -391,12 +399,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     kindElement.innerHTML = `
       <div class="flex justify-between items-center mb-3">
-        <h4 class="font-medium text-gray-700">Kind ${kinderCount}</h4>
-        <button type="button" class="remove-kind-btn text-gray-400">&times;</button>
+        <h4 class="font-medium text-gray-700" data-i18n-prefix="kind">Kind ${kinderCount}</h4>
+        <button type="button" class="remove-kind-btn text-gray-400"><i class="fas fa-times"></i> <span data-i18n="remove-child">Entfernen</span></button>
       </div>
       
       <div class="grid grid-cols-3 gap-4 items-center mb-3">
-        <label class="block text-gray-700">Alter</label>
+        <label class="block text-gray-700" data-i18n="age">Alter</label>
         <div class="col-span-2">
           <select id="kind${kinderCount}Alter" class="form-select kind-alter">
             ${altersOptionen}
@@ -405,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
       
       <div class="grid grid-cols-3 gap-4 items-center mb-3">
-        <label class="block text-gray-700">Lebensmittelpunkt</label>
+        <label class="block text-gray-700" data-i18n="lebensmittelpunkt">Lebensmittelpunkt</label>
         <div class="col-span-2">
           <select id="kind${kinderCount}Lebensmittelpunkt" class="form-select kind-lebensmittelpunkt">
             <option>Vater</option>
@@ -416,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
       
       <div class="grid grid-cols-3 gap-4 items-center mb-3 kindergeld-container">
-        <label class="block text-gray-700">Kindergeld geht an</label>
+        <label class="block text-gray-700" data-i18n="kindergeld-goes-to">Kindergeld geht an</label>
         <div class="col-span-2">
           <div class="flex">
             <button type="button" class="w-1/2 py-2 text-center border rounded-l-md kindergeld-vater" data-value="Vater">Vater</button>
@@ -426,7 +434,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
       
       <div class="grid grid-cols-3 gap-4 items-center mb-3 child-status-container">
-        <label class="block text-gray-700">Status</label>
+        <label class="block text-gray-700" data-i18n="status">Status</label>
         <div class="col-span-2">
           <select id="kind${kinderCount}Status" class="form-select kind-status">
             <option selected>Schüler</option>
@@ -440,14 +448,14 @@ document.addEventListener('DOMContentLoaded', function() {
       <!-- Combined Child Income Section -->
       <div class="mb-3 border-t pt-2">
         <div class="collapsible-header collapsed pl-0" data-target="kind${kinderCount}-einkommen-combined">
-          <label class="block text-gray-700 font-medium">Einkommen des Kindes</label>
+          <label class="block text-gray-700 font-medium" data-i18n="child-income">Einkommen des Kindes</label>
           <i class="fas fa-chevron-down text-gray-400 rotate-icon"></i>
         </div>
         <div id="kind${kinderCount}-einkommen-combined" class="collapsible-content mt-2">
           <!-- Einkommen aus Job/Ausbildung -->
           <div class="mb-4 job-income-container">
-            <h4 class="font-medium text-gray-700 mb-1">Einkommen aus Job/Ausb.</h4>
-            <div class="mb-2 text-xs text-gray-500">Einkünfte des Kindes aus Arbeit oder Ausbildung</div>
+            <h4 class="font-medium text-gray-700 mb-1" data-i18n="own-income">Einkommen aus Job/Ausb.</h4>
+            <div class="mb-2 text-xs text-gray-500" data-i18n="job-income-desc">Einkünfte des Kindes aus Arbeit oder Ausbildung</div>
             <div class="flex">
               <input type="number" id="kind${kinderCount}Einkommen" class="form-input kind-einkommen flex-grow" value="0">
               <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
@@ -456,8 +464,8 @@ document.addEventListener('DOMContentLoaded', function() {
           
           <!-- Sonstiges Einkommen -->
           <div class="pt-2">
-            <h4 class="font-medium text-gray-700 mb-1">Sonstiges Einkommen</h4>
-            <div class="mb-2 text-xs text-gray-500">Weitere Einkünfte des Kindes (z.B. Kapitalerträge)</div>
+            <h4 class="font-medium text-gray-700 mb-1" data-i18n="other-child-income">Sonstiges Einkommen</h4>
+            <div class="mb-2 text-xs text-gray-500" data-i18n="other-income-desc">Weitere Einkünfte des Kindes (z.B. Kapitalerträge)</div>
             <div class="flex">
               <input type="number" id="kind${kinderCount}SonstigesEinkommen" class="form-input kind-sonstiges-einkommen flex-grow" value="0">
               <div class="bg-gray-100 flex items-center px-3 border border-l-0 rounded-r-md">€</div>
@@ -671,12 +679,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Vater header cell
     const vaterHeaderCell = document.createElement('div');
     vaterHeaderCell.className = 'text-center font-medium bg-blue-200 py-1 px-2 rounded text-blue-800';
-    vaterHeaderCell.textContent = 'Vater';
+    vaterHeaderCell.setAttribute('data-i18n', 'father');
+    vaterHeaderCell.textContent = getTranslation('father', 'Vater');
     
     // Mutter header cell
     const mutterHeaderCell = document.createElement('div');
     mutterHeaderCell.className = 'text-center font-medium bg-purple-200 py-1 px-2 rounded text-purple-800';
-    mutterHeaderCell.textContent = 'Mutter';
+    mutterHeaderCell.setAttribute('data-i18n', 'mother');
+    mutterHeaderCell.textContent = getTranslation('mother', 'Mutter');
     
     // Add all cells to header row
     headerRow.appendChild(emptyHeaderCell);
@@ -699,7 +709,12 @@ document.addEventListener('DOMContentLoaded', function() {
       // Erstelle die Kindlabel-Zelle
       const kindLabel = document.createElement('div');
       kindLabel.className = 'text-gray-700 font-medium';
-      kindLabel.textContent = `Unterh. für Kind ${kindNummer} (${alter} J.)`;
+      kindLabel.setAttribute('data-child-support-label', 'true');
+      
+      // Get the translated text from translations
+      const childSupportText = getTranslation('child-support-for', 'Unterh. für Kind');
+      const ageUnit = getTranslation('age', 'Alter')?.charAt(0).toLowerCase() || 'J';
+      kindLabel.textContent = `${childSupportText} ${kindNummer} (${alter} ${ageUnit}.)`;
       
       // Erstelle die Vater-Zelle mit Farbcodierung
       const vaterCell = document.createElement('div');
@@ -744,5 +759,17 @@ document.addEventListener('DOMContentLoaded', function() {
    */
   function formatNumber(num) {
     return num.toLocaleString('de-DE') + ' €';
+  }
+  
+  /**
+   * Get translation for a key with fallback to default
+   */
+  function getTranslation(key, fallback) {
+    // Get the current language's translations
+    const currentLang = document.documentElement.getAttribute('lang') || 'de';
+    const translationObj = window.translations?.[currentLang];
+    
+    // Return the translation or fallback
+    return translationObj && translationObj[key] ? translationObj[key] : fallback;
   }
 }); 
