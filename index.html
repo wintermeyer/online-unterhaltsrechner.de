@@ -7,14 +7,28 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Add Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="js/duesseldorfer-tabelle.js" defer></script>
+    <script src="js/unterhaltsrechner.js" defer></script>
     <script src="js/app.js" defer></script>
 </head>
 <body class="bg-gray-100 min-h-screen">
-    <div class="container mx-auto p-4 max-w-3xl">
+    <div class="container mx-auto p-4 max-w-7xl">
         <h1 class="text-2xl font-bold mb-6">Unterhalt Berechnung</h1>
         
-        <!-- Parents Section -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-4">
+        <!-- Main two-column layout for desktop -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Left Column: Input Form -->
+            <div>
+                <!-- Form title with icon -->
+                <div class="flex items-center gap-2 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    <h2 class="text-xl font-semibold">Kindesunterhalt berechnen</h2>
+                </div>
+                
+                <!-- Parents Section -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-4">
             <div class="flex items-center gap-2 mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -125,17 +139,122 @@
         </div>
 
         <!-- Children Section -->
-        <div id="children-container">
-            <!-- Children will be added here dynamically -->
-        </div>
+            <div id="children-container">
+                <!-- Children will be added here dynamically -->
+            </div>
 
-        <div class="mb-4">
-            <button id="add-child" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded flex items-center justify-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+            <div class="mb-4">
+                <button id="add-child" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                    </svg>
+                    Kind hinzufügen
+                </button>
+            </div>
+
+            <div class="bg-blue-50 rounded-lg shadow-md p-6 mb-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                    </svg>
+                    <h2 class="text-xl font-semibold">Berechnung teilen</h2>
+                </div>
+            </div>
+            
+            <!-- End of left column -->
+        </div>
+        
+        <!-- Right column: Results -->
+        <div>
+            <!-- Results title with icon -->
+            <div class="flex items-center gap-2 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
-                Kind hinzufügen
-            </button>
+                <h2 class="text-xl font-semibold">Ergebnis</h2>
+            </div>
+            
+            <div id="results-container" class="bg-white rounded-lg shadow-md p-6 mb-4">
+            
+            <!-- Results content -->
+            <div id="calculation-results" class="mt-4">
+                <!-- Bereinigtes Netto section -->
+                <div class="bg-blue-50 rounded-lg p-4 mb-4">
+                    <div class="flex items-center gap-2 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
+                        </svg>
+                        <h3 class="text-lg font-medium">Bereinigtes Netto</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-2 text-center">
+                        <div class="bg-blue-100 py-2 px-4 rounded-md">Vater</div>
+                        <div class="bg-purple-100 py-2 px-4 rounded-md">Mutter</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div id="father-adjusted-income" class="text-center text-xl font-semibold">1.900 €</div>
+                        <div id="mother-adjusted-income" class="text-center text-xl font-semibold">0 €</div>
+                    </div>
+                </div>
+                
+                <!-- Children support results -->
+                <div id="children-results-container">
+                    <!-- Child support results will be added here dynamically -->
+                </div>
+                
+                <!-- Financial situation section -->
+                <div class="bg-yellow-50 rounded-lg p-4 mb-4">
+                    <div class="flex items-center gap-2 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
+                            <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd" />
+                        </svg>
+                        <h3 class="text-lg font-medium">Finanzielle Gesamtsituation</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-2 text-center">
+                        <div class="bg-blue-100 py-2 px-4 rounded-md">Vater</div>
+                        <div class="bg-purple-100 py-2 px-4 rounded-md">Mutter</div>
+                    </div>
+                    
+                    <!-- Bereinigtes Netto (copy from above for reference) -->
+                    <div class="grid grid-cols-3 gap-4 mb-2">
+                        <div class="text-left">Bereinigtes Netto</div>
+                        <div id="father-adjusted-income-2" class="text-center">1.900 €</div>
+                        <div id="mother-adjusted-income-2" class="text-center">0 €</div>
+                    </div>
+                    
+                    <!-- Unterhalt zu zahlen -->
+                    <div class="grid grid-cols-3 gap-4 mb-2">
+                        <div class="text-left">– Unterh. zu zahlen</div>
+                        <div id="father-payment" class="text-center text-red-600">427 €</div>
+                        <div id="mother-payment" class="text-center">0 €</div>
+                    </div>
+                    
+                    <!-- Unterhalt zu erhalten -->
+                    <div class="grid grid-cols-3 gap-4 mb-2">
+                        <div class="text-left">+ Unterh. zu erhal­ten</div>
+                        <div id="father-receipt" class="text-center">0 €</div>
+                        <div id="mother-receipt" class="text-center text-green-600">427 €</div>
+                    </div>
+                    
+                    <!-- Kindergeld zu erhalten -->
+                    <div class="grid grid-cols-3 gap-4 mb-2">
+                        <div class="text-left">+ Kinderg. zu erhal­ten</div>
+                        <div id="father-kindergeld" class="text-center">0 €</div>
+                        <div id="mother-kindergeld" class="text-center text-green-600">255 €</div>
+                    </div>
+                    
+                    <!-- Net total -->
+                    <div class="grid grid-cols-3 gap-4 mt-4 border-t pt-2 font-semibold">
+                        <div class="text-left">= Netto zur Verfü­gung</div>
+                        <div id="father-final-income" class="text-center">1.473 €</div>
+                        <div id="mother-final-income" class="text-center">682 €</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="bg-blue-50 rounded-lg shadow-md p-6 mb-4">
@@ -164,6 +283,8 @@
             <div id="copy-success" class="hidden mt-3 text-center text-green-600 font-medium">
                 Direktlink kopiert! Sie können ihn jetzt teilen.
             </div>
+        </div>
+        <!-- Close the main grid container -->
         </div>
     </div>
 
@@ -289,6 +410,28 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </template>
+    
+    <!-- Template for child support results -->
+    <template id="child-result-template">
+        <div class="child-result bg-green-50 rounded-lg p-4 mb-4">
+            <div class="flex items-center gap-2 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                </svg>
+                <h3 class="text-lg font-medium">Unterh. für Kind <span class="child-number">1</span> (<span class="child-age">6</span> J.)</h3>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 mb-2 text-center">
+                <div class="bg-blue-100 py-2 px-4 rounded-md">Vater</div>
+                <div class="bg-purple-100 py-2 px-4 rounded-md">Mutter</div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 mb-2">
+                <div class="father-payment text-center text-xl font-semibold">427 €</div>
+                <div class="mother-payment text-center text-xl font-semibold">-</div>
             </div>
         </div>
     </template>

@@ -75,7 +75,9 @@ let appState = {
         mother: { ...DEFAULT_DATA[CURRENT_VERSION].parents.mother }
     },
     children: [],
-    nextChildId: 1
+    nextChildId: 1,
+    calculationYear: '2025',
+    calculationResults: null
 };
 
 /**
@@ -114,24 +116,28 @@ function setupEventListeners() {
     elements.fatherIncome.addEventListener('input', () => {
         appState.parents.father.income = Number(elements.fatherIncome.value);
         updateIncomeGroup();
+        calculateAndUpdateResults();
         updateShareUrl();
     });
     
     elements.motherIncome.addEventListener('input', () => {
         appState.parents.mother.income = Number(elements.motherIncome.value);
         updateIncomeGroup();
+        calculateAndUpdateResults();
         updateShareUrl();
     });
     
     // Other income inputs
     elements.fatherOtherIncome.addEventListener('input', () => {
         appState.parents.father.otherIncome = Number(elements.fatherOtherIncome.value);
+        calculateAndUpdateResults();
         updateShareUrl();
         checkAndExpandAdditionalDetails();
     });
     
     elements.motherOtherIncome.addEventListener('input', () => {
         appState.parents.mother.otherIncome = Number(elements.motherOtherIncome.value);
+        calculateAndUpdateResults();
         updateShareUrl();
         checkAndExpandAdditionalDetails();
     });
@@ -139,12 +145,14 @@ function setupEventListeners() {
     // Housing benefit inputs
     elements.fatherHousingBenefit.addEventListener('input', () => {
         appState.parents.father.housingBenefit = Number(elements.fatherHousingBenefit.value);
+        calculateAndUpdateResults();
         updateShareUrl();
         checkAndExpandAdditionalDetails();
     });
     
     elements.motherHousingBenefit.addEventListener('input', () => {
         appState.parents.mother.housingBenefit = Number(elements.motherHousingBenefit.value);
+        calculateAndUpdateResults();
         updateShareUrl();
         checkAndExpandAdditionalDetails();
     });
@@ -152,12 +160,14 @@ function setupEventListeners() {
     // Debt expenses inputs
     elements.fatherDebtExpenses.addEventListener('input', () => {
         appState.parents.father.debtExpenses = Number(elements.fatherDebtExpenses.value);
+        calculateAndUpdateResults();
         updateShareUrl();
         checkAndExpandAdditionalDetails();
     });
     
     elements.motherDebtExpenses.addEventListener('input', () => {
         appState.parents.mother.debtExpenses = Number(elements.motherDebtExpenses.value);
+        calculateAndUpdateResults();
         updateShareUrl();
         checkAndExpandAdditionalDetails();
     });
@@ -332,6 +342,7 @@ function setupChildEventListeners(childCard, childId) {
         const childIndex = appState.children.findIndex(child => child.id === childId);
         if (childIndex !== -1) {
             appState.children[childIndex].age = Number(ageSelect.value);
+            calculateAndUpdateResults();
             updateShareUrl();
         }
     });
@@ -342,6 +353,7 @@ function setupChildEventListeners(childCard, childId) {
         const childIndex = appState.children.findIndex(child => child.id === childId);
         if (childIndex !== -1) {
             appState.children[childIndex].livingCenter = livingCenterSelect.value;
+            calculateAndUpdateResults();
             updateShareUrl();
         }
     });
@@ -367,6 +379,7 @@ function setupChildEventListeners(childCard, childId) {
                     }
                 });
                 
+                calculateAndUpdateResults();
                 updateShareUrl();
             }
         });
@@ -378,6 +391,7 @@ function setupChildEventListeners(childCard, childId) {
         const childIndex = appState.children.findIndex(child => child.id === childId);
         if (childIndex !== -1) {
             appState.children[childIndex].status = statusSelect.value;
+            calculateAndUpdateResults();
             updateShareUrl();
         }
     });
@@ -392,6 +406,7 @@ function setupChildEventListeners(childCard, childId) {
         const childIndex = appState.children.findIndex(child => child.id === childId);
         if (childIndex !== -1) {
             appState.children[childIndex].jobIncome = Number(jobIncomeInput.value);
+            calculateAndUpdateResults();
             updateShareUrl();
             checkAndExpandChildIncome(childCard);
         }
@@ -403,6 +418,7 @@ function setupChildEventListeners(childCard, childId) {
         const childIndex = appState.children.findIndex(child => child.id === childId);
         if (childIndex !== -1) {
             appState.children[childIndex].otherIncome = Number(otherIncomeInput.value);
+            calculateAndUpdateResults();
             updateShareUrl();
             checkAndExpandChildIncome(childCard);
         }
@@ -424,6 +440,9 @@ function removeChild(childId) {
     
     // Renumber remaining children
     renumberChildren();
+    
+    // Recalculate and update results
+    calculateAndUpdateResults();
     
     // Update share URL
     updateShareUrl();
@@ -462,6 +481,227 @@ function renumberChildren() {
 }
 
 /**
+ * Calculate child support based on current application state
+ */
+function calculateChildSupport() {
+    if (appState.children.length === 0) {
+        // No calculation needed if there are no children
+        appState.calculationResults = null;
+        return;
+    }
+    
+    try {
+        // Create a calculator instance with the current year
+        const calculator = new Unterhaltsrechner(appState.calculationYear);
+        
+        // Prepare data for calculation
+        const parents = {
+            father: {
+                income: parseFloat(appState.parents.father.income) || 0,
+                otherIncome: parseFloat(appState.parents.father.otherIncome) || 0,
+                housingBenefit: parseFloat(appState.parents.father.housingBenefit) || 0,
+                debtExpenses: parseFloat(appState.parents.father.debtExpenses) || 0
+            },
+            mother: {
+                income: parseFloat(appState.parents.mother.income) || 0,
+                otherIncome: parseFloat(appState.parents.mother.otherIncome) || 0,
+                housingBenefit: parseFloat(appState.parents.mother.housingBenefit) || 0,
+                debtExpenses: parseFloat(appState.parents.mother.debtExpenses) || 0
+            }
+        };
+        
+        // Format children data for the calculator
+        const children = appState.children.map(child => ({
+            id: child.id,
+            age: parseInt(child.age, 10),
+            livingCenter: child.livingCenter,
+            benefitReceiver: child.benefitReceiver,
+            status: child.status,
+            jobIncome: parseFloat(child.jobIncome) || 0,
+            otherIncome: parseFloat(child.otherIncome) || 0
+        }));
+        
+        // Perform the calculation
+        const results = calculator.calculateSupport(parents, children);
+        appState.calculationResults = results;
+        
+        console.log('Calculation results:', results);
+        return results;
+    } catch (error) {
+        console.error('Error calculating child support:', error);
+        return null;
+    }
+}
+
+/**
+ * Update the results display based on the calculation results
+ */
+function updateResultsDisplay() {
+    const resultsContainer = document.getElementById('results-container');
+    const calculationResults = document.getElementById('calculation-results');
+    
+    if (!resultsContainer || !calculationResults) {
+        console.error('Results container not found');
+        return;
+    }
+    
+    if (!appState.calculationResults || appState.children.length === 0) {
+        // Hide results if no calculation available or no children
+        resultsContainer.style.display = 'none';
+        return;
+    }
+    
+    // Show results container
+    resultsContainer.style.display = 'block';
+    calculationResults.style.display = 'block';
+    
+    const results = appState.calculationResults;
+    
+    // Update adjusted income display
+    const fatherAdjustedIncome = document.getElementById('father-adjusted-income');
+    const motherAdjustedIncome = document.getElementById('mother-adjusted-income');
+    const fatherAdjustedIncome2 = document.getElementById('father-adjusted-income-2');
+    const motherAdjustedIncome2 = document.getElementById('mother-adjusted-income-2');
+    
+    if (fatherAdjustedIncome) fatherAdjustedIncome.textContent = formatCurrency(results.parents.father.adjustedIncome);
+    if (motherAdjustedIncome) motherAdjustedIncome.textContent = formatCurrency(results.parents.mother.adjustedIncome);
+    if (fatherAdjustedIncome2) fatherAdjustedIncome2.textContent = formatCurrency(results.parents.father.adjustedIncome);
+    if (motherAdjustedIncome2) motherAdjustedIncome2.textContent = formatCurrency(results.parents.mother.adjustedIncome);
+    
+    // Update payment amounts
+    const fatherPayment = document.getElementById('father-payment');
+    const motherPayment = document.getElementById('mother-payment');
+    if (fatherPayment && results.parents.father.totalPayment > 0) {
+        fatherPayment.textContent = formatCurrency(results.parents.father.totalPayment);
+        fatherPayment.classList.add('text-red-600');
+    } else if (fatherPayment) {
+        fatherPayment.textContent = '0 €';
+        fatherPayment.classList.remove('text-red-600');
+    }
+    
+    if (motherPayment && results.parents.mother.totalPayment > 0) {
+        motherPayment.textContent = formatCurrency(results.parents.mother.totalPayment);
+        motherPayment.classList.add('text-red-600');
+    } else if (motherPayment) {
+        motherPayment.textContent = '0 €';
+        motherPayment.classList.remove('text-red-600');
+    }
+    
+    // Update receipt amounts
+    const fatherReceipt = document.getElementById('father-receipt');
+    const motherReceipt = document.getElementById('mother-receipt');
+    if (fatherReceipt && results.parents.mother.totalPayment > 0) {
+        fatherReceipt.textContent = formatCurrency(results.parents.mother.totalPayment);
+        fatherReceipt.classList.add('text-green-600');
+    } else if (fatherReceipt) {
+        fatherReceipt.textContent = '0 €';
+        fatherReceipt.classList.remove('text-green-600');
+    }
+    
+    if (motherReceipt && results.parents.father.totalPayment > 0) {
+        motherReceipt.textContent = formatCurrency(results.parents.father.totalPayment);
+        motherReceipt.classList.add('text-green-600');
+    } else if (motherReceipt) {
+        motherReceipt.textContent = '0 €';
+        motherReceipt.classList.remove('text-green-600');
+    }
+    
+    // Update kindergeld amounts
+    const fatherKindergeld = document.getElementById('father-kindergeld');
+    const motherKindergeld = document.getElementById('mother-kindergeld');
+    if (fatherKindergeld) fatherKindergeld.textContent = formatCurrency(results.parents.father.kindergeld || 0);
+    if (motherKindergeld) motherKindergeld.textContent = formatCurrency(results.parents.mother.kindergeld || 0);
+    
+    // Update final income
+    const fatherFinalIncome = document.getElementById('father-final-income');
+    const motherFinalIncome = document.getElementById('mother-final-income');
+    if (fatherFinalIncome) fatherFinalIncome.textContent = formatCurrency(results.parents.father.finalIncome);
+    if (motherFinalIncome) motherFinalIncome.textContent = formatCurrency(results.parents.mother.finalIncome);
+    
+    // Clear and update individual child results
+    const childrenResultsContainer = document.getElementById('children-results-container');
+    if (childrenResultsContainer) {
+        childrenResultsContainer.innerHTML = '';
+        
+        // Add result for each child
+        results.children.forEach(childResult => {
+            const childResultElement = createChildResultElement(childResult);
+            childrenResultsContainer.appendChild(childResultElement);
+        });
+    }
+}
+
+/**
+ * Create a result element for a single child
+ * @param {Object} childResult - The calculation result for a single child
+ * @return {HTMLElement} The child result element
+ */
+function createChildResultElement(childResult) {
+    const template = document.getElementById('child-result-template');
+    const clone = document.importNode(template.content, true);
+    
+    // Set child info - use the id as childNumber and age from the result
+    clone.querySelector('.child-number').textContent = childResult.childId;
+    clone.querySelector('.child-age').textContent = childResult.age;
+    
+    // Set payment amounts
+    const fatherPaymentElement = clone.querySelector('.father-payment');
+    const motherPaymentElement = clone.querySelector('.mother-payment');
+    
+    // Determine which parent pays
+    if (childResult.livingParent === 'father') {
+        // Child lives with father, mother might pay
+        if (childResult.motherPayment > 0) {
+            motherPaymentElement.textContent = formatCurrency(childResult.motherPayment);
+            motherPaymentElement.classList.add('text-red-600');
+            fatherPaymentElement.textContent = '-';
+        } else {
+            motherPaymentElement.textContent = '-';
+            fatherPaymentElement.textContent = '-';
+        }
+    } else {
+        // Child lives with mother, father might pay
+        if (childResult.fatherPayment > 0) {
+            fatherPaymentElement.textContent = formatCurrency(childResult.fatherPayment);
+            fatherPaymentElement.classList.add('text-red-600');
+            motherPaymentElement.textContent = '-';
+        } else {
+            fatherPaymentElement.textContent = '-';
+            motherPaymentElement.textContent = '-';
+        }
+    }
+    
+    return clone;
+}
+
+/**
+ * Format a number as a currency string
+ * @param {Number} amount - The amount to format
+ * @return {String} The formatted currency string
+ */
+function formatCurrency(amount) {
+    if (amount === 0) {
+        return '0 €';
+    }
+    
+    const formatter = new Intl.NumberFormat('de-DE', {
+        style: 'decimal',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    });
+    
+    return formatter.format(amount) + ' €';
+}
+
+/**
+ * Helper function to calculate and update results
+ */
+function calculateAndUpdateResults() {
+    calculateChildSupport();
+    updateResultsDisplay();
+}
+
+/**
  * Update the UI based on current state
  */
 function updateUI() {
@@ -482,6 +722,12 @@ function updateUI() {
     elements.otherIncomeSection.classList.add('hidden');
     elements.housingBenefitSection.classList.add('hidden');
     elements.debtExpensesSection.classList.add('hidden');
+    
+    // Check if any additional details should be expanded
+    checkAndExpandAdditionalDetails();
+    
+    // Calculate child support and update results
+    calculateAndUpdateResults();
     
     // Update share URL
     updateShareUrl();
