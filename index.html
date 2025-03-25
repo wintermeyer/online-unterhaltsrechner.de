@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unterhalt Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Add Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="js/app.js" defer></script>
 </head>
 <body class="bg-gray-100 min-h-screen">
@@ -42,73 +44,80 @@
                 </div>
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4" x-data="{
+                    isOpen: false,
+                    checkNonZeroValues() {
+                        // Get URL parameters
+                        const urlParams = new URLSearchParams(window.location.search);
+                        
+                        // Check for non-zero values in URL parameters
+                        this.isOpen = (
+                            (urlParams.has('foi') && Number(urlParams.get('foi')) > 0) ||
+                            (urlParams.has('moi') && Number(urlParams.get('moi')) > 0) ||
+                            (urlParams.has('fhb') && Number(urlParams.get('fhb')) > 0) ||
+                            (urlParams.has('mhb') && Number(urlParams.get('mhb')) > 0) ||
+                            (urlParams.has('fde') && Number(urlParams.get('fde')) > 0) ||
+                            (urlParams.has('mde') && Number(urlParams.get('mde')) > 0)
+                        );
+                        
+                        console.log('Alpine.js checking URL parameters, isOpen:', this.isOpen);
+                        return this.isOpen;
+                    }
+                }" x-init="checkNonZeroValues()">
                 <div class="flex items-center justify-between">
-                    <label class="block font-medium">Sonstige Einkommen</label>
-                    <button id="toggle-other-income" class="text-gray-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <label class="block font-medium">Weitere finanzielle Details</label>
+                    <button @click="isOpen = !isOpen" class="text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform" :class="{'rotate-180': isOpen}" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
                     </button>
                 </div>
-                <div id="other-income-section" class="mt-2">
-                    <div class="text-sm text-gray-600 mb-2">Weitere Einkünfte wie Kapitalerträge, Mieteinnahmen, etc.</div>
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="flex">
-                            <input type="number" id="father-other-income" class="w-full rounded-l-md border p-2" value="0">
-                            <span class="bg-gray-100 flex items-center px-3 rounded-r-md border border-l-0">€</span>
-                        </div>
-                        <div class="flex">
-                            <input type="number" id="mother-other-income" class="w-full rounded-l-md border p-2" value="0">
-                            <span class="bg-gray-100 flex items-center px-3 rounded-r-md border border-l-0">€</span>
+                <div x-show="isOpen" class="mt-2" x-transition>
+                    <!-- Sonstige Einkommen -->
+                    <div class="mb-6">
+                        <h3 class="font-medium mb-2">Sonstige Einkommen</h3>
+                        <div class="text-sm text-gray-600 mb-2">Weitere Einkünfte wie Kapitalerträge, Mieteinnahmen, etc.</div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="flex">
+                                <input type="number" id="father-other-income" class="w-full rounded-l-md border p-2" value="0">
+                                <span class="bg-gray-100 flex items-center px-3 rounded-r-md border border-l-0">€</span>
+                            </div>
+                            <div class="flex">
+                                <input type="number" id="mother-other-income" class="w-full rounded-l-md border p-2" value="0">
+                                <span class="bg-gray-100 flex items-center px-3 rounded-r-md border border-l-0">€</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="mt-4">
-                <div class="flex items-center justify-between">
-                    <label class="block font-medium">Wohnvorteil</label>
-                    <button id="toggle-housing-benefit" class="text-gray-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                </div>
-                <div id="housing-benefit-section" class="mt-2">
-                    <div class="text-sm text-gray-600 mb-2">Mietersparnis durch Wohneigentum</div>
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="flex">
-                            <input type="number" id="father-housing-benefit" class="w-full rounded-l-md border p-2" value="0">
-                            <span class="bg-gray-100 flex items-center px-3 rounded-r-md border border-l-0">€</span>
-                        </div>
-                        <div class="flex">
-                            <input type="number" id="mother-housing-benefit" class="w-full rounded-l-md border p-2" value="0">
-                            <span class="bg-gray-100 flex items-center px-3 rounded-r-md border border-l-0">€</span>
+                    
+                    <!-- Wohnvorteil -->
+                    <div class="mb-6">
+                        <h3 class="font-medium mb-2">Wohnvorteil</h3>
+                        <div class="text-sm text-gray-600 mb-2">Mietersparnis durch Wohneigentum</div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="flex">
+                                <input type="number" id="father-housing-benefit" class="w-full rounded-l-md border p-2" value="0">
+                                <span class="bg-gray-100 flex items-center px-3 rounded-r-md border border-l-0">€</span>
+                            </div>
+                            <div class="flex">
+                                <input type="number" id="mother-housing-benefit" class="w-full rounded-l-md border p-2" value="0">
+                                <span class="bg-gray-100 flex items-center px-3 rounded-r-md border border-l-0">€</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="mt-4">
-                <div class="flex items-center justify-between">
-                    <label class="block font-medium">Aufwand Schulden</label>
-                    <button id="toggle-debt-expenses" class="text-gray-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                </div>
-                <div id="debt-expenses-section" class="mt-2">
-                    <div class="text-sm text-gray-600 mb-2">Abzugsfähige Schuldverpflichtungen</div>
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="flex">
-                            <input type="number" id="father-debt-expenses" class="w-full rounded-l-md border p-2" value="0">
-                            <span class="bg-gray-100 flex items-center px-3 rounded-r-md border border-l-0">€</span>
-                        </div>
-                        <div class="flex">
-                            <input type="number" id="mother-debt-expenses" class="w-full rounded-l-md border p-2" value="0">
-                            <span class="bg-gray-100 flex items-center px-3 rounded-r-md border border-l-0">€</span>
+                    
+                    <!-- Aufwand Schulden -->
+                    <div>
+                        <h3 class="font-medium mb-2">Aufwand Schulden</h3>
+                        <div class="text-sm text-gray-600 mb-2">Abzugsfähige Schuldverpflichtungen</div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="flex">
+                                <input type="number" id="father-debt-expenses" class="w-full rounded-l-md border p-2" value="0">
+                                <span class="bg-gray-100 flex items-center px-3 rounded-r-md border border-l-0">€</span>
+                            </div>
+                            <div class="flex">
+                                <input type="number" id="mother-debt-expenses" class="w-full rounded-l-md border p-2" value="0">
+                                <span class="bg-gray-100 flex items-center px-3 rounded-r-md border border-l-0">€</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -129,13 +138,31 @@
             </button>
         </div>
 
-        <div class="bg-white rounded-lg shadow-md p-6 mb-4">
-            <h2 class="text-xl font-semibold mb-4">Share</h2>
-            <div class="flex gap-2">
-                <input type="text" id="share-url" class="w-full p-2 border rounded-md" readonly>
-                <button id="copy-url" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
-                    Copy
+        <div class="bg-blue-50 rounded-lg shadow-md p-6 mb-4">
+            <div class="flex items-center gap-2 mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                </svg>
+                <h2 class="text-xl font-semibold">Berechnung teilen</h2>
+            </div>
+            
+            <p class="text-gray-700 mb-4">Erstellen Sie einen Direktlink zu dieser Berechnung, um sie mit anderen zu teilen:</p>
+            
+            <div class="flex justify-center">
+                <button 
+                    id="copy-url" 
+                    class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg flex items-center gap-2"
+                    onclick="generateAndCopyShareableUrl()"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                    </svg>
+                    Direktlink kopieren
                 </button>
+            </div>
+            
+            <div id="copy-success" class="hidden mt-3 text-center text-green-600 font-medium">
+                Direktlink kopiert! Sie können ihn jetzt teilen.
             </div>
         </div>
     </div>
@@ -203,23 +230,48 @@
                 <label class="block font-medium mb-1">Status</label>
                 <select class="child-status w-full border rounded-md p-2">
                     <option value="school" selected>Schüler(in)</option>
-                    <option value="kindergarten">Kindergartenkind</option>
                     <option value="apprentice">Auszubildende(r)</option>
                     <option value="student">Student(in)</option>
                     <option value="working">Berufstätig</option>
                 </select>
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4" x-data="{
+                    isOpen: false,
+                    childNumber: 0,
+                    checkIncome() {
+                        // Get the child number from the closest parent with child ID
+                        const childCard = this.$el.closest('.child-card');
+                        if (childCard) {
+                            this.childNumber = parseInt(childCard.dataset.childId) || 0;
+                        }
+                        
+                        // Get URL parameters
+                        const urlParams = new URLSearchParams(window.location.search);
+                        
+                        // Check if child has non-zero income in URL params (c1ji, c1oi, etc.)
+                        if (this.childNumber > 0) {
+                            const prefix = `c${this.childNumber}`;
+                            this.isOpen = (
+                                (urlParams.has(`${prefix}ji`) && Number(urlParams.get(`${prefix}ji`)) > 0) ||
+                                (urlParams.has(`${prefix}oi`) && Number(urlParams.get(`${prefix}oi`)) > 0)
+                            );
+                            
+                            console.log(`Child ${this.childNumber} income section, isOpen:`, this.isOpen);
+                        }
+                        
+                        return this.isOpen;
+                    }
+                }" x-init="checkIncome()">
                 <div class="flex items-center justify-between">
                     <label class="block font-medium">Einkommen des Kindes</label>
-                    <button class="toggle-child-income text-gray-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <button @click="isOpen = !isOpen" class="text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform" :class="{'rotate-180': isOpen}" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
                     </button>
                 </div>
-                <div class="child-income-section mt-2">
+                <div x-show="isOpen" class="mt-2" x-transition>
                     <div>
                         <label class="block text-sm font-medium mb-1">Einkommen aus Job/Ausb.</label>
                         <div class="text-sm text-gray-600 mb-2">Einkünfte des Kindes aus Arbeit oder Ausbildung</div>

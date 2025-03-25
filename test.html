@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unterhalt Calculator - System Tests</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .test-results {
+            background-color: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 16px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .test-group {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 20px;
+        }
+        .test-group:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold mb-6">Unterhalt Calculator - System Tests</h1>
+        
+        <div class="test-group">
+            <h2 class="text-2xl font-bold mb-4">Test 1: Auto Expansion Test</h2>
+            <p class="mb-6">Tests that sections with non-zero values are automatically expanded when loading from a shareable URL.</p>
+        
+        <div id="auto-expansion-output" class="test-results">Test output will appear here...</div>
+        
+        <button id="run-auto-expansion-test" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded mb-4">Run Auto Expansion Test</button>
+        </div>
+        
+        <div class="test-group">
+            <h2 class="text-2xl font-bold mb-4">Test 2: Share Button Test</h2>
+            <p class="mb-6">Tests that the share button correctly generates and copies a URL that contains all the necessary parameters from the current application state.</p>
+            
+            <div id="share-button-output" class="test-results">Test output will appear here...</div>
+            
+            <button id="run-share-button-test" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded mb-4">Run Share Button Test</button>
+        </div>
+        
+        <div class="mt-8">
+            <button id="run-all-tests" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded mb-4 mr-4">Run All Tests</button>
+            <a href="index.html" class="text-blue-600 hover:text-blue-800">← Back to Calculator</a>
+        </div>
+    </div>
+
+    <!-- Load the app script first -->
+    <script src="js/app.js"></script>
+    
+    <!-- Load the test scripts -->
+    <script src="js/auto-expand-test.js"></script>
+    <script src="js/share-button-test.js"></script>
+    
+    <!-- Override console.log to display in output div -->
+    <script>
+        // Store original console methods
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        let currentOutput = null;
+        
+        // Function to set current output target
+        function setOutputTarget(targetId) {
+            currentOutput = document.getElementById(targetId);
+            if (currentOutput) {
+                currentOutput.innerHTML = '';
+            }
+        }
+        
+        // Override console methods
+        console.log = function() {
+            // Call original console.log
+            originalLog.apply(console, arguments);
+            
+            // Add to current output if set
+            if (currentOutput) {
+                const args = Array.from(arguments);
+                currentOutput.innerHTML += args.join(' ') + '\n';
+            }
+        };
+        
+        console.error = function() {
+            // Call original console.error
+            originalError.apply(console, arguments);
+            
+            // Add to current output with red text
+            if (currentOutput) {
+                const args = Array.from(arguments);
+                currentOutput.innerHTML += '<span style="color: red;">' + args.join(' ') + '</span>\n';
+            }
+        };
+        
+        console.warn = function() {
+            // Call original console.warn
+            originalWarn.apply(console, arguments);
+            
+            // Add to current output with orange text
+            if (currentOutput) {
+                const args = Array.from(arguments);
+                currentOutput.innerHTML += '<span style="color: orange;">' + args.join(' ') + '</span>\n';
+            }
+        };
+        
+        // Set up event listeners for test buttons
+        document.getElementById('run-auto-expansion-test').addEventListener('click', function() {
+            setOutputTarget('auto-expansion-output');
+            testAutoExpansionFromUrl();
+        });
+        
+        document.getElementById('run-share-button-test').addEventListener('click', function() {
+            setOutputTarget('share-button-output');
+            testShareButton();
+        });
+        
+        document.getElementById('run-all-tests').addEventListener('click', function() {
+            // Run tests sequentially
+            setOutputTarget('auto-expansion-output');
+            testAutoExpansionFromUrl();
+            
+            setTimeout(function() {
+                setOutputTarget('share-button-output');
+                testShareButton();
+            }, 2000);
+        });
+        
+        // Run test automatically when page loads
+        window.addEventListener('load', function() {
+            console.log('Test page loaded, running auto-expansion test automatically...');
+            setOutputTarget('auto-expansion-output');
+            setTimeout(testAutoExpansionFromUrl, 500);
+        });
+    </script>
+</body>
+</html>

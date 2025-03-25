@@ -169,6 +169,121 @@ function defineTests() {
         window.location = originalWindowLocation;
     });
     
+    // System test for child renumbering after deletion
+    TestSuite.addTest('System test - Child renumbering after deletion', async () => {
+        console.log('Running system test for child renumbering...');
+        
+        // Reset state and DOM for test
+        document.getElementById('children-container').innerHTML = '';
+        app.appState = {
+            parents: {
+                father: { income: 2000, otherIncome: 0, housingBenefit: 0, debtExpenses: 0 },
+                mother: { income: 0, otherIncome: 0, housingBenefit: 0, debtExpenses: 0 }
+            },
+            children: [],
+            nextChildId: 1
+        };
+        
+        // 1. Add three children
+        app.addChild(); // Child 1
+        app.addChild(); // Child 2
+        app.addChild(); // Child 3
+        
+        // Verify that we have exactly three children with sequential IDs and titles
+        TestSuite.assertEqual(app.appState.children.length, 3, 'Should have three children after adding three');
+        
+        const childCards = document.querySelectorAll('.child-card');
+        TestSuite.assertEqual(childCards.length, 3, 'DOM should show three children');
+        
+        // Verify IDs and titles of all three children
+        TestSuite.assertEqual(childCards[0].dataset.childId, '1', 'First child should have ID 1');
+        TestSuite.assertEqual(childCards[0].querySelector('.child-title').textContent, 'Kind 1', 'First child should have title "Kind 1"');
+        
+        TestSuite.assertEqual(childCards[1].dataset.childId, '2', 'Second child should have ID 2');
+        TestSuite.assertEqual(childCards[1].querySelector('.child-title').textContent, 'Kind 2', 'Second child should have title "Kind 2"');
+        
+        TestSuite.assertEqual(childCards[2].dataset.childId, '3', 'Third child should have ID 3');
+        TestSuite.assertEqual(childCards[2].querySelector('.child-title').textContent, 'Kind 3', 'Third child should have title "Kind 3"');
+        
+        // 2. Set different ages for each child to track them
+        // Set first child to age 5
+        const ageSelect1 = childCards[0].querySelector('.child-age');
+        ageSelect1.value = '5';
+        const changeEvent1 = new Event('change');
+        ageSelect1.dispatchEvent(changeEvent1);
+        
+        // Set second child to age 10
+        const ageSelect2 = childCards[1].querySelector('.child-age');
+        ageSelect2.value = '10';
+        const changeEvent2 = new Event('change');
+        ageSelect2.dispatchEvent(changeEvent2);
+        
+        // Set third child to age 15
+        const ageSelect3 = childCards[2].querySelector('.child-age');
+        ageSelect3.value = '15';
+        const changeEvent3 = new Event('change');
+        ageSelect3.dispatchEvent(changeEvent3);
+        
+        // Verify ages are set in state
+        TestSuite.assertEqual(app.appState.children[0].age, 5, 'First child should have age 5');
+        TestSuite.assertEqual(app.appState.children[1].age, 10, 'Second child should have age 10');
+        TestSuite.assertEqual(app.appState.children[2].age, 15, 'Third child should have age 15');
+        
+        // 3. Delete the second child (ID 2, age 10)
+        app.removeChild(2);
+        
+        // 4. Verify renumbering occurred
+        // Should now have 2 children
+        TestSuite.assertEqual(app.appState.children.length, 2, 'Should have two children after deletion');
+        
+        // Verify the state has been updated with proper IDs
+        TestSuite.assertEqual(app.appState.children[0].id, 1, 'First child should still have ID 1');
+        TestSuite.assertEqual(app.appState.children[1].id, 2, 'Previous third child should now have ID 2');
+        
+        // Verify state maintained the correct ages after renumbering
+        TestSuite.assertEqual(app.appState.children[0].age, 5, 'First child should still have age 5');
+        TestSuite.assertEqual(app.appState.children[1].age, 15, 'Second child (formerly third) should have age 15');
+        
+        // Verify nextChildId is updated correctly
+        TestSuite.assertEqual(app.appState.nextChildId, 3, 'Next child ID should be 3 after renumbering');
+        
+        // 5. Verify DOM reflects the changes
+        const updatedChildCards = document.querySelectorAll('.child-card');
+        TestSuite.assertEqual(updatedChildCards.length, 2, 'DOM should show two children after deletion');
+        
+        // Verify IDs and titles
+        TestSuite.assertEqual(updatedChildCards[0].dataset.childId, '1', 'First child should have ID 1');
+        TestSuite.assertEqual(updatedChildCards[0].querySelector('.child-title').textContent, 'Kind 1', 'First child should have title "Kind 1"');
+        
+        TestSuite.assertEqual(updatedChildCards[1].dataset.childId, '2', 'Second child (formerly third) should have ID 2');
+        TestSuite.assertEqual(updatedChildCards[1].querySelector('.child-title').textContent, 'Kind 2', 'Second child should have title "Kind 2"');
+        
+        // Verify ages preserved through renumbering
+        TestSuite.assertEqual(updatedChildCards[0].querySelector('.child-age').value, '5', 'First child should still have age 5 in DOM');
+        TestSuite.assertEqual(updatedChildCards[1].querySelector('.child-age').value, '15', 'Second child (formerly third) should have age 15 in DOM');
+        
+        // 6. Update share URL and check it reflects renumbered children
+        app.updateShareUrl();
+        const shareUrl = document.getElementById('share-url').value;
+        
+        // Extract query parameters
+        const queryString = shareUrl.split('?')[1];
+        const params = new URLSearchParams(queryString);
+        
+        // Verify URL has correct parameters
+        TestSuite.assertEqual(params.get('nc'), '2', 'URL should show 2 children');
+        TestSuite.assertEqual(params.get('c1a'), '5', 'URL should show first child with age 5');
+        TestSuite.assertEqual(params.get('c2a'), '15', 'URL should show second child with age 15');
+        
+        // 7. Test that adding a new child after deleting works correctly
+        app.addChild(); // Should be Child 3 now
+        
+        const finalChildCards = document.querySelectorAll('.child-card');
+        TestSuite.assertEqual(finalChildCards.length, 3, 'DOM should show three children after adding one back');
+        TestSuite.assertEqual(finalChildCards[2].dataset.childId, '3', 'New child should have ID 3');
+        TestSuite.assertEqual(finalChildCards[2].querySelector('.child-title').textContent, 'Kind 3', 'New child should have title "Kind 3"');
+    });
+    
     // Test income group calculation
     TestSuite.addTest('Income group calculation', () => {
         const mockState = {

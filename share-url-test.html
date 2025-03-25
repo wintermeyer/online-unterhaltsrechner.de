@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unterhalt Calculator - Share URL Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .test-results {
+            background-color: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 16px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold mb-6">Unterhalt Calculator - Share URL Test</h1>
+        <p class="mb-6">This page tests that the share URL field is properly populated in both scenarios: when loading without parameters and when loading with parameters.</p>
+        
+        <div id="test-output" class="test-results">Test output will appear here...</div>
+        
+        <button id="run-test" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded mb-4">Run Share URL Test</button>
+        
+        <div class="mt-4">
+            <a href="index.html" class="text-blue-600 hover:text-blue-800 mr-4">← Back to Calculator</a>
+            <a href="test.html" class="text-blue-600 hover:text-blue-800">View All Tests</a>
+        </div>
+    </div>
+
+    <!-- Load the app script first -->
+    <script src="js/app.js"></script>
+    
+    <!-- Load the test script -->
+    <script src="js/share-url-test.js"></script>
+    
+    <!-- Override console.log to display in output div -->
+    <script>
+        // Store original console methods
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        const testOutput = document.getElementById('test-output');
+        
+        // Override console methods
+        console.log = function() {
+            // Call original console.log
+            originalLog.apply(console, arguments);
+            
+            // Add to test output
+            const args = Array.from(arguments);
+            testOutput.innerHTML += args.join(' ') + '\n';
+        };
+        
+        console.error = function() {
+            // Call original console.error
+            originalError.apply(console, arguments);
+            
+            // Add to test output in red
+            const args = Array.from(arguments);
+            testOutput.innerHTML += '<span class="text-red-600">' + args.join(' ') + '</span>\n';
+        };
+        
+        console.warn = function() {
+            // Call original console.warn
+            originalWarn.apply(console, arguments);
+            
+            // Add to test output in yellow
+            const args = Array.from(arguments);
+            testOutput.innerHTML += '<span class="text-yellow-600">' + args.join(' ') + '</span>\n';
+        };
+        
+        // Connect button to test function
+        document.getElementById('run-test').addEventListener('click', function() {
+            // Clear previous test results
+            testOutput.innerHTML = '';
+            console.log('Starting share URL test...');
+            // Run the test
+            testShareUrlField();
+        });
+        
+        // Run test automatically when page loads
+        window.addEventListener('load', function() {
+            console.log('Test page loaded. Click the button to run the test.');
+        });
+    </script>
+</body>
+</html>
