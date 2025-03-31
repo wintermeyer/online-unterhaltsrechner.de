@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Child Numbering Test</title>
+    <link href="./dist/output.css" rel="stylesheet">
+    <style>
+        .test-log {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            font-family: monospace;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+    <div class="container mx-auto max-w-4xl">
+        <h1 class="text-2xl font-bold mb-4">Child Numbering Test</h1>
+        
+        <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Test Controls</h2>
+            <div class="flex space-x-2 mb-4">
+                <button id="addChildTest" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                    Add Child
+                </button>
+                <button id="removeFirstTest" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+                    Remove First Child
+                </button>
+                <button id="removeSecondTest" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+                    Remove Second Child
+                </button>
+                <button id="clearLog" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
+                    Clear Log
+                </button>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Left side: App UI -->
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <h2 class="text-xl font-semibold mb-4">App Interface</h2>
+                
+                <div id="childrenContainer" class="space-y-4">
+                    <!-- Children will be added here -->
+                </div>
+                
+                <button id="addChildBtn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md flex justify-center items-center mt-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                    </svg>
+                    Kind hinzufügen
+                </button>
+            </div>
+            
+            <!-- Right side: Test Log & Data -->
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <h2 class="text-xl font-semibold mb-2">Test Log</h2>
+                <div id="testLog" class="test-log mb-4"></div>
+                
+                <h2 class="text-xl font-semibold mb-2">JSON Data</h2>
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <pre id="jsonOutput" class="text-green-400 overflow-x-auto whitespace-pre-wrap"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Child Template (Hidden) -->
+    <template id="childTemplate">
+        <div class="child-form bg-white rounded-lg shadow-sm p-4 mb-4 border border-gray-200">
+            <div class="flex justify-between items-center mb-2">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <h3 class="font-bold child-title">Kind 1</h3>
+                </div>
+                <button class="delete-child text-red-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </template>
+    
+    <script>
+        // Include the main app.js
+        const script = document.createElement('script');
+        script.src = './app.js';
+        document.head.appendChild(script);
+        
+        // Test logging functions
+        function log(message, type = 'info') {
+            const logEl = document.getElementById('testLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = message;
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+        
+        // Test functions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait for app.js to initialize
+            setTimeout(() => {
+                const addChildTest = document.getElementById('addChildTest');
+                const removeFirstTest = document.getElementById('removeFirstTest');
+                const removeSecondTest = document.getElementById('removeSecondTest');
+                const clearLogBtn = document.getElementById('clearLog');
+                
+                // Test: Add Child
+                addChildTest.addEventListener('click', function() {
+                    const childrenBefore = document.querySelectorAll('#childrenContainer > .child-form').length;
+                    document.getElementById('addChildBtn').click();
+                    setTimeout(() => {
+                        const childrenAfter = document.querySelectorAll('#childrenContainer > .child-form').length;
+                        if (childrenAfter === childrenBefore + 1) {
+                            log('✅ SUCCESS: Child added successfully', 'success');
+                        } else {
+                            log('❌ ERROR: Failed to add child', 'error');
+                        }
+                        checkNumbering();
+                    }, 100);
+                });
+                
+                // Test: Remove First Child
+                removeFirstTest.addEventListener('click', function() {
+                    const firstChild = document.querySelector('#childrenContainer > .child-form:first-child');
+                    if (firstChild) {
+                        const deleteBtn = firstChild.querySelector('.delete-child');
+                        const childrenBefore = document.querySelectorAll('#childrenContainer > .child-form').length;
+                        deleteBtn.click();
+                        setTimeout(() => {
+                            const childrenAfter = document.querySelectorAll('#childrenContainer > .child-form').length;
+                            if (childrenBefore === 1 && childrenAfter === 1) {
+                                log('✅ SUCCESS: Last child cannot be deleted', 'success');
+                            } else if (childrenAfter === childrenBefore - 1) {
+                                log('✅ SUCCESS: First child deleted', 'success');
+                            } else {
+                                log('❌ ERROR: Unexpected behavior when deleting first child', 'error');
+                            }
+                            checkNumbering();
+                        }, 100);
+                    } else {
+                        log('❌ ERROR: No first child found', 'error');
+                    }
+                });
+                
+                // Test: Remove Second Child
+                removeSecondTest.addEventListener('click', function() {
+                    const secondChild = document.querySelector('#childrenContainer > .child-form:nth-child(2)');
+                    if (secondChild) {
+                        const deleteBtn = secondChild.querySelector('.delete-child');
+                        const childrenBefore = document.querySelectorAll('#childrenContainer > .child-form').length;
+                        deleteBtn.click();
+                        setTimeout(() => {
+                            const childrenAfter = document.querySelectorAll('#childrenContainer > .child-form').length;
+                            if (childrenAfter === childrenBefore - 1) {
+                                log('✅ SUCCESS: Second child deleted', 'success');
+                            } else {
+                                log('❌ ERROR: Failed to delete second child', 'error');
+                            }
+                            checkNumbering();
+                        }, 100);
+                    } else {
+                        log('ℹ️ INFO: No second child found', 'info');
+                    }
+                });
+                
+                // Clear log
+                clearLogBtn.addEventListener('click', function() {
+                    document.getElementById('testLog').innerHTML = '';
+                });
+                
+                // Check numbering
+                function checkNumbering() {
+                    const children = document.querySelectorAll('#childrenContainer > .child-form');
+                    let correct = true;
+                    
+                    children.forEach((child, index) => {
+                        const title = child.querySelector('.child-title').textContent;
+                        const expected = `Kind ${index + 1}`;
+                        if (title !== expected) {
+                            log(`❌ ERROR: Child numbering incorrect. Expected "${expected}" but got "${title}"`, 'error');
+                            correct = false;
+                        }
+                    });
+                    
+                    if (correct && children.length > 0) {
+                        log(`✅ SUCCESS: Child numbering is correct for ${children.length} children`, 'success');
+                    }
+                    
+                    // Check JSON data
+                    const jsonOutput = document.getElementById('jsonOutput');
+                    if (jsonOutput && jsonOutput.textContent) {
+                        try {
+                            const data = JSON.parse(jsonOutput.textContent);
+                            if (data.children.length !== children.length) {
+                                log(`❌ ERROR: Mismatch between DOM (${children.length} children) and data (${data.children.length} children)`, 'error');
+                            } else {
+                                log(`✅ SUCCESS: DOM and data structure match with ${children.length} children`, 'success');
+                            }
+                            
+                            // Check IDs in data
+                            let dataCorrect = true;
+                            data.children.forEach((child, index) => {
+                                if (child.id !== index + 1) {
+                                    log(`❌ ERROR: Child ID in data incorrect. Expected ${index + 1} but got ${child.id}`, 'error');
+                                    dataCorrect = false;
+                                }
+                            });
+                            
+                            if (dataCorrect && data.children.length > 0) {
+                                log(`✅ SUCCESS: Child IDs in data structure are correct`, 'success');
+                            }
+                        } catch (e) {
+                            log(`❌ ERROR: Failed to parse JSON data: ${e.message}`, 'error');
+                        }
+                    }
+                }
+                
+                // Initial log
+                log('ℹ️ Test page loaded. You can now run the tests.', 'info');
+                setTimeout(checkNumbering, 500);
+            }, 500);
+        });
+    </script>
+</body>
+</html>

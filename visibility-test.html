@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Button Visibility Test</title>
+    <link href="./dist/output.css" rel="stylesheet">
+    <style>
+        .test-suite {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        
+        .test-case {
+            background-color: #f8f9fa;
+            border-left: 4px solid #ddd;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .test-case.running {
+            border-left-color: #fbbf24;
+        }
+        
+        .test-case.passed {
+            border-left-color: #10b981;
+        }
+        
+        .test-case.failed {
+            border-left-color: #ef4444;
+        }
+        
+        .test-case h3 {
+            margin-top: 0;
+        }
+        
+        .test-log {
+            background-color: #1f2937;
+            color: #f9fafb;
+            font-family: monospace;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            margin-bottom: 0.5rem;
+        }
+        
+        .pass { color: #10b981; }
+        .fail { color: #ef4444; }
+        .info { color: #60a5fa; }
+        
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 0.25rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4">
+    <div class="test-suite">
+        <h1 class="text-2xl font-bold mb-4">Delete Button Visibility Test</h1>
+        
+        <div class="mb-4">
+            <button id="runAllTests" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                Run All Tests
+            </button>
+        </div>
+        
+        <div id="testCases">
+            <div id="test1" class="test-case">
+                <h3 class="font-semibold">Test 1: Single Child - Delete Button Should Be Hidden</h3>
+                <div class="test-log" id="test1Log"></div>
+            </div>
+            
+            <div id="test2" class="test-case">
+                <h3 class="font-semibold">Test 2: Add Second Child - Both Should Show Delete Buttons</h3>
+                <div class="test-log" id="test2Log"></div>
+            </div>
+            
+            <div id="test3" class="test-case">
+                <h3 class="font-semibold">Test 3: Add Third Child - All Should Show Delete Buttons</h3>
+                <div class="test-log" id="test3Log"></div>
+            </div>
+            
+            <div id="test4" class="test-case">
+                <h3 class="font-semibold">Test 4: Delete Children Until One Remains - Last Should Hide Delete Button</h3>
+                <div class="test-log" id="test4Log"></div>
+            </div>
+        </div>
+        
+        <div class="mt-6">
+            <h2 class="text-xl font-bold mb-2">Test Frame</h2>
+            <iframe id="testFrame" src="index.html"></iframe>
+        </div>
+    </div>
+    
+    <script>
+        // Utility functions
+        function log(testId, message, type = 'info') {
+            const logElement = document.getElementById(`${testId}Log`);
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = message;
+            logElement.appendChild(entry);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        function markTestCase(testId, status) {
+            const testCase = document.getElementById(testId);
+            testCase.classList.remove('running', 'passed', 'failed');
+            testCase.classList.add(status);
+        }
+        
+        // Test functions
+        async function test1_SingleChildDeleteButtonHidden() {
+            const testId = 'test1';
+            markTestCase(testId, 'running');
+            log(testId, '🔄 Starting test: Single child delete button visibility');
+            
+            const frame = document.getElementById('testFrame');
+            
+            // Test 1: Initially with one child, verify delete button is NOT visible
+            try {
+                // Wait for the app to initialize
+                await new Promise(r => setTimeout(r, 1000));
+                
+                // Check if delete button is hidden for the first child
+                const deleteButtonVisible = frame.contentWindow.eval(() => {
+                    const deleteBtn = document.querySelector('.child-form .delete-child');
+                    if (!deleteBtn) return false;
+                    const style = window.getComputedStyle(deleteBtn);
+                    return style.display !== 'none';
+                });
+                
+                if (!deleteButtonVisible) {
+                    log(testId, '✅ PASS: Delete button is hidden with single child', 'pass');
+                    markTestCase(testId, 'passed');
+                    return true;
+                } else {
+                    log(testId, '❌ FAIL: Delete button is visible with single child', 'fail');
+                    markTestCase(testId, 'failed');
+                    return false;
+                }
+            } catch (error) {
+                log(testId, `❌ ERROR: ${error.message}`, 'fail');
+                markTestCase(testId, 'failed');
+                return false;
+            }
+        }
+        
+        async function test2_AddSecondChildBothShowDeleteButtons() {
+            const testId = 'test2';
+            markTestCase(testId, 'running');
+            log(testId, '🔄 Starting test: Add second child - both showing delete buttons');
+            
+            const frame = document.getElementById('testFrame');
+            
+            try {
+                // Add a second child
+                frame.contentWindow.eval(() => {
+                    document.getElementById('addChildBtn').click();
+                });
+                
+                // Wait for the DOM to update
+                await new Promise(r => setTimeout(r, 1000));
+                
+                // Check if both children show delete buttons
+                const allDeleteButtonsVisible = frame.contentWindow.eval(() => {
+                    const deleteBtns = document.querySelectorAll('.child-form .delete-child');
+                    if (deleteBtns.length !== 2) return false;
+                    
+                    return Array.from(deleteBtns).every(btn => {
+                        const style = window.getComputedStyle(btn);
+                        return style.display !== 'none';
+                    });
+                });
+                
+                if (allDeleteButtonsVisible) {
+                    log(testId, '✅ PASS: Delete buttons visible for both children', 'pass');
+                    markTestCase(testId, 'passed');
+                    return true;
+                } else {
+                    log(testId, '❌ FAIL: Not all delete buttons are visible with two children', 'fail');
+                    markTestCase(testId, 'failed');
+                    return false;
+                }
+            } catch (error) {
+                log(testId, `❌ ERROR: ${error.message}`, 'fail');
+                markTestCase(testId, 'failed');
+                return false;
+            }
+        }
+        
+        async function test3_AddThirdChildAllShowDeleteButtons() {
+            const testId = 'test3';
+            markTestCase(testId, 'running');
+            log(testId, '🔄 Starting test: Add third child - all showing delete buttons');
+            
+            const frame = document.getElementById('testFrame');
+            
+            try {
+                // Add a third child
+                frame.contentWindow.eval(() => {
+                    document.getElementById('addChildBtn').click();
+                });
+                
+                // Wait for the DOM to update
+                await new Promise(r => setTimeout(r, 1000));
+                
+                // Check if all three children show delete buttons
+                const allDeleteButtonsVisible = frame.contentWindow.eval(() => {
+                    const deleteBtns = document.querySelectorAll('.child-form .delete-child');
+                    if (deleteBtns.length !== 3) return false;
+                    
+                    return Array.from(deleteBtns).every(btn => {
+                        const style = window.getComputedStyle(btn);
+                        return style.display !== 'none';
+                    });
+                });
+                
+                if (allDeleteButtonsVisible) {
+                    log(testId, '✅ PASS: Delete buttons visible for all three children', 'pass');
+                    markTestCase(testId, 'passed');
+                    return true;
+                } else {
+                    log(testId, '❌ FAIL: Not all delete buttons are visible with three children', 'fail');
+                    markTestCase(testId, 'failed');
+                    return false;
+                }
+            } catch (error) {
+                log(testId, `❌ ERROR: ${error.message}`, 'fail');
+                markTestCase(testId, 'failed');
+                return false;
+            }
+        }
+        
+        async function test4_DeleteUntilOneRemains() {
+            const testId = 'test4';
+            markTestCase(testId, 'running');
+            log(testId, '🔄 Starting test: Delete children until one remains');
+            
+            const frame = document.getElementById('testFrame');
+            
+            try {
+                // Delete the third child
+                log(testId, 'Deleting third child...', 'info');
+                frame.contentWindow.eval(() => {
+                    document.querySelector('.child-form:nth-child(3) .delete-child').click();
+                });
+                
+                // Wait for the DOM to update
+                await new Promise(r => setTimeout(r, 1000));
+                
+                // Check if both remaining children show delete buttons
+                const twoChildrenBtnsVisible = frame.contentWindow.eval(() => {
+                    const deleteBtns = document.querySelectorAll('.child-form .delete-child');
+                    if (deleteBtns.length !== 2) return false;
+                    
+                    return Array.from(deleteBtns).every(btn => {
+                        const style = window.getComputedStyle(btn);
+                        return style.display !== 'none';
+                    });
+                });
+                
+                if (!twoChildrenBtnsVisible) {
+                    log(testId, '❌ FAIL: Delete buttons not visible for all remaining children after first deletion', 'fail');
+                    markTestCase(testId, 'failed');
+                    return false;
+                }
+                
+                log(testId, '✅ Delete buttons still visible for both remaining children', 'pass');
+                
+                // Delete the second child
+                log(testId, 'Deleting second child...', 'info');
+                frame.contentWindow.eval(() => {
+                    document.querySelector('.child-form:nth-child(2) .delete-child').click();
+                });
+                
+                // Wait for the DOM to update
+                await new Promise(r => setTimeout(r, 1000));
+                
+                // Check if the last child's delete button is hidden
+                const lastChildBtnHidden = frame.contentWindow.eval(() => {
+                    const deleteBtn = document.querySelector('.child-form .delete-child');
+                    if (!deleteBtn) return true;
+                    
+                    const style = window.getComputedStyle(deleteBtn);
+                    return style.display === 'none';
+                });
+                
+                if (lastChildBtnHidden) {
+                    log(testId, '✅ PASS: Delete button hidden for last remaining child', 'pass');
+                    markTestCase(testId, 'passed');
+                    return true;
+                } else {
+                    log(testId, '❌ FAIL: Delete button still visible for last child', 'fail');
+                    markTestCase(testId, 'failed');
+                    return false;
+                }
+            } catch (error) {
+                log(testId, `❌ ERROR: ${error.message}`, 'fail');
+                markTestCase(testId, 'failed');
+                return false;
+            }
+        }
+        
+        // Run all tests in sequence
+        async function runAllTests() {
+            // Reset the iframe
+            document.getElementById('testFrame').src = 'index.html';
+            
+            // Wait for iframe to load
+            await new Promise(r => {
+                const frame = document.getElementById('testFrame');
+                frame.onload = r;
+            });
+            
+            // Run tests in sequence
+            const test1Result = await test1_SingleChildDeleteButtonHidden();
+            if (test1Result) {
+                const test2Result = await test2_AddSecondChildBothShowDeleteButtons();
+                if (test2Result) {
+                    const test3Result = await test3_AddThirdChildAllShowDeleteButtons();
+                    if (test3Result) {
+                        await test4_DeleteUntilOneRemains();
+                    }
+                }
+            }
+        }
+        
+        // Set up event listeners
+        document.getElementById('runAllTests').addEventListener('click', runAllTests);
+    </script>
+</body>
+</html>
