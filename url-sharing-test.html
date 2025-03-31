@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Sharing Test</title>
+    <link href="./dist/output.css" rel="stylesheet">
+    <style>
+        .test-suite {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .test-case {
+            background-color: #f8f9fa;
+            border-left: 4px solid #ddd;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .test-case.running {
+            border-left-color: #fbbf24;
+        }
+        
+        .test-case.passed {
+            border-left-color: #10b981;
+        }
+        
+        .test-case.failed {
+            border-left-color: #ef4444;
+        }
+        
+        .test-log {
+            background-color: #1f2937;
+            color: #f9fafb;
+            font-family: monospace;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            margin-bottom: 0.5rem;
+        }
+        
+        .pass { color: #10b981; }
+        .fail { color: #ef4444; }
+        .info { color: #60a5fa; }
+        
+        iframe {
+            width: 100%;
+            height: 350px;
+            border: 1px solid #ddd;
+            border-radius: 0.25rem;
+        }
+
+        .scenario-description {
+            padding: 1rem;
+            background-color: #e9f5fe;
+            border-radius: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .url-display {
+            font-family: monospace;
+            padding: 0.5rem;
+            background-color: #f1f1f1;
+            border-radius: 0.25rem;
+            margin-top: 0.5rem;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4">
+    <div class="test-suite">
+        <h1 class="text-2xl font-bold mb-4">URL Sharing Functionality Test</h1>
+        
+        <div class="mb-4">
+            <button id="runAllTests" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                Run All Tests
+            </button>
+        </div>
+        
+        <div id="testCases">
+            <div id="test1" class="test-case">
+                <h3 class="font-semibold">Test 1: Generating URL with Basic Parameters</h3>
+                <div class="scenario-description">
+                    This test creates a basic scenario with one child and verifies the URL is generated correctly.
+                </div>
+                <div class="test-log" id="test1Log"></div>
+            </div>
+            
+            <div id="test2" class="test-case">
+                <h3 class="font-semibold">Test 2: Loading Form from Shared URL</h3>
+                <div class="scenario-description">
+                    This test uses a predefined URL with parameters to verify that the form loads properly from URL.
+                </div>
+                <div class="test-log" id="test2Log"></div>
+            </div>
+            
+            <div id="test3" class="test-case">
+                <h3 class="font-semibold">Test 3: Complex Scenario with Multiple Children</h3>
+                <div class="scenario-description">
+                    Creates a complex scenario with multiple children and various parameters, then verifies URL generation and form loading.
+                </div>
+                <div class="test-log" id="test3Log"></div>
+            </div>
+            
+            <div id="test4" class="test-case">
+                <h3 class="font-semibold">Test 4: Empty URL Parameters</h3>
+                <div class="scenario-description">
+                    Verifies that the form loads with default values when no URL parameters are provided.
+                </div>
+                <div class="test-log" id="test4Log"></div>
+            </div>
+        </div>
+        
+        <div class="mt-6">
+            <h2 class="text-xl font-bold mb-2">Test Frame</h2>
+            <iframe id="testFrame" src="index.html"></iframe>
+        </div>
+
+        <div class="mt-6 p-4 bg-white rounded-lg shadow-md">
+            <h2 class="text-xl font-bold mb-2">Manual Test URLs</h2>
+            <p class="mb-3">Here are pre-configured URLs you can copy and test manually:</p>
+
+            <div class="mb-3">
+                <h3 class="font-semibold">Scenario 1: Basic Parameters</h3>
+                <div class="url-display" id="scenario1Url"></div>
+                <button class="copy-url mt-2 px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm" data-target="scenario1Url">
+                    Copy URL
+                </button>
+            </div>
+
+            <div class="mb-3">
+                <h3 class="font-semibold">Scenario 2: Multiple Children</h3>
+                <div class="url-display" id="scenario2Url"></div>
+                <button class="copy-url mt-2 px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm" data-target="scenario2Url">
+                    Copy URL
+                </button>
+            </div>
+
+            <div class="mb-3">
+                <h3 class="font-semibold">Scenario 3: Complex Settings</h3>
+                <div class="url-display" id="scenario3Url"></div>
+                <button class="copy-url mt-2 px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm" data-target="scenario3Url">
+                    Copy URL
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Utility functions
+        function log(testId, message, type = 'info') {
+            const logElement = document.getElementById(`${testId}Log`);
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = message;
+            logElement.appendChild(entry);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        function markTestCase(testId, status) {
+            const testCase = document.getElementById(testId);
+            testCase.classList.remove('running', 'passed', 'failed');
+            testCase.classList.add(status);
+        }
+
+        // Generate test URLs
+        function generateTestUrls() {
+            const baseUrl = window.location.href.replace('url-sharing-test.html', 'index.html');
+            
+            // Scenario 1: Basic Parameters
+            const scenario1 = `${baseUrl}?v_ne=2500&m_ne=1800&c1_age=8&c1_res=mutter&c1_ben=mutter&c1_sta=schueler`;
+            document.getElementById('scenario1Url').textContent = scenario1;
+            
+            // Scenario 2: Multiple Children
+            const scenario2 = `${baseUrl}?v_ne=3000&m_ne=1500&c1_age=6&c1_res=mutter&c1_ben=mutter&c1_sta=schueler&c2_age=10&c2_res=mutter&c2_ben=mutter&c2_sta=schueler&c3_age=14&c3_res=vater&c3_ben=vater&c3_sta=schueler`;
+            document.getElementById('scenario2Url').textContent = scenario2;
+            
+            // Scenario 3: Complex Settings
+            const scenario3 = `${baseUrl}?v_ne=4200&v_se=500&v_wv=200&m_ne=2800&m_se=350&c1_age=7&c1_res=mutter&c1_ben=mutter&c1_sta=schueler&c2_age=15&c2_res=beide&c2_ben=vater&c2_sta=schueler&c2_inc=150&c2_exp=1`;
+            document.getElementById('scenario3Url').textContent = scenario3;
+            
+            // Set up copy buttons
+            document.querySelectorAll('.copy-url').forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const textToCopy = document.getElementById(targetId).textContent;
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        const originalText = this.textContent;
+                        this.textContent = 'Copied!';
+                        setTimeout(() => {
+                            this.textContent = originalText;
+                        }, 2000);
+                    });
+                });
+            });
+        }
+        
+        // Test functions
+        async function test1_GenerateUrlWithBasicParameters() {
+            const testId = 'test1';
+            markTestCase(testId, 'running');
+            log(testId, '🔄 Starting test: Generating URL with basic parameters');
+            
+            try {
+                // Reset the iframe
+                document.getElementById('testFrame').src = 'index.html';
+                
+                // Wait for iframe to load
+                await new Promise(r => {
+                    const frame = document.getElementById('testFrame');
+                    frame.onload = r;
+                });
+                
+                // Wait for the app to initialize
+                await new Promise(r => setTimeout(r, 1000));
+                
+                // Set up basic parameters
+                await setFrameInputValue('vaterNettoEinkommen', '2500');
+                await setFrameInputValue('mutterNettoEinkommen', '1800');
+                
+                // Get the first child age input and set to 8
+                await frame.contentWindow.eval(() => {
+                    const ageInput = document.querySelector('.child-form .child-age');
+                    if (ageInput) ageInput.value = '8';
+                    // Trigger a change event
+                    ageInput.dispatchEvent(new Event('input'));
+                });
+                
+                // Wait for data to be updated
+                await new Promise(r => setTimeout(r, 500));
+                
+                // Now generate the URL
+                const generatedUrl = await frame.contentWindow.eval(() => {
+                    return window.generateShareableUrl ? window.generateShareableUrl() : null;
+                });
+                
+                if (!generatedUrl) {
+                    log(testId, '❌ FAIL: Could not access generateShareableUrl function', 'fail');
+                    markTestCase(testId, 'failed');
+                    return;
+                }
+                
+                // Log the generated URL
+                log(testId, `Generated URL: ${generatedUrl}`, 'info');
+                
+                // Check if URL contains expected parameters
+                const url = new URL(generatedUrl);
+                const hasVaterNetto = url.searchParams.has('v_ne') && url.searchParams.get('v_ne') === '2500';
+                const hasMutterNetto = url.searchParams.has('m_ne') && url.searchParams.get('m_ne') === '1800';
+                const hasChildAge = url.searchParams.has('c1_age') && url.searchParams.get('c1_age') === '8';
+                
+                if (hasVaterNetto && hasMutterNetto && hasChildAge) {
+                    log(testId, '✅ PASS: URL contains all expected parameters', 'pass');
+                    markTestCase(testId, 'passed');
+                } else {
+                    log(testId, '❌ FAIL: URL is missing expected parameters', 'fail');
+                    markTestCase(testId, 'failed');
+                }
+            } catch (error) {
+                log(testId, `❌ ERROR: ${error.message}`, 'fail');
+                markTestCase(testId, 'failed');
+            }
+        }
+        
+        async function test2_LoadingFormFromUrl() {
+            const testId = 'test2';
+            markTestCase(testId, 'running');
+            log(testId, '🔄 Starting test: Loading form from shared URL');
+            
+            try {
+                // Create a URL with test parameters
+                const baseUrl = window.location.href.replace('url-sharing-test.html', 'index.html');
+                const testUrl = `${baseUrl}?v_ne=3000&m_ne=1200&c1_age=10&c1_res=vater&c1_ben=vater&c1_sta=schueler`;
+                
+                // Log the test URL
+                log(testId, `Test URL: ${testUrl}`, 'info');
+                
+                // Load the URL in the iframe
+                document.getElementById('testFrame').src = testUrl;
+                
+                // Wait for iframe to load
+                await new Promise(r => {
+                    const frame = document.getElementById('testFrame');
+                    frame.onload = r;
+                });
+                
+                // Wait for the app to initialize
+                await new Promise(r => setTimeout(r, 1500));
+                
+                // Check if form is populated correctly
+                const frame = document.getElementById('testFrame');
+                
+                const vaterNettoEinkommen = await frame.contentWindow.eval(() => {
+                    return document.getElementById('vaterNettoEinkommen').value;
+                });
+                
+                const mutterNettoEinkommen = await frame.contentWindow.eval(() => {
+                    return document.getElementById('mutterNettoEinkommen').value;
+                });
+                
+                const childAge = await frame.contentWindow.eval(() => {
+                    return document.querySelector('.child-form .child-age').value;
+                });
+                
+                const childResidence = await frame.contentWindow.eval(() => {
+                    return document.querySelector('.child-form .child-residence').value;
+                });
+                
+                // Verify values match what we expect
+                const vaterNettoCorrect = vaterNettoEinkommen === '3000';
+                const mutterNettoCorrect = mutterNettoEinkommen === '1200';
+                const childAgeCorrect = childAge === '10';
+                const childResidenceCorrect = childResidence === 'vater';
+                
+                if (vaterNettoCorrect && mutterNettoCorrect && childAgeCorrect && childResidenceCorrect) {
+                    log(testId, '✅ PASS: Form populated correctly from URL parameters', 'pass');
+                    markTestCase(testId, 'passed');
+                } else {
+                    log(testId, '❌ FAIL: Form not populated correctly from URL parameters', 'fail');
+                    log(testId, `Vater Netto: ${vaterNettoCorrect ? 'OK' : 'FAIL'}`, vaterNettoCorrect ? 'pass' : 'fail');
+                    log(testId, `Mutter Netto: ${mutterNettoCorrect ? 'OK' : 'FAIL'}`, mutterNettoCorrect ? 'pass' : 'fail');
+                    log(testId, `Child Age: ${childAgeCorrect ? 'OK' : 'FAIL'}`, childAgeCorrect ? 'pass' : 'fail');
+                    log(testId, `Child Residence: ${childResidenceCorrect ? 'OK' : 'FAIL'}`, childResidenceCorrect ? 'pass' : 'fail');
+                    markTestCase(testId, 'failed');
+                }
+            } catch (error) {
+                log(testId, `❌ ERROR: ${error.message}`, 'fail');
+                markTestCase(testId, 'failed');
+            }
+        }
+        
+        async function test3_ComplexScenarioWithMultipleChildren() {
+            const testId = 'test3';
+            markTestCase(testId, 'running');
+            log(testId, '🔄 Starting test: Complex scenario with multiple children');
+            
+            try {
+                // Create a URL with complex parameters
+                const baseUrl = window.location.href.replace('url-sharing-test.html', 'index.html');
+                const testUrl = `${baseUrl}?v_ne=4200&v_se=500&v_wv=200&m_ne=2800&m_se=350&c1_age=7&c1_res=mutter&c1_ben=mutter&c1_sta=schueler&c2_age=15&c2_res=beide&c2_ben=vater&c2_sta=schueler&c2_inc=150&c2_exp=1&c3_age=17&c3_res=vater&c3_ben=vater&c3_sta=berufsausbildung&c3_inc=450&c3_exp=1`;
+                
+                // Log the test URL
+                log(testId, `Test URL: ${testUrl}`, 'info');
+                
+                // Load the URL in the iframe
+                document.getElementById('testFrame').src = testUrl;
+                
+                // Wait for iframe to load
+                await new Promise(r => {
+                    const frame = document.getElementById('testFrame');
+                    frame.onload = r;
+                });
+                
+                // Wait for the app to initialize
+                await new Promise(r => setTimeout(r, 2000));
+                
+                // Check if form is populated correctly
+                const frame = document.getElementById('testFrame');
+                
+                // Check number of children
+                const childCount = await frame.contentWindow.eval(() => {
+                    return document.querySelectorAll('.child-form').length;
+                });
+                
+                if (childCount !== 3) {
+                    log(testId, `❌ FAIL: Expected 3 children, found ${childCount}`, 'fail');
+                    markTestCase(testId, 'failed');
+                    return;
+                }
+                
+                log(testId, '✅ Correct number of children created', 'pass');
+                
+                // Check parent values
+                const vaterNetto = await frame.contentWindow.eval(() => document.getElementById('vaterNettoEinkommen').value);
+                const vaterSonstige = await frame.contentWindow.eval(() => document.getElementById('vaterSonstigeEinkommen').value);
+                const vaterWohnvorteil = await frame.contentWindow.eval(() => document.getElementById('vaterWohnvorteil').value);
+                
+                if (vaterNetto === '4200' && vaterSonstige === '500' && vaterWohnvorteil === '200') {
+                    log(testId, '✅ Father values correctly loaded', 'pass');
+                } else {
+                    log(testId, '❌ Father values not loaded correctly', 'fail');
+                }
+                
+                // Check third child's specific values
+                const thirdChildValues = await frame.contentWindow.eval(() => {
+                    const childForm = document.querySelector('.child-form:nth-child(3)');
+                    if (!childForm) return null;
+                    
+                    return {
+                        age: childForm.querySelector('.child-age').value,
+                        status: childForm.querySelector('.child-status').value,
+                        income: childForm.querySelector('.child-income-job')?.value || '0'
+                    };
+                });
+                
+                if (thirdChildValues && thirdChildValues.age === '17' && 
+                    thirdChildValues.status === 'berufsausbildung' && 
+                    thirdChildValues.income === '450') {
+                    log(testId, '✅ Third child values correctly loaded', 'pass');
+                    markTestCase(testId, 'passed');
+                } else {
+                    log(testId, '❌ Third child values not loaded correctly', 'fail');
+                    markTestCase(testId, 'failed');
+                }
+                
+                // Now try to generate URL and see if it matches or contains the same parameters
+                const regeneratedUrl = await frame.contentWindow.eval(() => {
+                    return window.generateShareableUrl ? window.generateShareableUrl() : null;
+                });
+                
+                if (regeneratedUrl) {
+                    log(testId, `Regenerated URL: ${regeneratedUrl}`, 'info');
+                    log(testId, '✅ Successfully regenerated URL from loaded form', 'pass');
+                }
+            } catch (error) {
+                log(testId, `❌ ERROR: ${error.message}`, 'fail');
+                markTestCase(testId, 'failed');
+            }
+        }
+        
+        async function test4_EmptyUrlParameters() {
+            const testId = 'test4';
+            markTestCase(testId, 'running');
+            log(testId, '🔄 Starting test: Empty URL parameters');
+            
+            try {
+                // Load the base URL without parameters
+                const baseUrl = window.location.href.replace('url-sharing-test.html', 'index.html');
+                
+                // Log the test URL
+                log(testId, `Test URL: ${baseUrl}`, 'info');
+                
+                // Load the URL in the iframe
+                document.getElementById('testFrame').src = baseUrl;
+                
+                // Wait for iframe to load
+                await new Promise(r => {
+                    const frame = document.getElementById('testFrame');
+                    frame.onload = r;
+                });
+                
+                // Wait for the app to initialize
+                await new Promise(r => setTimeout(r, 1500));
+                
+                // Check if form has default values
+                const frame = document.getElementById('testFrame');
+                
+                // Check number of children
+                const childCount = await frame.contentWindow.eval(() => {
+                    return document.querySelectorAll('.child-form').length;
+                });
+                
+                if (childCount !== 1) {
+                    log(testId, `❌ FAIL: Expected 1 default child, found ${childCount}`, 'fail');
+                    markTestCase(testId, 'failed');
+                    return;
+                }
+                
+                // Check default values
+                const vaterNetto = await frame.contentWindow.eval(() => document.getElementById('vaterNettoEinkommen').value);
+                const childAge = await frame.contentWindow.eval(() => {
+                    const ageInput = document.querySelector('.child-form .child-age');
+                    return ageInput ? ageInput.value : null;
+                });
+                
+                if (vaterNetto === '2000' && childAge === '6') {
+                    log(testId, '✅ PASS: Form loaded with correct default values', 'pass');
+                    markTestCase(testId, 'passed');
+                } else {
+                    log(testId, '❌ FAIL: Default values not loaded correctly', 'fail');
+                    log(testId, `vaterNetto: ${vaterNetto}, expected: 2000`, vaterNetto === '2000' ? 'pass' : 'fail');
+                    log(testId, `childAge: ${childAge}, expected: 6`, childAge === '6' ? 'pass' : 'fail');
+                    markTestCase(testId, 'failed');
+                }
+            } catch (error) {
+                log(testId, `❌ ERROR: ${error.message}`, 'fail');
+                markTestCase(testId, 'failed');
+            }
+        }
+        
+        // Helper function to set input value in iframe
+        async function setFrameInputValue(elementId, value) {
+            const frame = document.getElementById('testFrame');
+            await frame.contentWindow.eval(`
+                const element = document.getElementById('${elementId}');
+                if (element) {
+                    element.value = '${value}';
+                    element.dispatchEvent(new Event('input'));
+                }
+            `);
+        }
+        
+        // Run all tests in sequence
+        async function runAllTests() {
+            await test1_GenerateUrlWithBasicParameters();
+            await test2_LoadingFormFromUrl();
+            await test3_ComplexScenarioWithMultipleChildren();
+            await test4_EmptyUrlParameters();
+        }
+        
+        // Set up event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Generate test URLs
+            generateTestUrls();
+            
+            // Set up run tests button
+            document.getElementById('runAllTests').addEventListener('click', runAllTests);
+        });
+    </script>
+</body>
+</html>

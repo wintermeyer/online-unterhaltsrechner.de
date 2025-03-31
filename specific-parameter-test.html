@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Parameter Test</title>
+    <link href="./dist/output.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            line-height: 1.5;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        .btn {
+            background-color: #1d4ed8;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn:hover {
+            background-color: #1e40af;
+        }
+        pre {
+            background-color: #1e293b;
+            color: #a5f3fc;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .success {
+            color: #10b981;
+            font-weight: bold;
+        }
+        .error {
+            color: #ef4444;
+            font-weight: bold;
+        }
+        .expected, .actual {
+            margin-top: 1rem;
+        }
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+        }
+        .test-result {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+        .test-success {
+            background-color: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+        }
+        .test-failure {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container">
+        <h1 class="text-2xl font-bold mb-4">URL Parameter Specific Test</h1>
+        
+        <div class="card">
+            <h2 class="text-xl font-semibold mb-3">Test: Specific Parameter Case</h2>
+            <p>Testing URL: <code>index.html?v_ne=2000&m_ne=500&c1_age=6&c1_res=mutter&c1_ben=mutter&c1_sta=schueler</code></p>
+            
+            <button id="runTest" class="btn mt-3">Run Test</button>
+            
+            <div id="testResult" class="mt-4"></div>
+            
+            <div class="expected">
+                <h3 class="font-semibold">Expected JSON:</h3>
+                <pre id="expectedJson"></pre>
+            </div>
+            
+            <div class="actual">
+                <h3 class="font-semibold">Actual JSON:</h3>
+                <pre id="actualJson">Run the test to see results</pre>
+            </div>
+            
+            <div class="mt-4">
+                <h3 class="font-semibold">Debug Parameters:</h3>
+                <pre id="debugParams"></pre>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="text-xl font-semibold mb-3">Test Frame:</h2>
+            <iframe id="testFrame"></iframe>
+        </div>
+    </div>
+    
+    <script>
+        // The expected JSON result
+        const expectedJson = {
+            "children": [
+                {
+                    "id": 1,
+                    "age": 6,
+                    "residenceWith": "mutter",
+                    "childBenefitTo": "mutter",
+                    "status": "schueler",
+                    "income": {
+                        "expanded": false,
+                        "amount": 0
+                    }
+                }
+            ],
+            "vater": {
+                "nettoEinkommen": 2000,
+                "sonstigeEinkommen": 0,
+                "wohnvorteil": 0,
+                "schulden": 0
+            },
+            "mutter": {
+                "nettoEinkommen": 500,
+                "sonstigeEinkommen": 0,
+                "wohnvorteil": 0,
+                "schulden": 0
+            }
+        };
+        
+        // Display expected JSON
+        document.getElementById('expectedJson').textContent = JSON.stringify(expectedJson, null, 2);
+        
+        // Function to run the test
+        async function runTest() {
+            const testResultElement = document.getElementById('testResult');
+            const actualJsonElement = document.getElementById('actualJson');
+            const debugParamsElement = document.getElementById('debugParams');
+            
+            try {
+                // Construct the test URL
+                const baseUrl = window.location.href.replace('specific-parameter-test.html', 'index.html');
+                const testUrl = `${baseUrl}?v_ne=2000&m_ne=500&c1_age=6&c1_res=mutter&c1_ben=mutter&c1_sta=schueler`;
+                
+                // Show URL parameters for debugging
+                const params = new URLSearchParams(testUrl.split('?')[1]);
+                const paramDebug = {};
+                for (const [key, value] of params.entries()) {
+                    paramDebug[key] = value;
+                }
+                debugParamsElement.textContent = JSON.stringify(paramDebug, null, 2);
+                
+                // Load the iframe with the test URL
+                const frame = document.getElementById('testFrame');
+                frame.src = testUrl;
+                
+                // Wait for the iframe to load
+                await new Promise(resolve => {
+                    frame.onload = resolve;
+                });
+                
+                // Give the app some time to initialize and process parameters
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Extract the JSON from the iframe
+                const jsonFromFrame = await frame.contentWindow.eval(() => {
+                    const jsonOutput = document.getElementById('jsonOutput');
+                    return jsonOutput ? jsonOutput.textContent : null;
+                });
+                
+                if (!jsonFromFrame) {
+                    throw new Error('Could not find JSON output in the iframe');
+                }
+                
+                // Parse the JSON and display it
+                const actualJson = JSON.parse(jsonFromFrame);
+                actualJsonElement.textContent = JSON.stringify(actualJson, null, 2);
+                
+                // Check for exact match
+                const expectedStr = JSON.stringify(expectedJson);
+                const actualStr = JSON.stringify(actualJson);
+                
+                // Function to compare values
+                function compareValues(expected, actual, path = '') {
+                    if (typeof expected !== typeof actual) {
+                        return [`${path}: Type mismatch - Expected ${typeof expected}, got ${typeof actual}`];
+                    }
+                    
+                    if (Array.isArray(expected)) {
+                        if (!Array.isArray(actual)) {
+                            return [`${path}: Expected array, got ${typeof actual}`];
+                        }
+                        if (expected.length !== actual.length) {
+                            return [`${path}: Array length mismatch - Expected ${expected.length}, got ${actual.length}`];
+                        }
+                        
+                        let errors = [];
+                        for (let i = 0; i < expected.length; i++) {
+                            errors = errors.concat(compareValues(expected[i], actual[i], `${path}[${i}]`));
+                        }
+                        return errors;
+                    }
+                    
+                    if (typeof expected === 'object' && expected !== null) {
+                        if (typeof actual !== 'object' || actual === null) {
+                            return [`${path}: Expected object, got ${typeof actual}`];
+                        }
+                        
+                        let errors = [];
+                        for (const key in expected) {
+                            if (!actual.hasOwnProperty(key)) {
+                                errors.push(`${path}.${key}: Missing property`);
+                            } else {
+                                errors = errors.concat(compareValues(expected[key], actual[key], `${path}.${key}`));
+                            }
+                        }
+                        return errors;
+                    }
+                    
+                    if (expected !== actual) {
+                        return [`${path}: Value mismatch - Expected ${expected}, got ${actual}`];
+                    }
+                    
+                    return [];
+                }
+                
+                // Compare the objects
+                const differences = compareValues(expectedJson, actualJson);
+                
+                if (differences.length === 0) {
+                    testResultElement.className = 'test-result test-success';
+                    testResultElement.innerHTML = '<span class="success">✓ TEST PASSED:</span> The actual JSON matches the expected JSON.';
+                } else {
+                    testResultElement.className = 'test-result test-failure';
+                    testResultElement.innerHTML = `<span class="error">✗ TEST FAILED:</span> Found ${differences.length} differences:<br>`;
+                    differences.forEach(diff => {
+                        testResultElement.innerHTML += `• ${diff}<br>`;
+                    });
+                }
+            } catch (error) {
+                testResultElement.className = 'test-result test-failure';
+                testResultElement.innerHTML = `<span class="error">✗ TEST ERROR:</span> ${error.message}`;
+                console.error(error);
+            }
+        }
+        
+        // Attach the run test event
+        document.getElementById('runTest').addEventListener('click', runTest);
+        
+        // Auto-run the test when the page loads
+        document.addEventListener('DOMContentLoaded', runTest);
+    </script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct URL Parameter Test</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #0055aa;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .pass {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .fail {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #eee;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .comparison {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .comparison > div {
+            flex: 1;
+        }
+        h3 {
+            margin-top: 0;
+        }
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #differences {
+            margin-top: 20px;
+        }
+        .difference-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Direct URL Parameter Test</h1>
+        <p>This test checks if the following URL produces the expected JSON:</p>
+        <pre>index.html?v_ne=2000&m_ne=500&c1_age=6&c1_res=mutter&c1_ben=mutter&c1_sta=schueler</pre>
+        
+        <div>
+            <button id="runTest">Run Test</button>
+        </div>
+        
+        <div id="result"></div>
+        
+        <div class="comparison">
+            <div>
+                <h3>Expected JSON:</h3>
+                <pre id="expectedJson"></pre>
+            </div>
+            <div>
+                <h3>Actual JSON:</h3>
+                <pre id="actualJson"></pre>
+            </div>
+        </div>
+        
+        <div id="differences"></div>
+        
+        <h2>Test Frame:</h2>
+        <iframe id="testFrame"></iframe>
+    </div>
+    
+    <script>
+        // The expected JSON structure
+        const expectedJson = {
+            "children": [
+                {
+                    "id": 1,
+                    "age": 6,
+                    "residenceWith": "mutter",
+                    "childBenefitTo": "mutter",
+                    "status": "schueler",
+                    "income": {
+                        "expanded": false,
+                        "amount": 0
+                    }
+                }
+            ],
+            "vater": {
+                "nettoEinkommen": 2000,
+                "sonstigeEinkommen": 0,
+                "wohnvorteil": 0,
+                "schulden": 0
+            },
+            "mutter": {
+                "nettoEinkommen": 500,
+                "sonstigeEinkommen": 0,
+                "wohnvorteil": 0,
+                "schulden": 0
+            }
+        };
+        
+        // Display the expected JSON
+        document.getElementById('expectedJson').textContent = JSON.stringify(expectedJson, null, 2);
+        
+        // Function to compare two objects and find differences
+        function findDifferences(obj1, obj2, path = '') {
+            const differences = [];
+            
+            // Check for keys in obj1 not in obj2
+            for (const key in obj1) {
+                const newPath = path ? `${path}.${key}` : key;
+                
+                if (!(key in obj2)) {
+                    differences.push(`Key '${newPath}' exists in expected but not in actual`);
+                    continue;
+                }
+                
+                if (typeof obj1[key] !== typeof obj2[key]) {
+                    differences.push(`Type mismatch for '${newPath}': expected ${typeof obj1[key]}, got ${typeof obj2[key]}`);
+                    continue;
+                }
+                
+                if (typeof obj1[key] === 'object' && obj1[key] !== null) {
+                    // Recursively compare objects/arrays
+                    differences.push(...findDifferences(obj1[key], obj2[key], newPath));
+                } else if (obj1[key] !== obj2[key]) {
+                    differences.push(`Value mismatch for '${newPath}': expected ${obj1[key]}, got ${obj2[key]}`);
+                }
+            }
+            
+            // Check for keys in obj2 not in obj1
+            for (const key in obj2) {
+                const newPath = path ? `${path}.${key}` : key;
+                if (!(key in obj1)) {
+                    differences.push(`Key '${newPath}' exists in actual but not in expected`);
+                }
+            }
+            
+            return differences;
+        }
+        
+        // Run the test
+        document.getElementById('runTest').addEventListener('click', async function() {
+            // Clear previous results
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('actualJson').textContent = 'Loading...';
+            document.getElementById('differences').innerHTML = '';
+            
+            // Set up the iframe with the test URL
+            const testUrl = 'index.html?v_ne=2000&m_ne=500&c1_age=6&c1_res=mutter&c1_ben=mutter&c1_sta=schueler';
+            const iframe = document.getElementById('testFrame');
+            iframe.src = testUrl;
+            
+            // Wait for the iframe to load
+            await new Promise(resolve => {
+                iframe.onload = resolve;
+            });
+            
+            // Give the app some time to initialize and process parameters
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            try {
+                // Get the resulting JSON from the iframe
+                const actualJsonElement = await iframe.contentDocument.getElementById('jsonOutput');
+                
+                if (!actualJsonElement) {
+                    throw new Error('Could not find #jsonOutput element in the iframe');
+                }
+                
+                const actualJson = JSON.parse(actualJsonElement.textContent);
+                document.getElementById('actualJson').textContent = JSON.stringify(actualJson, null, 2);
+                
+                // Compare the JSON objects
+                const differences = findDifferences(expectedJson, actualJson);
+                
+                // Display the result
+                const resultElement = document.getElementById('result');
+                if (differences.length === 0) {
+                    resultElement.className = 'result pass';
+                    resultElement.textContent = '✅ TEST PASSED: The JSON output matches the expected structure.';
+                } else {
+                    resultElement.className = 'result fail';
+                    resultElement.textContent = `❌ TEST FAILED: Found ${differences.length} differences.`;
+                    
+                    // Display the differences
+                    const differencesElement = document.getElementById('differences');
+                    differences.forEach(diff => {
+                        const diffItem = document.createElement('div');
+                        diffItem.className = 'difference-item';
+                        diffItem.textContent = diff;
+                        differencesElement.appendChild(diffItem);
+                    });
+                }
+            } catch (error) {
+                document.getElementById('result').className = 'result fail';
+                document.getElementById('result').textContent = `❌ ERROR: ${error.message}`;
+                document.getElementById('actualJson').textContent = 'Error getting JSON';
+            }
+        });
+    </script>
+</body>
+</html>

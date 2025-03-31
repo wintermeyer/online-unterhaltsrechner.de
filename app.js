@@ -435,8 +435,202 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('vaterSchulden').addEventListener('input', checkFinancialDetailsSection);
     document.getElementById('mutterSchulden').addEventListener('input', checkFinancialDetailsSection);
     
-    // Initialize with default first child
-    addChild();
+    // URL sharing functionality
+    const shareButton = document.getElementById('shareButton');
+    const shareConfirmation = document.getElementById('shareConfirmation');
+    
+    // Generate shareable URL with non-zero parameters
+    function generateShareableUrl() {
+        const url = new URL(window.location.href.split('?')[0]); // Base URL without parameters
+        
+        // Add parent data
+        if (data.vater.nettoEinkommen > 0) url.searchParams.append('v_ne', data.vater.nettoEinkommen);
+        if (data.vater.sonstigeEinkommen > 0) url.searchParams.append('v_se', data.vater.sonstigeEinkommen);
+        if (data.vater.wohnvorteil > 0) url.searchParams.append('v_wv', data.vater.wohnvorteil);
+        if (data.vater.schulden > 0) url.searchParams.append('v_sc', data.vater.schulden);
+        
+        if (data.mutter.nettoEinkommen > 0) url.searchParams.append('m_ne', data.mutter.nettoEinkommen);
+        if (data.mutter.sonstigeEinkommen > 0) url.searchParams.append('m_se', data.mutter.sonstigeEinkommen);
+        if (data.mutter.wohnvorteil > 0) url.searchParams.append('m_wv', data.mutter.wohnvorteil);
+        if (data.mutter.schulden > 0) url.searchParams.append('m_sc', data.mutter.schulden);
+        
+        // Add children data
+        data.children.forEach((child, index) => {
+            const prefix = `c${index + 1}_`;
+            url.searchParams.append(`${prefix}age`, child.age);
+            url.searchParams.append(`${prefix}res`, child.residenceWith);
+            url.searchParams.append(`${prefix}ben`, child.childBenefitTo);
+            url.searchParams.append(`${prefix}sta`, child.status);
+            if (child.income.amount > 0) url.searchParams.append(`${prefix}inc`, child.income.amount);
+            if (child.income.expanded) url.searchParams.append(`${prefix}exp`, 1);
+        });
+        
+        return url.toString();
+    }
+    
+    // Copy URL to clipboard
+    shareButton.addEventListener('click', function() {
+        const shareableUrl = generateShareableUrl();
+        navigator.clipboard.writeText(shareableUrl)
+            .then(() => {
+                // Show confirmation message
+                shareConfirmation.classList.remove('hidden');
+                setTimeout(() => {
+                    shareConfirmation.classList.add('hidden');
+                }, 3000);
+            })
+            .catch(err => {
+                console.error('Could not copy to clipboard: ', err);
+                alert('Die URL konnte nicht in die Zwischenablage kopiert werden. Bitte versuchen Sie es erneut.');
+            });
+    });
+    
+    // Function to parse URL parameters and populate the form
+    function parseUrlParameters() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.size === 0) return false; // No parameters
+        
+        // Clear existing children first - remove the default one
+        data.children = [];
+        const childForms = document.querySelectorAll('#childrenContainer > .child-form');
+        childForms.forEach(form => form.remove());
+        
+        // Reset data structure to match expected output exactly
+        data.vater = {
+            nettoEinkommen: 0,
+            sonstigeEinkommen: 0,
+            wohnvorteil: 0,
+            schulden: 0
+        };
+        
+        data.mutter = {
+            nettoEinkommen: 0,
+            sonstigeEinkommen: 0,
+            wohnvorteil: 0,
+            schulden: 0
+        };
+        
+        // Parse parent data
+        if (params.has('v_ne')) {
+            const value = parseFloat(params.get('v_ne'));
+            document.getElementById('vaterNettoEinkommen').value = value;
+            data.vater.nettoEinkommen = value;
+        }
+        
+        if (params.has('v_se')) {
+            const value = parseFloat(params.get('v_se'));
+            document.getElementById('vaterSonstigeEinkommen').value = value;
+            data.vater.sonstigeEinkommen = value;
+        }
+        
+        if (params.has('v_wv')) {
+            const value = parseFloat(params.get('v_wv'));
+            document.getElementById('vaterWohnvorteil').value = value;
+            data.vater.wohnvorteil = value;
+        }
+        
+        if (params.has('v_sc')) {
+            const value = parseFloat(params.get('v_sc'));
+            document.getElementById('vaterSchulden').value = value;
+            data.vater.schulden = value;
+        }
+        
+        if (params.has('m_ne')) {
+            const value = parseFloat(params.get('m_ne'));
+            document.getElementById('mutterNettoEinkommen').value = value;
+            data.mutter.nettoEinkommen = value;
+        }
+        
+        if (params.has('m_se')) {
+            const value = parseFloat(params.get('m_se'));
+            document.getElementById('mutterSonstigeEinkommen').value = value;
+            data.mutter.sonstigeEinkommen = value;
+        }
+        
+        if (params.has('m_wv')) {
+            const value = parseFloat(params.get('m_wv'));
+            document.getElementById('mutterWohnvorteil').value = value;
+            data.mutter.wohnvorteil = value;
+        }
+        
+        if (params.has('m_sc')) {
+            const value = parseFloat(params.get('m_sc'));
+            document.getElementById('mutterSchulden').value = value;
+            data.mutter.schulden = value;
+        }
+        
+        // Determine number of children from URL parameters
+        const childRegex = /^c(\d+)_age/;
+        const childIndices = [];
+        
+        for (const param of params.keys()) {
+            const match = param.match(childRegex);
+            if (match && match[1]) {
+                const childIndex = parseInt(match[1]);
+                if (!childIndices.includes(childIndex)) {
+                    childIndices.push(childIndex);
+                }
+            }
+        }
+        
+        // Sort child indices
+        childIndices.sort((a, b) => a - b);
+        
+        // Create and populate children
+        childIndices.forEach(childIndex => {
+            const prefix = `c${childIndex}_`;
+            
+            // Create child data with parameters from URL
+            const childData = {
+                id: childIndex,
+                age: parseInt(params.get(`${prefix}age`)),
+                residenceWith: params.get(`${prefix}res`),
+                childBenefitTo: params.get(`${prefix}ben`),
+                status: params.get(`${prefix}sta`),
+                income: {
+                    expanded: params.has(`${prefix}exp`), // Use expanded parameter if present
+                    amount: params.has(`${prefix}inc`) ? parseFloat(params.get(`${prefix}inc`)) : 0 // Use income amount if present
+                }
+            };
+            
+            // Add to data model
+            data.children.push(childData);
+            
+            // Add to UI
+            addChild(childData);
+        });
+        
+        // If no child parameters were found, add one default child
+        if (childIndices.length === 0) {
+            addChild();
+        }
+        
+        // Update all UI elements
+        updateDeleteButtonVisibility();
+        checkFinancialDetailsSection();
+        updateJsonOutput(); // Make sure this comes last
+        
+        return true; // Parameters were processed
+    }
+    
+    // Initialize based on URL parameters or defaults
+    const parametersProcessed = parseUrlParameters();
+    
+    // If no parameters, initialize with default first child
+    if (!parametersProcessed) {
+        addChild();
+        
+        // Set default values for parents
+        document.getElementById('vaterNettoEinkommen').value = 2000;
+        data.vater.nettoEinkommen = 2000;
+    }
+    
+    // Make the JSON object available for testing
+    window.getAppData = function() {
+        return JSON.parse(JSON.stringify(data));
+    };
+    
+    window.generateShareableUrl = generateShareableUrl;
     
     // Initial JSON output update
     updateJsonOutput();

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Child Income URL Sharing Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .test-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .test-section {
+            margin-bottom: 20px;
+        }
+        .test-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .test-button:hover {
+            background-color: #2980b9;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 14px;
+            border: 1px solid #ddd;
+        }
+        .url-display {
+            font-family: monospace;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            margin: 10px 0;
+            word-break: break-all;
+            font-size: 14px;
+        }
+        .test-result {
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .failure {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            white-space: pre-wrap;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: -1px;
+        }
+        .tab {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+        }
+        .tab.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+        }
+        .tab-content {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 0 5px 5px 5px;
+            background-color: white;
+        }
+        .tab-panel {
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Child Income URL Sharing Test</h1>
+    
+    <div class="test-container">
+        <h2>Test 1: Sharing Child Income via URL</h2>
+        <div class="test-section">
+            <p>This test checks if a child's income is properly included in the shareable URL and if the income is correctly loaded when opening that URL.</p>
+            <button id="runTest1" class="test-button">Run Test 1</button>
+            <div id="test1Result"></div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="generated">Generated URL</div>
+            <div class="tab" data-tab="expected">Expected URL</div>
+            <div class="tab" data-tab="comparison">Comparison</div>
+        </div>
+        <div class="tab-content">
+            <div class="tab-panel active" data-tab="generated">
+                <h3>Generated URL:</h3>
+                <div class="url-display" id="generatedUrl">No URL generated yet</div>
+            </div>
+            <div class="tab-panel" data-tab="expected">
+                <h3>Expected URL Format:</h3>
+                <div class="url-display" id="expectedUrl">index.html?v_ne=2000&m_ne=1500&c1_age=10&c1_res=mutter&c1_ben=mutter&c1_sta=schueler&<strong>c1_inc=250</strong>&<strong>c1_exp=1</strong></div>
+                <p>The URL should include the child's income (c1_inc) and expanded state (c1_exp) parameters.</p>
+            </div>
+            <div class="tab-panel" data-tab="comparison">
+                <h3>Parameter Comparison:</h3>
+                <div id="paramComparison">Run the test to see comparison</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-container">
+        <h2>Test 2: Loading Child Income from URL</h2>
+        <div class="test-section">
+            <p>This test verifies that when a URL with child income parameters is loaded, the values are correctly applied to the form and data model.</p>
+            <button id="runTest2" class="test-button">Run Test 2</button>
+            <div id="test2Result"></div>
+        </div>
+        
+        <h3>Test JSON Output:</h3>
+        <pre id="testJsonOutput">Run the test to see JSON output</pre>
+    </div>
+    
+    <div class="test-container">
+        <h2>Test Frame</h2>
+        <iframe id="testFrame" src="index.html"></iframe>
+    </div>
+    
+    <div class="test-container">
+        <h2>Implementation Details</h2>
+        <p>The issue occurs in the <code>generateShareableUrl</code> function which should include child income parameters but currently doesn't.</p>
+        
+        <div class="code-block" id="codeExample">
+// The generateShareableUrl function should include child income parameters
+function generateShareableUrl() {
+    const url = new URL(window.location.href.split('?')[0]);
+    
+    // Parent parameters
+    if (data.vater.nettoEinkommen > 0) url.searchParams.append('v_ne', data.vater.nettoEinkommen);
+    // ... other parent parameters
+    
+    // Child parameters
+    data.children.forEach(child => {
+        const prefix = `c${child.id}_`;
+        url.searchParams.append(`${prefix}age`, child.age);
+        url.searchParams.append(`${prefix}res`, child.residenceWith);
+        url.searchParams.append(`${prefix}ben`, child.childBenefitTo);
+        url.searchParams.append(`${prefix}sta`, child.status);
+        
+        // Missing: Child income parameters
+        // Should include:
+        // if (child.income.amount > 0) url.searchParams.append(`${prefix}inc`, child.income.amount);
+        // if (child.income.expanded) url.searchParams.append(`${prefix}exp`, 1);
+    });
+    
+    return url.toString();
+}</div>
+    </div>
+    
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // Update active tab
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update active panel
+                document.querySelectorAll('.tab-panel').forEach(panel => {
+                    panel.classList.remove('active');
+                });
+                document.querySelector(`.tab-panel[data-tab="${tabId}"]`).classList.add('active');
+            });
+        });
+        
+        // Test 1: Verify URL generation includes child income
+        document.getElementById('runTest1').addEventListener('click', async function() {
+            const resultElement = document.getElementById('test1Result');
+            resultElement.innerHTML = '<p>Running test...</p>';
+            resultElement.className = '';
+            
+            try {
+                // Reset the iframe to a clean state
+                const frame = document.getElementById('testFrame');
+                frame.src = 'index.html';
+                
+                // Wait for the frame to load
+                await new Promise(resolve => {
+                    frame.onload = resolve;
+                });
+                
+                // Wait for the app to initialize
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Set up test data in the iframe
+                await frame.contentWindow.eval(`
+                    // Set parent data
+                    document.getElementById('vaterNettoEinkommen').value = 2000;
+                    document.getElementById('vaterNettoEinkommen').dispatchEvent(new Event('input'));
+                    document.getElementById('mutterNettoEinkommen').value = 1500;
+                    document.getElementById('mutterNettoEinkommen').dispatchEvent(new Event('input'));
+                    
+                    // Get the first child form
+                    const childForm = document.querySelector('.child-form');
+                    if (childForm) {
+                        // Set age
+                        const ageInput = childForm.querySelector('.child-age');
+                        ageInput.value = 10;
+                        ageInput.dispatchEvent(new Event('input'));
+                        
+                        // Set status
+                        const statusSelect = childForm.querySelector('.child-status');
+                        statusSelect.value = 'schueler';
+                        statusSelect.dispatchEvent(new Event('change'));
+                        
+                        // Open the income section
+                        const incomeHeader = childForm.querySelector('.income-group-header');
+                        if (incomeHeader) {
+                            incomeHeader.click();
+                        }
+                        
+                        // Set income
+                        const incomeInput = childForm.querySelector('.child-income-job');
+                        if (incomeInput) {
+                            incomeInput.value = 250;
+                            incomeInput.dispatchEvent(new Event('input'));
+                        }
+                    }
+                    
+                    // Wait a moment for data to update
+                    setTimeout(() => {
+                        // Verify the data structure
+                        console.log('Test data:', JSON.stringify(data));
+                    }, 500);
+                `);
+                
+                // Wait for data to be updated
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Generate the URL
+                const generatedUrl = await frame.contentWindow.eval('window.generateShareableUrl()');
+                document.getElementById('generatedUrl').textContent = generatedUrl;
+                
+                // Parse the generated URL to check for income parameters
+                const url = new URL(generatedUrl);
+                const params = url.searchParams;
+                
+                // Check if child income parameters are present
+                const hasIncomeParam = params.has('c1_inc');
+                const hasExpandedParam = params.has('c1_exp');
+                
+                // Compare parameters
+                const paramList = [];
+                params.forEach((value, key) => {
+                    paramList.push(`<li>${key} = ${value}</li>`);
+                });
+                
+                document.getElementById('paramComparison').innerHTML = `
+                    <div class="code-block">
+                        <p>URL Parameters:</p>
+                        <ul>${paramList.join('')}</ul>
+                        <p>Child Income Parameter (c1_inc): ${hasIncomeParam ? 'Present ✓' : 'Missing ✗'}</p>
+                        <p>Income Expanded Parameter (c1_exp): ${hasExpandedParam ? 'Present ✓' : 'Missing ✗'}</p>
+                    </div>
+                `;
+                
+                // Display test result
+                if (hasIncomeParam && hasExpandedParam) {
+                    resultElement.innerHTML = '<p>✅ PASS: Child income parameters are correctly included in the URL</p>';
+                    resultElement.className = 'test-result success';
+                } else {
+                    resultElement.innerHTML = `
+                        <p>❌ FAIL: Child income parameters are missing from the URL</p>
+                        <p>Missing parameters: ${!hasIncomeParam ? 'c1_inc' : ''}${(!hasIncomeParam && !hasExpandedParam) ? ', ' : ''}${!hasExpandedParam ? 'c1_exp' : ''}</p>
+                    `;
+                    resultElement.className = 'test-result failure';
+                }
+            } catch (error) {
+                resultElement.innerHTML = `<p>❌ ERROR: ${error.message}</p>`;
+                resultElement.className = 'test-result failure';
+            }
+        });
+        
+        // Test 2: Verify URL loading handles child income
+        document.getElementById('runTest2').addEventListener('click', async function() {
+            const resultElement = document.getElementById('test2Result');
+            resultElement.innerHTML = '<p>Running test...</p>';
+            resultElement.className = '';
+            
+            try {
+                // Create a test URL with child income parameters
+                const baseUrl = window.location.href.replace('child-income-test.html', 'index.html');
+                const testUrl = `${baseUrl}?v_ne=2000&m_ne=1500&c1_age=10&c1_res=mutter&c1_ben=mutter&c1_sta=schueler&c1_inc=250&c1_exp=1`;
+                
+                // Load the URL in the iframe
+                const frame = document.getElementById('testFrame');
+                frame.src = testUrl;
+                
+                // Wait for the frame to load
+                await new Promise(resolve => {
+                    frame.onload = resolve;
+                });
+                
+                // Wait for the app to initialize
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Get the JSON data from the iframe
+                const jsonData = await frame.contentWindow.eval('JSON.stringify(data, null, 2)');
+                document.getElementById('testJsonOutput').textContent = jsonData;
+                
+                // Parse the JSON to check if income values are correct
+                const data = JSON.parse(jsonData);
+                
+                // Check if the child has the correct income values
+                const child = data.children[0];
+                const hasCorrectIncome = child && child.income.amount === 250;
+                const hasCorrectExpanded = child && child.income.expanded === true;
+                
+                // Display test result
+                if (hasCorrectIncome && hasCorrectExpanded) {
+                    resultElement.innerHTML = '<p>✅ PASS: Child income is correctly loaded from URL parameters</p>';
+                    resultElement.className = 'test-result success';
+                } else {
+                    resultElement.innerHTML = `
+                        <p>❌ FAIL: Child income is not correctly loaded from URL parameters</p>
+                        <p>Issues: ${!hasCorrectIncome ? 'Income amount is incorrect' : ''}${(!hasCorrectIncome && !hasCorrectExpanded) ? ', ' : ''}${!hasCorrectExpanded ? 'Expanded state is incorrect' : ''}</p>
+                    `;
+                    resultElement.className = 'test-result failure';
+                }
+                
+                // Also check the UI
+                const incomeInputValue = await frame.contentWindow.eval(`
+                    const childForm = document.querySelector('.child-form');
+                    const incomeInput = childForm.querySelector('.child-income-job');
+                    incomeInput.value;
+                `);
+                
+                const incomeSectionVisible = await frame.contentWindow.eval(`
+                    const childForm = document.querySelector('.child-form');
+                    const incomeSection = childForm.querySelector('.income-group-content');
+                    !incomeSection.classList.contains('hidden');
+                `);
+                
+                if (incomeInputValue !== '250' || !incomeSectionVisible) {
+                    resultElement.innerHTML += `
+                        <p>⚠️ UI Issues:</p>
+                        <ul>
+                            ${incomeInputValue !== '250' ? '<li>Income input value is not 250 (actual: ' + incomeInputValue + ')</li>' : ''}
+                            ${!incomeSectionVisible ? '<li>Income section is not expanded as it should be</li>' : ''}
+                        </ul>
+                    `;
+                }
+            } catch (error) {
+                resultElement.innerHTML = `<p>❌ ERROR: ${error.message}</p>`;
+                resultElement.className = 'test-result failure';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specific URL Parameter Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .test-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .test-url {
+            font-family: monospace;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .test-button:hover {
+            background-color: #0069d9;
+        }
+        .result-container {
+            display: flex;
+            margin-top: 20px;
+            gap: 20px;
+        }
+        .result-box {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+        }
+        .result-expected {
+            background-color: #e8f4ff;
+        }
+        .result-actual {
+            background-color: #fff8e8;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        .iframe-container {
+            margin-top: 30px;
+        }
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .test-result-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            border: 1px solid #c3e6cb;
+        }
+        .test-result-failure {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            border: 1px solid #f5c6cb;
+        }
+        .diff-container {
+            margin-top: 20px;
+        }
+        .diff-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 4px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Specific URL Parameter Test</h1>
+    
+    <div class="test-container">
+        <h2>Test Case: Specific URL</h2>
+        <p>Testing the exact URL from the requirement:</p>
+        <div class="test-url">index.html?v_ne=2000&m_ne=500&c1_age=6&c1_res=mutter&c1_ben=mutter&c1_sta=schueler</div>
+        
+        <button id="runTest" class="test-button">Run Test</button>
+        
+        <div id="testResult"></div>
+        
+        <div class="result-container">
+            <div class="result-box result-expected">
+                <h3>Expected JSON:</h3>
+                <pre id="expectedJson"></pre>
+            </div>
+            <div class="result-box result-actual">
+                <h3>Actual JSON:</h3>
+                <pre id="actualJson">Run the test to see the actual JSON</pre>
+            </div>
+        </div>
+        
+        <div id="diffContainer" class="diff-container"></div>
+    </div>
+    
+    <div class="iframe-container">
+        <h2>Test Page:</h2>
+        <iframe id="testFrame"></iframe>
+    </div>
+    
+    <script>
+        // The expected JSON result
+        const expectedJson = {
+            "children": [
+                {
+                    "id": 1,
+                    "age": 6,
+                    "residenceWith": "mutter",
+                    "childBenefitTo": "mutter",
+                    "status": "schueler",
+                    "income": {
+                        "expanded": false,
+                        "amount": 0
+                    }
+                }
+            ],
+            "vater": {
+                "nettoEinkommen": 2000,
+                "sonstigeEinkommen": 0,
+                "wohnvorteil": 0,
+                "schulden": 0
+            },
+            "mutter": {
+                "nettoEinkommen": 500,
+                "sonstigeEinkommen": 0,
+                "wohnvorteil": 0,
+                "schulden": 0
+            }
+        };
+        
+        // Display the expected JSON
+        document.getElementById('expectedJson').textContent = JSON.stringify(expectedJson, null, 2);
+        
+        // Compare two objects for differences
+        function findDifferences(expected, actual, path = '') {
+            const differences = [];
+            
+            // Helper function to format a value for display
+            function formatValue(value) {
+                if (value === undefined) return 'undefined';
+                if (value === null) return 'null';
+                if (typeof value === 'object') return JSON.stringify(value);
+                return value.toString();
+            }
+            
+            // Check properties in expected
+            for (const key in expected) {
+                const currentPath = path ? `${path}.${key}` : key;
+                
+                // Property missing in actual
+                if (!(key in actual)) {
+                    differences.push(`Missing property: ${currentPath}`);
+                    continue;
+                }
+                
+                // Type mismatch
+                if (typeof expected[key] !== typeof actual[key]) {
+                    differences.push(`Type mismatch for ${currentPath}: expected ${typeof expected[key]}, got ${typeof actual[key]}`);
+                    continue;
+                }
+                
+                // Recurse for objects
+                if (typeof expected[key] === 'object' && expected[key] !== null) {
+                    const nestedDiffs = findDifferences(expected[key], actual[key], currentPath);
+                    differences.push(...nestedDiffs);
+                    continue;
+                }
+                
+                // Value mismatch
+                if (expected[key] !== actual[key]) {
+                    differences.push(`Value mismatch for ${currentPath}: expected ${formatValue(expected[key])}, got ${formatValue(actual[key])}`);
+                }
+            }
+            
+            // Check for extra properties in actual
+            for (const key in actual) {
+                const currentPath = path ? `${path}.${key}` : key;
+                if (!(key in expected)) {
+                    differences.push(`Extra property: ${currentPath}`);
+                }
+            }
+            
+            return differences;
+        }
+        
+        // Run the test
+        document.getElementById('runTest').addEventListener('click', async function() {
+            const testUrl = 'index.html?v_ne=2000&m_ne=500&c1_age=6&c1_res=mutter&c1_ben=mutter&c1_sta=schueler';
+            const iframe = document.getElementById('testFrame');
+            
+            // Reset test results
+            document.getElementById('testResult').innerHTML = '';
+            document.getElementById('actualJson').textContent = 'Loading...';
+            document.getElementById('diffContainer').innerHTML = '';
+            
+            // Load the iframe with our test URL
+            iframe.src = testUrl;
+            
+            // Wait for iframe to load
+            await new Promise(resolve => {
+                iframe.onload = resolve;
+            });
+            
+            // Give the app time to process parameters and update
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            try {
+                // Get the JSON output from the iframe
+                const jsonOutput = await iframe.contentDocument.querySelector('#jsonOutput');
+                
+                if (!jsonOutput) {
+                    throw new Error('Could not find #jsonOutput element in the page');
+                }
+                
+                const actualJson = JSON.parse(jsonOutput.textContent);
+                
+                // Display the actual JSON
+                document.getElementById('actualJson').textContent = JSON.stringify(actualJson, null, 2);
+                
+                // Compare the JSONs
+                const differences = findDifferences(expectedJson, actualJson);
+                
+                const resultElement = document.getElementById('testResult');
+                const diffContainer = document.getElementById('diffContainer');
+                
+                if (differences.length === 0) {
+                    // Test passed
+                    resultElement.innerHTML = `
+                        <div class="test-result-success">
+                            <strong>✓ TEST PASSED!</strong> The actual JSON exactly matches the expected JSON.
+                        </div>
+                    `;
+                } else {
+                    // Test failed
+                    resultElement.innerHTML = `
+                        <div class="test-result-failure">
+                            <strong>✗ TEST FAILED!</strong> Found ${differences.length} differences between actual and expected JSON.
+                        </div>
+                    `;
+                    
+                    // Display differences
+                    diffContainer.innerHTML = '<h3>Differences:</h3>';
+                    differences.forEach(diff => {
+                        const diffItem = document.createElement('div');
+                        diffItem.className = 'diff-item';
+                        diffItem.textContent = diff;
+                        diffContainer.appendChild(diffItem);
+                    });
+                }
+            } catch (error) {
+                document.getElementById('testResult').innerHTML = `
+                    <div class="test-result-failure">
+                        <strong>✗ ERROR:</strong> ${error.message}
+                    </div>
+                `;
+                document.getElementById('actualJson').textContent = 'Error getting JSON';
+            }
+        });
+        
+        // Auto-run the test when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('runTest').click();
+        });
+    </script>
+</body>
+</html>
