@@ -324,29 +324,55 @@ document.addEventListener('DOMContentLoaded', function() {
         return obj;
     }
     
-    // Function to update income group text
+    // Function to update income group text based on Düsseldorfer Tabelle 2025
     function updateIncomeGroup() {
         const vaterEinkommen = parseFloat(document.getElementById('vaterNettoEinkommen').value) || 0;
-        const incomeGroupElement = document.getElementById('incomeGroup');
+        const mutterEinkommen = parseFloat(document.getElementById('mutterNettoEinkommen').value) || 0;
+        const vaterGroupElement = document.getElementById('vaterEinkommensgruppe');
+        const mutterGroupElement = document.getElementById('mutterEinkommensgruppe');
         
-        let groupText = '';
-        if (vaterEinkommen <= 1900) {
-            groupText = 'bis 1900 €';
-        } else if (vaterEinkommen <= 2300) {
-            groupText = 'bis 2300 €';
-        } else if (vaterEinkommen <= 2700) {
-            groupText = 'bis 2700 €';
-        } else if (vaterEinkommen <= 3100) {
-            groupText = 'bis 3100 €';
-        } else if (vaterEinkommen <= 3500) {
-            groupText = 'bis 3500 €';
-        } else if (vaterEinkommen <= 3900) {
-            groupText = 'bis 3900 €';
+        // Update father's income group
+        vaterGroupElement.innerHTML = `Einkommensgruppe:<br/>${getIncomeGroupText(vaterEinkommen)}`;
+        
+        // Update mother's income group
+        mutterGroupElement.innerHTML = `Einkommensgruppe:<br/>${getIncomeGroupText(mutterEinkommen)}`;
+    }
+    
+    // Helper function to determine income group text based on 2025 Düsseldorfer Tabelle
+    function getIncomeGroupText(einkommen) {
+        if (einkommen <= 2100) {
+            return 'bis 2100 €';
+        } else if (einkommen <= 2500) {
+            return '2101 € - 2500 €';
+        } else if (einkommen <= 2900) {
+            return '2501 € - 2900 €';
+        } else if (einkommen <= 3300) {
+            return '2901 € - 3300 €';
+        } else if (einkommen <= 3700) {
+            return '3301 € - 3700 €';
+        } else if (einkommen <= 4100) {
+            return '3701 € - 4100 €';
+        } else if (einkommen <= 4500) {
+            return '4101 € - 4500 €';
+        } else if (einkommen <= 4900) {
+            return '4501 € - 4900 €';
+        } else if (einkommen <= 5300) {
+            return '4901 € - 5300 €';
+        } else if (einkommen <= 5700) {
+            return '5301 € - 5700 €';
+        } else if (einkommen <= 6400) {
+            return '5701 € - 6400 €';
+        } else if (einkommen <= 7200) {
+            return '6401 € - 7200 €';
+        } else if (einkommen <= 8200) {
+            return '7201 € - 8200 €';
+        } else if (einkommen <= 9700) {
+            return '8201 € - 9700 €';
+        } else if (einkommen <= 11200) {
+            return '9701 € - 11200 €';
         } else {
-            groupText = 'über 3900 €';
+            return 'über 11200 €';
         }
-        
-        incomeGroupElement.textContent = `Einkommensgruppe: ${groupText}`;
     }
     
     // Function to format JSON for display
