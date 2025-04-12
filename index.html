@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unterhaltsrechner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .mobile-menu {
+            transition: all 0.3s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        .mobile-menu.show {
+            max-height: 400px; /* Adjust this value based on your content */
+        }
+        .hamburger-line {
+            transition: all 0.3s ease-in-out;
+        }
+        .mobile-menu-button.active .hamburger-line:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+        .mobile-menu-button.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+        .mobile-menu-button.active .hamburger-line:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div>
+                        <!-- Website Logo -->
+                        <a href="#" class="flex items-center py-4">
+                            <span class="font-semibold text-gray-700 text-lg">Unterhaltsrechner</span>
+                        </a>
+                    </div>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button class="outline-none mobile-menu-button p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
+                        <div class="flex flex-col justify-center w-6 h-6 space-y-2">
+                            <span class="hamburger-line w-full h-0.5 bg-gray-600 rounded-lg"></span>
+                            <span class="hamburger-line w-full h-0.5 bg-gray-600 rounded-lg"></span>
+                            <span class="hamburger-line w-full h-0.5 bg-gray-600 rounded-lg"></span>
+                        </div>
+                    </button>
+                </div>
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-3">
+                    <a href="#" class="py-4 px-2 text-gray-500 font-medium hover:text-gray-900 transition duration-300">Start</a>
+                    <a href="#" class="py-4 px-2 text-gray-500 font-medium hover:text-gray-900 transition duration-300">Rechner</a>
+                    <a href="#" class="py-4 px-2 text-gray-500 font-medium hover:text-gray-900 transition duration-300">Informationen</a>
+                    <a href="#" class="py-4 px-2 text-gray-500 font-medium hover:text-gray-900 transition duration-300">Kontakt</a>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="mobile-menu md:hidden bg-white border-t border-gray-100">
+            <ul class="px-2 pt-2 pb-3 space-y-1">
+                <li><a href="#" class="block px-4 py-3 text-gray-600 font-medium rounded-lg hover:bg-gray-50 hover:text-gray-900 transition duration-300">Start</a></li>
+                <li><a href="#" class="block px-4 py-3 text-gray-600 font-medium rounded-lg hover:bg-gray-50 hover:text-gray-900 transition duration-300">Rechner</a></li>
+                <li><a href="#" class="block px-4 py-3 text-gray-600 font-medium rounded-lg hover:bg-gray-50 hover:text-gray-900 transition duration-300">Informationen</a></li>
+                <li><a href="#" class="block px-4 py-3 text-gray-600 font-medium rounded-lg hover:bg-gray-50 hover:text-gray-900 transition duration-300">Kontakt</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Willkommen beim Unterhaltsrechner</h1>
+        <p class="text-gray-600 mb-8">Berechnen Sie schnell und einfach Ihren Unterhaltsanspruch.</p>
+        
+        <!-- Two Column Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Left Column - Input Form -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Eingabe</h2>
+                <div class="space-y-4">
+                    <!-- Placeholder for form - will be added later -->
+                    <p class="text-gray-600">Formular wird hier eingefügt...</p>
+                </div>
+            </div>
+
+            <!-- Right Column - Results -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Ergebnis</h2>
+                <div class="space-y-4">
+                    <!-- Placeholder for results - will be added later -->
+                    <p class="text-gray-600">Berechnungsergebnisse werden hier angezeigt...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Mobile menu toggle
+        const btn = document.querySelector(".mobile-menu-button");
+        const menu = document.querySelector(".mobile-menu");
+
+        btn.addEventListener("click", () => {
+            menu.classList.toggle("show");
+            btn.classList.toggle("active");
+        });
+    </script>
+</body>
+</html> 
