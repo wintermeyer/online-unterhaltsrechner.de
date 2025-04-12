@@ -1,18 +1,22 @@
 {
   "name": "unterhalt11",
   "version": "1.0.0",
-  "description": "Unterhaltsrechner based on Düsseldorfer Tabelle",
-  "main": "index.html",
+  "description": "Unterhaltsrechner",
+  "main": "index.js",
   "directories": {
     "doc": "doc"
   },
   "scripts": {
-    "test": "node test/berechnung.test.js"
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "node test/berechnung.test.js",
+    "test:e2e": "playwright test",
+    "start": "http-server -p 3000"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.42.1"
+    "@playwright/test": "^1.42.1",
+    "http-server": "^14.1.1"
   }
 }

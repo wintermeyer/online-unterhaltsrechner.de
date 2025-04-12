@@ -209,6 +209,30 @@
                 </div>
             </div>
         </div>
+
+        <!-- Share Card -->
+        <div class="mt-6 bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">Link teilen</h2>
+            <div class="space-y-4">
+                <div class="flex items-center space-x-4">
+                    <input
+                        type="text"
+                        id="share-url"
+                        class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
+                        readonly
+                    >
+                    <button
+                        id="copy-button"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                    >
+                        Kopieren
+                    </button>
+                </div>
+                <p class="text-sm text-gray-500">
+                    Teile diesen Link, um die aktuellen Werte mit anderen zu teilen.
+                </p>
+            </div>
+        </div>
     </main>
 
     <script src="js/berechnung.js"></script>
@@ -216,6 +240,8 @@
         // Mobile menu toggle
         const btn = document.querySelector(".mobile-menu-button");
         const menu = document.querySelector(".mobile-menu");
+        const shareUrlInput = document.getElementById('share-url');
+        const copyButton = document.getElementById('copy-button');
 
         btn.addEventListener("click", () => {
             menu.classList.toggle("show");
@@ -241,6 +267,66 @@
             }).format(value || 0);
         }
 
+        function updateShareUrl() {
+            try {
+                const vaterValue = vaterNettoInput.value;
+                const mutterValue = mutterNettoInput.value;
+                
+                const url = new URL(window.location.href);
+                // Remove any existing parameters
+                url.search = '';
+                // Only add parameters if they have values
+                if (vaterValue) url.searchParams.set('vater', vaterValue);
+                if (mutterValue) url.searchParams.set('mutter', mutterValue);
+                
+                shareUrlInput.value = url.toString();
+            } catch (err) {
+                console.error('Failed to update share URL: ', err);
+                shareUrlInput.value = window.location.href;
+            }
+        }
+
+        function loadFromUrl() {
+            try {
+                const url = new URL(window.location.href);
+                const vaterValue = url.searchParams.get('vater');
+                const mutterValue = url.searchParams.get('mutter');
+
+                // Only set values if they are valid numbers
+                if (vaterValue !== null && !isNaN(vaterValue)) {
+                    vaterNettoInput.value = vaterValue;
+                }
+                if (mutterValue !== null && !isNaN(mutterValue)) {
+                    mutterNettoInput.value = mutterValue;
+                }
+
+                if ((vaterValue !== null && !isNaN(vaterValue)) || 
+                    (mutterValue !== null && !isNaN(mutterValue))) {
+                    updateResults();
+                }
+            } catch (err) {
+                console.error('Failed to load from URL: ', err);
+            }
+        }
+
+        copyButton.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(shareUrlInput.value);
+                const originalText = copyButton.textContent;
+                copyButton.textContent = 'Kopiert!';
+                copyButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                copyButton.classList.add('bg-green-600', 'hover:bg-green-700');
+                
+                setTimeout(() => {
+                    copyButton.textContent = originalText;
+                    copyButton.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    copyButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+        });
+
         function updateResults() {
             const vaterValue = parseFloat(vaterNettoInput.value) || 0;
             const mutterValue = parseFloat(mutterNettoInput.value) || 0;
@@ -264,13 +350,19 @@
 
             vaterNettoRange.textContent = getIncomeBracket(vaterValue);
             mutterNettoRange.textContent = getIncomeBracket(mutterValue);
+
+            // Update share URL whenever results are updated
+            updateShareUrl();
         }
 
         // Add event listeners for real-time updates
         vaterNettoInput.addEventListener('input', updateResults);
         mutterNettoInput.addEventListener('input', updateResults);
 
-        // Trigger initial calculation
+        // Load values from URL parameters if they exist
+        loadFromUrl();
+
+        // Initial update
         updateResults();
     </script>
 </body>
