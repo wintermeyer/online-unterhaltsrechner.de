@@ -131,6 +131,44 @@
                                     <span id="vater-netto-range"></span>
                                 </p>
                             </div>
+                            <div>
+                                <label for="vater-sonstige" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Sonstige Einkommen
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="number"
+                                        id="vater-sonstige"
+                                        name="vater-sonstige"
+                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="0.00"
+                                        step="0.01"
+                                        min="0"
+                                    >
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500">€</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="vater-wohnvorteil" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Wohnvorteil
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="number"
+                                        id="vater-wohnvorteil"
+                                        name="vater-wohnvorteil"
+                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="0.00"
+                                        step="0.01"
+                                        min="0"
+                                    >
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500">€</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Mutter Column -->
@@ -159,6 +197,44 @@
                                     <span id="mutter-netto-range"></span>
                                 </p>
                             </div>
+                            <div>
+                                <label for="mutter-sonstige" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Sonstige Einkommen
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="number"
+                                        id="mutter-sonstige"
+                                        name="mutter-sonstige"
+                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="0.00"
+                                        step="0.01"
+                                        min="0"
+                                    >
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500">€</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="mutter-wohnvorteil" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Wohnvorteil
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="number"
+                                        id="mutter-wohnvorteil"
+                                        name="mutter-wohnvorteil"
+                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="0.00"
+                                        step="0.01"
+                                        min="0"
+                                    >
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500">€</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -175,11 +251,19 @@
                             <div class="space-y-2">
                                 <div class="flex justify-between items-baseline">
                                     <p class="text-sm text-gray-600">Netto-Einkommen:</p>
-                                    <p id="vater-netto-result" class="text-lg font-semibold text-gray-800">0,00 €</p>
+                                    <p id="vater-netto-result" class="text-lg text-gray-800">0,00 €</p>
                                 </div>
                                 <div class="flex justify-between items-baseline">
                                     <p class="text-sm text-gray-600">Berufsbedingte Aufwände:</p>
-                                    <p id="vater-aufwände-result" class="text-lg font-semibold text-red-600">-0,00 €</p>
+                                    <p id="vater-aufwände-result" class="text-lg text-red-600">-0,00 €</p>
+                                </div>
+                                <div class="flex justify-between items-baseline">
+                                    <p class="text-sm text-gray-600">Sonstige Einkommen:</p>
+                                    <p id="vater-sonstige-result" class="text-lg text-gray-800">0,00 €</p>
+                                </div>
+                                <div class="flex justify-between items-baseline">
+                                    <p class="text-sm text-gray-600">Wohnvorteil:</p>
+                                    <p id="vater-wohnvorteil-result" class="text-lg text-gray-800">0,00 €</p>
                                 </div>
                                 <div class="border-t border-gray-200 pt-2 flex justify-between items-baseline">
                                     <p class="text-sm text-gray-600">Bereinigtes Einkommen:</p>
@@ -193,11 +277,19 @@
                             <div class="space-y-2">
                                 <div class="flex justify-between items-baseline">
                                     <p class="text-sm text-gray-600">Netto-Einkommen:</p>
-                                    <p id="mutter-netto-result" class="text-lg font-semibold text-gray-800">0,00 €</p>
+                                    <p id="mutter-netto-result" class="text-lg text-gray-800">0,00 €</p>
                                 </div>
                                 <div class="flex justify-between items-baseline">
                                     <p class="text-sm text-gray-600">Berufsbedingte Aufwände:</p>
-                                    <p id="mutter-aufwände-result" class="text-lg font-semibold text-red-600">-0,00 €</p>
+                                    <p id="mutter-aufwände-result" class="text-lg text-red-600">-0,00 €</p>
+                                </div>
+                                <div class="flex justify-between items-baseline">
+                                    <p class="text-sm text-gray-600">Sonstige Einkommen:</p>
+                                    <p id="mutter-sonstige-result" class="text-lg text-gray-800">0,00 €</p>
+                                </div>
+                                <div class="flex justify-between items-baseline">
+                                    <p class="text-sm text-gray-600">Wohnvorteil:</p>
+                                    <p id="mutter-wohnvorteil-result" class="text-lg text-gray-800">0,00 €</p>
                                 </div>
                                 <div class="border-t border-gray-200 pt-2 flex justify-between items-baseline">
                                     <p class="text-sm text-gray-600">Bereinigtes Einkommen:</p>
@@ -251,8 +343,16 @@
         // Form handling
         const vaterNettoInput = document.getElementById('vater-netto');
         const mutterNettoInput = document.getElementById('mutter-netto');
+        const vaterSonstigeInput = document.getElementById('vater-sonstige');
+        const mutterSonstigeInput = document.getElementById('mutter-sonstige');
+        const vaterWohnvorteilInput = document.getElementById('vater-wohnvorteil');
+        const mutterWohnvorteilInput = document.getElementById('mutter-wohnvorteil');
         const vaterNettoResult = document.getElementById('vater-netto-result');
         const mutterNettoResult = document.getElementById('mutter-netto-result');
+        const vaterSonstigeResult = document.getElementById('vater-sonstige-result');
+        const mutterSonstigeResult = document.getElementById('mutter-sonstige-result');
+        const vaterWohnvorteilResult = document.getElementById('vater-wohnvorteil-result');
+        const mutterWohnvorteilResult = document.getElementById('mutter-wohnvorteil-result');
         const vaterAufwändeResult = document.getElementById('vater-aufwände-result');
         const mutterAufwändeResult = document.getElementById('mutter-aufwände-result');
         const vaterBereinigtResult = document.getElementById('vater-bereinigt-result');
@@ -271,6 +371,10 @@
             try {
                 const vaterValue = vaterNettoInput.value;
                 const mutterValue = mutterNettoInput.value;
+                const vaterSonstigeValue = vaterSonstigeInput.value;
+                const mutterSonstigeValue = mutterSonstigeInput.value;
+                const vaterWohnvorteilValue = vaterWohnvorteilInput.value;
+                const mutterWohnvorteilValue = mutterWohnvorteilInput.value;
                 
                 const url = new URL(window.location.href);
                 // Remove any existing parameters
@@ -278,6 +382,10 @@
                 // Only add parameters if they have values
                 if (vaterValue) url.searchParams.set('vater', vaterValue);
                 if (mutterValue) url.searchParams.set('mutter', mutterValue);
+                if (vaterSonstigeValue) url.searchParams.set('vater-sonstige', vaterSonstigeValue);
+                if (mutterSonstigeValue) url.searchParams.set('mutter-sonstige', mutterSonstigeValue);
+                if (vaterWohnvorteilValue) url.searchParams.set('vater-wohnvorteil', vaterWohnvorteilValue);
+                if (mutterWohnvorteilValue) url.searchParams.set('mutter-wohnvorteil', mutterWohnvorteilValue);
                 
                 shareUrlInput.value = url.toString();
             } catch (err) {
@@ -291,6 +399,10 @@
                 const url = new URL(window.location.href);
                 const vaterValue = url.searchParams.get('vater');
                 const mutterValue = url.searchParams.get('mutter');
+                const vaterSonstigeValue = url.searchParams.get('vater-sonstige');
+                const mutterSonstigeValue = url.searchParams.get('mutter-sonstige');
+                const vaterWohnvorteilValue = url.searchParams.get('vater-wohnvorteil');
+                const mutterWohnvorteilValue = url.searchParams.get('mutter-wohnvorteil');
 
                 // Only set values if they are valid numbers
                 if (vaterValue !== null && !isNaN(vaterValue)) {
@@ -299,9 +411,25 @@
                 if (mutterValue !== null && !isNaN(mutterValue)) {
                     mutterNettoInput.value = mutterValue;
                 }
+                if (vaterSonstigeValue !== null && !isNaN(vaterSonstigeValue)) {
+                    vaterSonstigeInput.value = vaterSonstigeValue;
+                }
+                if (mutterSonstigeValue !== null && !isNaN(mutterSonstigeValue)) {
+                    mutterSonstigeInput.value = mutterSonstigeValue;
+                }
+                if (vaterWohnvorteilValue !== null && !isNaN(vaterWohnvorteilValue)) {
+                    vaterWohnvorteilInput.value = vaterWohnvorteilValue;
+                }
+                if (mutterWohnvorteilValue !== null && !isNaN(mutterWohnvorteilValue)) {
+                    mutterWohnvorteilInput.value = mutterWohnvorteilValue;
+                }
 
                 if ((vaterValue !== null && !isNaN(vaterValue)) || 
-                    (mutterValue !== null && !isNaN(mutterValue))) {
+                    (mutterValue !== null && !isNaN(mutterValue)) ||
+                    (vaterSonstigeValue !== null && !isNaN(vaterSonstigeValue)) ||
+                    (mutterSonstigeValue !== null && !isNaN(mutterSonstigeValue)) ||
+                    (vaterWohnvorteilValue !== null && !isNaN(vaterWohnvorteilValue)) ||
+                    (mutterWohnvorteilValue !== null && !isNaN(mutterWohnvorteilValue))) {
                     updateResults();
                 }
             } catch (err) {
@@ -330,22 +458,86 @@
         function updateResults() {
             const vaterValue = parseFloat(vaterNettoInput.value) || 0;
             const mutterValue = parseFloat(mutterNettoInput.value) || 0;
+            const vaterSonstigeValue = parseFloat(vaterSonstigeInput.value) || 0;
+            const mutterSonstigeValue = parseFloat(mutterSonstigeInput.value) || 0;
+            const vaterWohnvorteilValue = parseFloat(vaterWohnvorteilInput.value) || 0;
+            const mutterWohnvorteilValue = parseFloat(mutterWohnvorteilInput.value) || 0;
 
             const vaterAufwände = calculateBerufsbedingteAufwände(vaterValue);
             const mutterAufwände = calculateBerufsbedingteAufwände(mutterValue);
 
             // Calculate bereinigtes Einkommen (will always be 0 or positive since Aufwände can't exceed income)
-            const vaterBereinigt = vaterValue - vaterAufwände;
-            const mutterBereinigt = mutterValue - mutterAufwände;
+            const vaterBereinigt = vaterValue + vaterSonstigeValue + vaterWohnvorteilValue - vaterAufwände;
+            const mutterBereinigt = mutterValue + mutterSonstigeValue + mutterWohnvorteilValue - mutterAufwände;
 
-            vaterNettoResult.textContent = formatCurrency(vaterValue);
-            mutterNettoResult.textContent = formatCurrency(mutterValue);
+            // Update Vater results
+            const vaterNettoElement = document.querySelector('#vater-netto-result').parentElement;
+            const vaterAufwändeElement = document.querySelector('#vater-aufwände-result').parentElement;
+            const vaterSonstigeElement = document.querySelector('#vater-sonstige-result').parentElement;
+            const vaterWohnvorteilElement = document.querySelector('#vater-wohnvorteil-result').parentElement;
+            const vaterBereinigtElement = document.querySelector('#vater-bereinigt-result').parentElement;
 
-            // Add minus sign for Aufwände
-            vaterAufwändeResult.textContent = `-${formatCurrency(vaterAufwände)}`;
-            mutterAufwändeResult.textContent = `-${formatCurrency(mutterAufwände)}`;
+            // Hide all elements first
+            vaterNettoElement.style.display = 'none';
+            vaterAufwändeElement.style.display = 'none';
+            vaterSonstigeElement.style.display = 'none';
+            vaterWohnvorteilElement.style.display = 'none';
+            vaterBereinigtElement.style.display = 'none';
 
+            // Show only non-zero values
+            if (vaterValue !== 0) {
+                vaterNettoElement.style.display = 'flex';
+                vaterNettoResult.textContent = formatCurrency(vaterValue);
+            }
+            if (vaterAufwände !== 0) {
+                vaterAufwändeElement.style.display = 'flex';
+                vaterAufwändeResult.textContent = `-${formatCurrency(vaterAufwände)}`;
+            }
+            if (vaterSonstigeValue !== 0) {
+                vaterSonstigeElement.style.display = 'flex';
+                vaterSonstigeResult.textContent = formatCurrency(vaterSonstigeValue);
+            }
+            if (vaterWohnvorteilValue !== 0) {
+                vaterWohnvorteilElement.style.display = 'flex';
+                vaterWohnvorteilResult.textContent = formatCurrency(vaterWohnvorteilValue);
+            }
+            // Always show bereinigtes Einkommen
+            vaterBereinigtElement.style.display = 'flex';
             vaterBereinigtResult.textContent = formatCurrency(vaterBereinigt);
+
+            // Update Mutter results
+            const mutterNettoElement = document.querySelector('#mutter-netto-result').parentElement;
+            const mutterAufwändeElement = document.querySelector('#mutter-aufwände-result').parentElement;
+            const mutterSonstigeElement = document.querySelector('#mutter-sonstige-result').parentElement;
+            const mutterWohnvorteilElement = document.querySelector('#mutter-wohnvorteil-result').parentElement;
+            const mutterBereinigtElement = document.querySelector('#mutter-bereinigt-result').parentElement;
+
+            // Hide all elements first
+            mutterNettoElement.style.display = 'none';
+            mutterAufwändeElement.style.display = 'none';
+            mutterSonstigeElement.style.display = 'none';
+            mutterWohnvorteilElement.style.display = 'none';
+            mutterBereinigtElement.style.display = 'none';
+
+            // Show only non-zero values
+            if (mutterValue !== 0) {
+                mutterNettoElement.style.display = 'flex';
+                mutterNettoResult.textContent = formatCurrency(mutterValue);
+            }
+            if (mutterAufwände !== 0) {
+                mutterAufwändeElement.style.display = 'flex';
+                mutterAufwändeResult.textContent = `-${formatCurrency(mutterAufwände)}`;
+            }
+            if (mutterSonstigeValue !== 0) {
+                mutterSonstigeElement.style.display = 'flex';
+                mutterSonstigeResult.textContent = formatCurrency(mutterSonstigeValue);
+            }
+            if (mutterWohnvorteilValue !== 0) {
+                mutterWohnvorteilElement.style.display = 'flex';
+                mutterWohnvorteilResult.textContent = formatCurrency(mutterWohnvorteilValue);
+            }
+            // Always show bereinigtes Einkommen
+            mutterBereinigtElement.style.display = 'flex';
             mutterBereinigtResult.textContent = formatCurrency(mutterBereinigt);
 
             vaterNettoRange.textContent = getIncomeBracket(vaterValue);
@@ -358,6 +550,10 @@
         // Add event listeners for real-time updates
         vaterNettoInput.addEventListener('input', updateResults);
         mutterNettoInput.addEventListener('input', updateResults);
+        vaterSonstigeInput.addEventListener('input', updateResults);
+        mutterSonstigeInput.addEventListener('input', updateResults);
+        vaterWohnvorteilInput.addEventListener('input', updateResults);
+        mutterWohnvorteilInput.addEventListener('input', updateResults);
 
         // Load values from URL parameters if they exist
         loadFromUrl();
