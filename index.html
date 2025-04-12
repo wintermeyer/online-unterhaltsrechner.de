@@ -487,12 +487,14 @@
                     }
                 }
 
-                // If we have additional values, expand the section
+                // If we have additional values, expand the section and hide toggle button
                 if (hasAdditionalValues) {
                     const additionalFields = document.getElementById('additional-fields');
+                    const toggleButton = document.getElementById('toggle-additional-fields');
                     const toggleIcon = document.getElementById('toggle-icon');
                     if (additionalFields) {
                         additionalFields.classList.remove('hidden');
+                        toggleButton.classList.add('hidden');
                         if (toggleIcon) {
                             toggleIcon.style.transform = 'rotate(180deg)';
                         }
@@ -671,11 +673,16 @@
                                    mutterSchuldenValue !== 0;
 
             const additionalFields = document.getElementById('additional-fields');
+            const toggleButton = document.getElementById('toggle-additional-fields');
             const toggleIcon = document.getElementById('toggle-icon');
 
-            if (hasNonZeroValues) {
+            // Only auto-expand and hide toggle button if there are non-zero values
+            if (hasNonZeroValues && !additionalFields.classList.contains('hidden')) {
                 additionalFields.classList.remove('hidden');
+                toggleButton.classList.add('hidden');
                 toggleIcon.style.transform = 'rotate(180deg)';
+            } else if (!hasNonZeroValues) {
+                toggleButton.classList.remove('hidden');
             }
 
             // Update URL whenever values change
@@ -685,9 +692,11 @@
         function toggleAdditionalFields() {
             const additionalFields = document.getElementById('additional-fields');
             const toggleIcon = document.getElementById('toggle-icon');
+            const toggleButton = document.getElementById('toggle-additional-fields');
             
+            const isHidden = additionalFields.classList.contains('hidden');
             additionalFields.classList.toggle('hidden');
-            toggleIcon.style.transform = additionalFields.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+            toggleIcon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
         // Add event listeners
@@ -754,12 +763,14 @@
                 }
             }
 
-            // Show additional fields if needed
+            // Show additional fields and hide toggle button if needed
             if (hasAdditionalValues) {
                 const additionalFields = document.getElementById('additional-fields');
+                const toggleButton = document.getElementById('toggle-additional-fields');
                 const toggleIcon = document.getElementById('toggle-icon');
                 if (additionalFields) {
                     additionalFields.classList.remove('hidden');
+                    toggleButton.classList.add('hidden');
                     if (toggleIcon) {
                         toggleIcon.style.transform = 'rotate(180deg)';
                     }
