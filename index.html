@@ -207,15 +207,15 @@
                         <div>
                             <h3 class="text-lg font-medium text-gray-700 mb-4">Vater</h3>
                             <div class="space-y-2">
-                                <div>
+                                <div class="flex justify-between items-baseline">
                                     <p class="text-sm text-gray-600">Netto-Einkommen:</p>
                                     <p id="vater-netto-result" class="text-lg font-semibold text-gray-800">0,00 €</p>
                                 </div>
-                                <div>
+                                <div class="flex justify-between items-baseline">
                                     <p class="text-sm text-gray-600">Berufsbedingte Aufwände:</p>
-                                    <p id="vater-aufwände-result" class="text-lg font-semibold text-gray-800">0,00 €</p>
+                                    <p id="vater-aufwände-result" class="text-lg font-semibold text-red-600">-0,00 €</p>
                                 </div>
-                                <div class="border-t border-gray-200 pt-2">
+                                <div class="border-t border-gray-200 pt-2 flex justify-between items-baseline">
                                     <p class="text-sm text-gray-600">Bereinigtes Einkommen:</p>
                                     <p id="vater-bereinigt-result" class="text-lg font-semibold text-gray-800">0,00 €</p>
                                 </div>
@@ -225,15 +225,15 @@
                         <div>
                             <h3 class="text-lg font-medium text-gray-700 mb-4">Mutter</h3>
                             <div class="space-y-2">
-                                <div>
+                                <div class="flex justify-between items-baseline">
                                     <p class="text-sm text-gray-600">Netto-Einkommen:</p>
                                     <p id="mutter-netto-result" class="text-lg font-semibold text-gray-800">0,00 €</p>
                                 </div>
-                                <div>
+                                <div class="flex justify-between items-baseline">
                                     <p class="text-sm text-gray-600">Berufsbedingte Aufwände:</p>
-                                    <p id="mutter-aufwände-result" class="text-lg font-semibold text-gray-800">0,00 €</p>
+                                    <p id="mutter-aufwände-result" class="text-lg font-semibold text-red-600">-0,00 €</p>
                                 </div>
-                                <div class="border-t border-gray-200 pt-2">
+                                <div class="border-t border-gray-200 pt-2 flex justify-between items-baseline">
                                     <p class="text-sm text-gray-600">Bereinigtes Einkommen:</p>
                                     <p id="mutter-bereinigt-result" class="text-lg font-semibold text-gray-800">0,00 €</p>
                                 </div>
@@ -291,8 +291,9 @@
             vaterNettoResult.textContent = formatCurrency(vaterValue);
             mutterNettoResult.textContent = formatCurrency(mutterValue);
 
-            vaterAufwändeResult.textContent = formatCurrency(vaterAufwände);
-            mutterAufwändeResult.textContent = formatCurrency(mutterAufwände);
+            // Add minus sign for Aufwände
+            vaterAufwändeResult.textContent = `-${formatCurrency(vaterAufwände)}`;
+            mutterAufwändeResult.textContent = `-${formatCurrency(mutterAufwände)}`;
 
             vaterAufwändeInput.value = vaterAufwände;
             mutterAufwändeInput.value = mutterAufwände;
