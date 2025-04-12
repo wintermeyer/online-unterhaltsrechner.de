@@ -127,8 +127,8 @@
                                     </div>
                                 </div>
                                 <p class="mt-1 text-xs text-gray-500">
-                                    <span class="font-medium">Einkommensgruppe:</span>
-                                    <span id="vater-netto-range"></span>
+                                    <span class="font-medium block md:inline">Einkommensgruppe:</span>
+                                    <span id="vater-netto-range" class="block md:inline"></span>
                                 </p>
                             </div>
                             <div>
@@ -193,8 +193,8 @@
                                     </div>
                                 </div>
                                 <p class="mt-1 text-xs text-gray-500">
-                                    <span class="font-medium">Einkommensgruppe:</span>
-                                    <span id="mutter-netto-range"></span>
+                                    <span class="font-medium block md:inline">Einkommensgruppe:</span>
+                                    <span id="mutter-netto-range" class="block md:inline"></span>
                                 </p>
                             </div>
                             <div>
@@ -243,58 +243,56 @@
             <!-- Right Column - Results -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-6">Ergebnis</h2>
-                <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-6">
-                        <!-- Vater Results -->
-                        <div>
-                            <h3 class="text-lg font-medium text-gray-700 mb-4">Vater</h3>
-                            <div class="space-y-2">
-                                <div class="flex justify-between items-baseline">
-                                    <p class="text-sm text-gray-600">Netto-Einkommen:</p>
-                                    <p id="vater-netto-result" class="text-lg text-gray-800">0,00 €</p>
-                                </div>
-                                <div class="flex justify-between items-baseline">
-                                    <p class="text-sm text-gray-600">Berufsbedingte Aufwände:</p>
-                                    <p id="vater-aufwände-result" class="text-lg text-red-600">-0,00 €</p>
-                                </div>
-                                <div class="flex justify-between items-baseline">
-                                    <p class="text-sm text-gray-600">Sonstige Einkommen:</p>
-                                    <p id="vater-sonstige-result" class="text-lg text-gray-800">0,00 €</p>
-                                </div>
-                                <div class="flex justify-between items-baseline">
-                                    <p class="text-sm text-gray-600">Wohnvorteil:</p>
-                                    <p id="vater-wohnvorteil-result" class="text-lg text-gray-800">0,00 €</p>
-                                </div>
-                                <div class="border-t border-gray-200 pt-2 flex justify-between items-baseline">
-                                    <p class="text-sm text-gray-600">Bereinigtes Einkommen:</p>
-                                    <p id="vater-bereinigt-result" class="text-lg font-semibold text-gray-800">0,00 €</p>
-                                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Vater Results -->
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-700 mb-4">Vater</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-baseline">
+                                <p class="text-sm text-gray-600 min-w-[140px]">Netto-Einkommen:</p>
+                                <p id="vater-netto-result" class="text-lg text-gray-800 tabular-nums">0,00 €</p>
+                            </div>
+                            <div class="flex justify-between items-baseline">
+                                <p class="text-sm text-gray-600 min-w-[140px]">Berufsbedingte Aufwände:</p>
+                                <p id="vater-aufwände-result" class="text-lg text-red-600 tabular-nums">-0,00 €</p>
+                            </div>
+                            <div class="flex justify-between items-baseline">
+                                <p class="text-sm text-gray-600 min-w-[140px]">Sonstige Einkommen:</p>
+                                <p id="vater-sonstige-result" class="text-lg text-gray-800 tabular-nums">0,00 €</p>
+                            </div>
+                            <div class="flex justify-between items-baseline">
+                                <p class="text-sm text-gray-600 min-w-[140px]">Wohnvorteil:</p>
+                                <p id="vater-wohnvorteil-result" class="text-lg text-gray-800 tabular-nums">0,00 €</p>
+                            </div>
+                            <div class="border-t border-gray-200 pt-3 flex justify-between items-baseline">
+                                <p class="text-sm text-gray-600 min-w-[140px]">Bereinigtes Einkommen:</p>
+                                <p id="vater-bereinigt-result" class="text-lg font-semibold text-gray-800 tabular-nums">0,00 €</p>
                             </div>
                         </div>
-                        <!-- Mutter Results -->
-                        <div>
-                            <h3 class="text-lg font-medium text-gray-700 mb-4">Mutter</h3>
-                            <div class="space-y-2">
-                                <div class="flex justify-between items-baseline">
-                                    <p class="text-sm text-gray-600">Netto-Einkommen:</p>
-                                    <p id="mutter-netto-result" class="text-lg text-gray-800">0,00 €</p>
-                                </div>
-                                <div class="flex justify-between items-baseline">
-                                    <p class="text-sm text-gray-600">Berufsbedingte Aufwände:</p>
-                                    <p id="mutter-aufwände-result" class="text-lg text-red-600">-0,00 €</p>
-                                </div>
-                                <div class="flex justify-between items-baseline">
-                                    <p class="text-sm text-gray-600">Sonstige Einkommen:</p>
-                                    <p id="mutter-sonstige-result" class="text-lg text-gray-800">0,00 €</p>
-                                </div>
-                                <div class="flex justify-between items-baseline">
-                                    <p class="text-sm text-gray-600">Wohnvorteil:</p>
-                                    <p id="mutter-wohnvorteil-result" class="text-lg text-gray-800">0,00 €</p>
-                                </div>
-                                <div class="border-t border-gray-200 pt-2 flex justify-between items-baseline">
-                                    <p class="text-sm text-gray-600">Bereinigtes Einkommen:</p>
-                                    <p id="mutter-bereinigt-result" class="text-lg font-semibold text-gray-800">0,00 €</p>
-                                </div>
+                    </div>
+                    <!-- Mutter Results -->
+                    <div class="mt-6 md:mt-0">
+                        <h3 class="text-lg font-medium text-gray-700 mb-4">Mutter</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-baseline">
+                                <p class="text-sm text-gray-600 min-w-[140px]">Netto-Einkommen:</p>
+                                <p id="mutter-netto-result" class="text-lg text-gray-800 tabular-nums">0,00 €</p>
+                            </div>
+                            <div class="flex justify-between items-baseline">
+                                <p class="text-sm text-gray-600 min-w-[140px]">Berufsbedingte Aufwände:</p>
+                                <p id="mutter-aufwände-result" class="text-lg text-red-600 tabular-nums">-0,00 €</p>
+                            </div>
+                            <div class="flex justify-between items-baseline">
+                                <p class="text-sm text-gray-600 min-w-[140px]">Sonstige Einkommen:</p>
+                                <p id="mutter-sonstige-result" class="text-lg text-gray-800 tabular-nums">0,00 €</p>
+                            </div>
+                            <div class="flex justify-between items-baseline">
+                                <p class="text-sm text-gray-600 min-w-[140px]">Wohnvorteil:</p>
+                                <p id="mutter-wohnvorteil-result" class="text-lg text-gray-800 tabular-nums">0,00 €</p>
+                            </div>
+                            <div class="border-t border-gray-200 pt-3 flex justify-between items-baseline">
+                                <p class="text-sm text-gray-600 min-w-[140px]">Bereinigtes Einkommen:</p>
+                                <p id="mutter-bereinigt-result" class="text-lg font-semibold text-gray-800 tabular-nums">0,00 €</p>
                             </div>
                         </div>
                     </div>
