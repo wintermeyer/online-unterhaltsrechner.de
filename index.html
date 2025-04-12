@@ -132,66 +132,6 @@
                                     <span id="vater-netto-range" class="block md:inline"></span>
                                 </p>
                             </div>
-                            <div>
-                                <label for="vater-sonstige" class="block text-sm font-medium text-gray-700 mb-1">
-                                    Sonstige Einkommen
-                                </label>
-                                <div class="relative">
-                                    <input
-                                        type="number"
-                                        id="vater-sonstige"
-                                        name="vater-sonstige"
-                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="0.00"
-                                        step="0.01"
-                                        min="0"
-                                        tabindex="3"
-                                    >
-                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                        <span class="text-gray-500">€</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <label for="vater-wohnvorteil" class="block text-sm font-medium text-gray-700 mb-1">
-                                    Wohnvorteil
-                                </label>
-                                <div class="relative">
-                                    <input
-                                        type="number"
-                                        id="vater-wohnvorteil"
-                                        name="vater-wohnvorteil"
-                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="0.00"
-                                        step="0.01"
-                                        min="0"
-                                        tabindex="5"
-                                    >
-                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                        <span class="text-gray-500">€</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <label for="vater-schulden" class="block text-sm font-medium text-gray-700 mb-1">
-                                    Aufwand Schulden
-                                </label>
-                                <div class="relative">
-                                    <input
-                                        type="number"
-                                        id="vater-schulden"
-                                        name="vater-schulden"
-                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="0.00"
-                                        step="0.01"
-                                        min="0"
-                                        tabindex="7"
-                                    >
-                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                        <span class="text-gray-500">€</span>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                         <!-- Mutter Column -->
@@ -221,63 +161,147 @@
                                     <span id="mutter-netto-range" class="block md:inline"></span>
                                 </p>
                             </div>
-                            <div>
-                                <label for="mutter-sonstige" class="block text-sm font-medium text-gray-700 mb-1">
-                                    Sonstige Einkommen
-                                </label>
-                                <div class="relative">
-                                    <input
-                                        type="number"
-                                        id="mutter-sonstige"
-                                        name="mutter-sonstige"
-                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="0.00"
-                                        step="0.01"
-                                        min="0"
-                                        tabindex="4"
-                                    >
-                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                        <span class="text-gray-500">€</span>
+                        </div>
+
+                        <!-- Additional Fields Toggle Button -->
+                        <div class="col-span-2 mt-4">
+                            <button
+                                type="button"
+                                id="toggle-additional-fields"
+                                class="w-full flex justify-between items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                            >
+                                <span>Weitere Einkommensarten</span>
+                                <svg id="toggle-icon" class="h-5 w-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Collapsible Section -->
+                        <div id="additional-fields" class="col-span-2 grid grid-cols-2 gap-6 mt-4 hidden">
+                            <!-- Vater Additional Fields -->
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="vater-sonstige" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Sonstige Einkommen
+                                    </label>
+                                    <div class="relative">
+                                        <input
+                                            type="number"
+                                            id="vater-sonstige"
+                                            name="vater-sonstige"
+                                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="0.00"
+                                            step="0.01"
+                                            min="0"
+                                            tabindex="3"
+                                        >
+                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500">€</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="vater-wohnvorteil" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Wohnvorteil
+                                    </label>
+                                    <div class="relative">
+                                        <input
+                                            type="number"
+                                            id="vater-wohnvorteil"
+                                            name="vater-wohnvorteil"
+                                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="0.00"
+                                            step="0.01"
+                                            min="0"
+                                            tabindex="5"
+                                        >
+                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500">€</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="vater-schulden" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Aufwand Schulden
+                                    </label>
+                                    <div class="relative">
+                                        <input
+                                            type="number"
+                                            id="vater-schulden"
+                                            name="vater-schulden"
+                                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="0.00"
+                                            step="0.01"
+                                            min="0"
+                                            tabindex="7"
+                                        >
+                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500">€</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <label for="mutter-wohnvorteil" class="block text-sm font-medium text-gray-700 mb-1">
-                                    Wohnvorteil
-                                </label>
-                                <div class="relative">
-                                    <input
-                                        type="number"
-                                        id="mutter-wohnvorteil"
-                                        name="mutter-wohnvorteil"
-                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="0.00"
-                                        step="0.01"
-                                        min="0"
-                                        tabindex="6"
-                                    >
-                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                        <span class="text-gray-500">€</span>
+                            <!-- Mutter Additional Fields -->
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="mutter-sonstige" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Sonstige Einkommen
+                                    </label>
+                                    <div class="relative">
+                                        <input
+                                            type="number"
+                                            id="mutter-sonstige"
+                                            name="mutter-sonstige"
+                                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="0.00"
+                                            step="0.01"
+                                            min="0"
+                                            tabindex="4"
+                                        >
+                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500">€</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div>
-                                <label for="mutter-schulden" class="block text-sm font-medium text-gray-700 mb-1">
-                                    Aufwand Schulden
-                                </label>
-                                <div class="relative">
-                                    <input
-                                        type="number"
-                                        id="mutter-schulden"
-                                        name="mutter-schulden"
-                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="0.00"
-                                        step="0.01"
-                                        min="0"
-                                        tabindex="8"
-                                    >
-                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                        <span class="text-gray-500">€</span>
+                                <div>
+                                    <label for="mutter-wohnvorteil" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Wohnvorteil
+                                    </label>
+                                    <div class="relative">
+                                        <input
+                                            type="number"
+                                            id="mutter-wohnvorteil"
+                                            name="mutter-wohnvorteil"
+                                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="0.00"
+                                            step="0.01"
+                                            min="0"
+                                            tabindex="6"
+                                        >
+                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500">€</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="mutter-schulden" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Aufwand Schulden
+                                    </label>
+                                    <div class="relative">
+                                        <input
+                                            type="number"
+                                            id="mutter-schulden"
+                                            name="mutter-schulden"
+                                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="0.00"
+                                            step="0.01"
+                                            min="0"
+                                            tabindex="8"
+                                        >
+                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500">€</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -423,107 +447,97 @@
             }).format(value || 0);
         }
 
-        function updateShareUrl() {
-            try {
-                const vaterValue = vaterNettoInput.value;
-                const mutterValue = mutterNettoInput.value;
-                const vaterSonstigeValue = vaterSonstigeInput.value;
-                const mutterSonstigeValue = mutterSonstigeInput.value;
-                const vaterWohnvorteilValue = vaterWohnvorteilInput.value;
-                const mutterWohnvorteilValue = mutterWohnvorteilInput.value;
-                const vaterSchuldenValue = vaterSchuldenInput.value;
-                const mutterSchuldenValue = mutterSchuldenInput.value;
-                
-                const url = new URL(window.location.href);
-                // Remove any existing parameters
-                url.search = '';
-                // Only add parameters if they have values
-                if (vaterValue) url.searchParams.set('vater', vaterValue);
-                if (mutterValue) url.searchParams.set('mutter', mutterValue);
-                if (vaterSonstigeValue) url.searchParams.set('vater-sonstige', vaterSonstigeValue);
-                if (mutterSonstigeValue) url.searchParams.set('mutter-sonstige', mutterSonstigeValue);
-                if (vaterWohnvorteilValue) url.searchParams.set('vater-wohnvorteil', vaterWohnvorteilValue);
-                if (mutterWohnvorteilValue) url.searchParams.set('mutter-wohnvorteil', mutterWohnvorteilValue);
-                if (vaterSchuldenValue) url.searchParams.set('vater-schulden', vaterSchuldenValue);
-                if (mutterSchuldenValue) url.searchParams.set('mutter-schulden', mutterSchuldenValue);
-                
-                shareUrlInput.value = url.toString();
-            } catch (err) {
-                console.error('Failed to update share URL: ', err);
-                shareUrlInput.value = window.location.href;
-            }
-        }
-
         function loadFromUrl() {
             try {
                 const url = new URL(window.location.href);
-                const vaterValue = url.searchParams.get('vater');
-                const mutterValue = url.searchParams.get('mutter');
-                const vaterSonstigeValue = url.searchParams.get('vater-sonstige');
-                const mutterSonstigeValue = url.searchParams.get('mutter-sonstige');
-                const vaterWohnvorteilValue = url.searchParams.get('vater-wohnvorteil');
-                const mutterWohnvorteilValue = url.searchParams.get('mutter-wohnvorteil');
-                const vaterSchuldenValue = url.searchParams.get('vater-schulden');
-                const mutterSchuldenValue = url.searchParams.get('mutter-schulden');
+                const params = url.searchParams;
+                let hasAdditionalValues = false;
 
-                // Only set values if they are valid numbers
-                if (vaterValue !== null && !isNaN(vaterValue)) {
-                    vaterNettoInput.value = vaterValue;
-                }
-                if (mutterValue !== null && !isNaN(mutterValue)) {
-                    mutterNettoInput.value = mutterValue;
-                }
-                if (vaterSonstigeValue !== null && !isNaN(vaterSonstigeValue)) {
-                    vaterSonstigeInput.value = vaterSonstigeValue;
-                }
-                if (mutterSonstigeValue !== null && !isNaN(mutterSonstigeValue)) {
-                    mutterSonstigeInput.value = mutterSonstigeValue;
-                }
-                if (vaterWohnvorteilValue !== null && !isNaN(vaterWohnvorteilValue)) {
-                    vaterWohnvorteilInput.value = vaterWohnvorteilValue;
-                }
-                if (mutterWohnvorteilValue !== null && !isNaN(mutterWohnvorteilValue)) {
-                    mutterWohnvorteilInput.value = mutterWohnvorteilValue;
-                }
-                if (vaterSchuldenValue !== null && !isNaN(vaterSchuldenValue)) {
-                    vaterSchuldenInput.value = vaterSchuldenValue;
-                }
-                if (mutterSchuldenValue !== null && !isNaN(mutterSchuldenValue)) {
-                    mutterSchuldenInput.value = mutterSchuldenValue;
+                // Helper function to set input value if parameter exists
+                const setInputValue = (paramName, inputId) => {
+                    const value = params.get(paramName);
+                    if (value !== null && !isNaN(value)) {
+                        document.getElementById(inputId).value = value;
+                        if (paramName.includes('sonstige') || 
+                            paramName.includes('wohnvorteil') || 
+                            paramName.includes('schulden')) {
+                            hasAdditionalValues = true;
+                        }
+                        return true;
+                    }
+                    return false;
+                };
+
+                // Load all possible values
+                const fields = {
+                    'vater-netto': 'vater-netto',
+                    'mutter-netto': 'mutter-netto',
+                    'vater-sonstige': 'vater-sonstige',
+                    'mutter-sonstige': 'mutter-sonstige',
+                    'vater-wohnvorteil': 'vater-wohnvorteil',
+                    'mutter-wohnvorteil': 'mutter-wohnvorteil',
+                    'vater-schulden': 'vater-schulden',
+                    'mutter-schulden': 'mutter-schulden'
+                };
+
+                let hasValues = false;
+                for (const [param, id] of Object.entries(fields)) {
+                    if (setInputValue(param, id)) {
+                        hasValues = true;
+                    }
                 }
 
-                if ((vaterValue !== null && !isNaN(vaterValue)) || 
-                    (mutterValue !== null && !isNaN(mutterValue)) ||
-                    (vaterSonstigeValue !== null && !isNaN(vaterSonstigeValue)) ||
-                    (mutterSonstigeValue !== null && !isNaN(mutterSonstigeValue)) ||
-                    (vaterWohnvorteilValue !== null && !isNaN(vaterWohnvorteilValue)) ||
-                    (mutterWohnvorteilValue !== null && !isNaN(mutterWohnvorteilValue)) ||
-                    (vaterSchuldenValue !== null && !isNaN(vaterSchuldenValue)) ||
-                    (mutterSchuldenValue !== null && !isNaN(mutterSchuldenValue))) {
+                // If we have additional values, expand the section
+                if (hasAdditionalValues) {
+                    const additionalFields = document.getElementById('additional-fields');
+                    const toggleIcon = document.getElementById('toggle-icon');
+                    if (additionalFields) {
+                        additionalFields.classList.remove('hidden');
+                        if (toggleIcon) {
+                            toggleIcon.style.transform = 'rotate(180deg)';
+                        }
+                    }
+                }
+
+                if (hasValues) {
                     updateResults();
+                    // Clean up URL after loading parameters
+                    window.history.replaceState({}, '', window.location.pathname);
                 }
             } catch (err) {
                 console.error('Failed to load from URL: ', err);
             }
         }
 
-        copyButton.addEventListener('click', async () => {
+        function updateShareUrl() {
             try {
-                await navigator.clipboard.writeText(shareUrlInput.value);
-                const originalText = copyButton.textContent;
-                copyButton.textContent = 'Kopiert!';
-                copyButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-                copyButton.classList.add('bg-green-600', 'hover:bg-green-700');
+                const url = new URL(window.location.href);
+                url.search = '';
                 
-                setTimeout(() => {
-                    copyButton.textContent = originalText;
-                    copyButton.classList.remove('bg-green-600', 'hover:bg-green-700');
-                    copyButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
-                }, 2000);
+                // Helper function to add parameter if value exists
+                const addParam = (paramName, value) => {
+                    if (value) {
+                        url.searchParams.set(paramName, value);
+                    }
+                };
+
+                // Add all non-zero values to URL
+                addParam('vater-netto', vaterNettoInput.value);
+                addParam('mutter-netto', mutterNettoInput.value);
+                addParam('vater-sonstige', vaterSonstigeInput.value);
+                addParam('mutter-sonstige', mutterSonstigeInput.value);
+                addParam('vater-wohnvorteil', vaterWohnvorteilInput.value);
+                addParam('mutter-wohnvorteil', mutterWohnvorteilInput.value);
+                addParam('vater-schulden', vaterSchuldenInput.value);
+                addParam('mutter-schulden', mutterSchuldenInput.value);
+
+                // Only update the share URL input field, not the browser URL
+                shareUrlInput.value = url.toString();
             } catch (err) {
-                console.error('Failed to copy text: ', err);
+                console.error('Failed to update share URL: ', err);
+                shareUrlInput.value = window.location.href;
             }
-        });
+        }
 
         function updateResults() {
             const vaterValue = parseFloat(vaterNettoInput.value) || 0;
@@ -534,6 +548,16 @@
             const mutterWohnvorteilValue = parseFloat(mutterWohnvorteilInput.value) || 0;
             const vaterSchuldenValue = parseFloat(vaterSchuldenInput.value) || 0;
             const mutterSchuldenValue = parseFloat(mutterSchuldenInput.value) || 0;
+
+            // Save values to localStorage
+            localStorage.setItem('vater-netto', vaterValue || '');
+            localStorage.setItem('mutter-netto', mutterValue || '');
+            localStorage.setItem('vater-sonstige', vaterSonstigeValue || '');
+            localStorage.setItem('mutter-sonstige', mutterSonstigeValue || '');
+            localStorage.setItem('vater-wohnvorteil', vaterWohnvorteilValue || '');
+            localStorage.setItem('mutter-wohnvorteil', mutterWohnvorteilValue || '');
+            localStorage.setItem('vater-schulden', vaterSchuldenValue || '');
+            localStorage.setItem('mutter-schulden', mutterSchuldenValue || '');
 
             const vaterAufwände = calculateBerufsbedingteAufwände(vaterValue);
             const mutterAufwände = calculateBerufsbedingteAufwände(mutterValue);
@@ -631,21 +655,126 @@
             updateShareUrl();
         }
 
-        // Add event listeners for real-time updates
-        vaterNettoInput.addEventListener('input', updateResults);
-        mutterNettoInput.addEventListener('input', updateResults);
-        vaterSonstigeInput.addEventListener('input', updateResults);
-        mutterSonstigeInput.addEventListener('input', updateResults);
-        vaterWohnvorteilInput.addEventListener('input', updateResults);
-        mutterWohnvorteilInput.addEventListener('input', updateResults);
-        vaterSchuldenInput.addEventListener('input', updateResults);
-        mutterSchuldenInput.addEventListener('input', updateResults);
+        function updateAdditionalFieldsVisibility() {
+            const vaterSonstigeValue = parseFloat(vaterSonstigeInput.value) || 0;
+            const mutterSonstigeValue = parseFloat(mutterSonstigeInput.value) || 0;
+            const vaterWohnvorteilValue = parseFloat(vaterWohnvorteilInput.value) || 0;
+            const mutterWohnvorteilValue = parseFloat(mutterWohnvorteilInput.value) || 0;
+            const vaterSchuldenValue = parseFloat(vaterSchuldenInput.value) || 0;
+            const mutterSchuldenValue = parseFloat(mutterSchuldenInput.value) || 0;
 
-        // Load values from URL parameters if they exist
-        loadFromUrl();
+            const hasNonZeroValues = vaterSonstigeValue !== 0 || 
+                                   mutterSonstigeValue !== 0 || 
+                                   vaterWohnvorteilValue !== 0 || 
+                                   mutterWohnvorteilValue !== 0 || 
+                                   vaterSchuldenValue !== 0 || 
+                                   mutterSchuldenValue !== 0;
 
-        // Initial update
-        updateResults();
+            const additionalFields = document.getElementById('additional-fields');
+            const toggleIcon = document.getElementById('toggle-icon');
+
+            if (hasNonZeroValues) {
+                additionalFields.classList.remove('hidden');
+                toggleIcon.style.transform = 'rotate(180deg)';
+            }
+
+            // Update URL whenever values change
+            updateShareUrl();
+        }
+
+        function toggleAdditionalFields() {
+            const additionalFields = document.getElementById('additional-fields');
+            const toggleIcon = document.getElementById('toggle-icon');
+            
+            additionalFields.classList.toggle('hidden');
+            toggleIcon.style.transform = additionalFields.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+
+        // Add event listeners
+        document.getElementById('toggle-additional-fields').addEventListener('click', toggleAdditionalFields);
+
+        // Add input event listeners for all fields
+        const allInputs = [
+            vaterNettoInput, mutterNettoInput,
+            vaterSonstigeInput, mutterSonstigeInput,
+            vaterWohnvorteilInput, mutterWohnvorteilInput,
+            vaterSchuldenInput, mutterSchuldenInput
+        ];
+
+        allInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                updateResults();
+                updateAdditionalFieldsVisibility();
+            });
+        });
+
+        copyButton.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(shareUrlInput.value);
+                const originalText = copyButton.innerText?.trim() || 'Kopieren';
+                const originalClasses = copyButton.className;
+                
+                // Show success feedback immediately
+                copyButton.innerText = 'Kopiert!';
+                copyButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                copyButton.classList.add('bg-green-600', 'hover:bg-green-700');
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    copyButton.innerText = originalText;
+                    copyButton.className = originalClasses;
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy URL: ', err);
+            }
+        });
+
+        // Add loadFromStorage function
+        function loadFromStorage() {
+            // Load values from localStorage
+            const fields = {
+                'vater-netto': vaterNettoInput,
+                'mutter-netto': mutterNettoInput,
+                'vater-sonstige': vaterSonstigeInput,
+                'mutter-sonstige': mutterSonstigeInput,
+                'vater-wohnvorteil': vaterWohnvorteilInput,
+                'mutter-wohnvorteil': mutterWohnvorteilInput,
+                'vater-schulden': vaterSchuldenInput,
+                'mutter-schulden': mutterSchuldenInput
+            };
+
+            let hasAdditionalValues = false;
+            for (const [key, input] of Object.entries(fields)) {
+                const value = localStorage.getItem(key);
+                if (value) {
+                    input.value = value;
+                    if (key.includes('sonstige') || key.includes('wohnvorteil') || key.includes('schulden')) {
+                        hasAdditionalValues = true;
+                    }
+                }
+            }
+
+            // Show additional fields if needed
+            if (hasAdditionalValues) {
+                const additionalFields = document.getElementById('additional-fields');
+                const toggleIcon = document.getElementById('toggle-icon');
+                if (additionalFields) {
+                    additionalFields.classList.remove('hidden');
+                    if (toggleIcon) {
+                        toggleIcon.style.transform = 'rotate(180deg)';
+                    }
+                }
+            }
+
+            updateResults();
+        }
+
+        // Add event listener for page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromUrl();
+            loadFromStorage();
+            updateResults();
+        });
     </script>
 </body>
 </html> 

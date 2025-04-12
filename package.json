@@ -7,16 +7,18 @@
     "doc": "doc"
   },
   "scripts": {
-    "test": "npm run test:unit && npm run test:e2e",
-    "test:unit": "node test/berechnung.test.js",
-    "test:e2e": "playwright test",
-    "start": "http-server -p 3000"
+    "start": "serve -s",
+    "test": "playwright test",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report",
+    "test:install": "playwright install chromium --with-deps"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.42.1",
-    "http-server": "^14.1.1"
+    "@types/node": "^20.11.24",
+    "serve": "^14.2.1"
   }
 }
