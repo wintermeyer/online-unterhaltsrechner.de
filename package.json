@@ -1,14 +1,13 @@
 {
   "name": "unterhalt11",
   "version": "1.0.0",
-  "description": "Eine mobile-first Webseite mit Tailwind CSS und Hamburger-Menü.",
-  "main": "index.js",
+  "description": "Unterhaltsrechner based on Düsseldorfer Tabelle",
+  "main": "index.html",
   "directories": {
     "doc": "doc"
   },
   "scripts": {
-    "test": "playwright test",
-    "test:ui": "playwright test --ui"
+    "test": "node test/berechnung.test.js"
   },
   "keywords": [],
   "author": "",
