@@ -131,23 +131,6 @@
                                     <span id="vater-netto-range"></span>
                                 </p>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Berufsbedingte Aufwände
-                                </label>
-                                <div class="relative">
-                                    <input
-                                        type="number"
-                                        id="vater-aufwände"
-                                        name="vater-aufwände"
-                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                                        readonly
-                                    >
-                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                        <span class="text-gray-500">€</span>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                         <!-- Mutter Column -->
@@ -175,23 +158,6 @@
                                     <span class="font-medium">Einkommensgruppe:</span>
                                     <span id="mutter-netto-range"></span>
                                 </p>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Berufsbedingte Aufwände
-                                </label>
-                                <div class="relative">
-                                    <input
-                                        type="number"
-                                        id="mutter-aufwände"
-                                        name="mutter-aufwände"
-                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                                        readonly
-                                    >
-                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                        <span class="text-gray-500">€</span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -259,8 +225,6 @@
         // Form handling
         const vaterNettoInput = document.getElementById('vater-netto');
         const mutterNettoInput = document.getElementById('mutter-netto');
-        const vaterAufwändeInput = document.getElementById('vater-aufwände');
-        const mutterAufwändeInput = document.getElementById('mutter-aufwände');
         const vaterNettoResult = document.getElementById('vater-netto-result');
         const mutterNettoResult = document.getElementById('mutter-netto-result');
         const vaterAufwändeResult = document.getElementById('vater-aufwände-result');
@@ -294,9 +258,6 @@
             // Add minus sign for Aufwände
             vaterAufwändeResult.textContent = `-${formatCurrency(vaterAufwände)}`;
             mutterAufwändeResult.textContent = `-${formatCurrency(mutterAufwände)}`;
-
-            vaterAufwändeInput.value = vaterAufwände;
-            mutterAufwändeInput.value = mutterAufwände;
 
             vaterBereinigtResult.textContent = formatCurrency(vaterBereinigt);
             mutterBereinigtResult.textContent = formatCurrency(mutterBereinigt);
