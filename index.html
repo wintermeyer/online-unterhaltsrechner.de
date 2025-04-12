@@ -169,6 +169,25 @@
                                     </div>
                                 </div>
                             </div>
+                            <div>
+                                <label for="vater-schulden" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Aufwand Schulden
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="number"
+                                        id="vater-schulden"
+                                        name="vater-schulden"
+                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="0.00"
+                                        step="0.01"
+                                        min="0"
+                                    >
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500">€</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Mutter Column -->
@@ -235,6 +254,25 @@
                                     </div>
                                 </div>
                             </div>
+                            <div>
+                                <label for="mutter-schulden" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Aufwand Schulden
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="number"
+                                        id="mutter-schulden"
+                                        name="mutter-schulden"
+                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="0.00"
+                                        step="0.01"
+                                        min="0"
+                                    >
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500">€</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -264,6 +302,10 @@
                                 <p class="text-sm text-gray-600 min-w-[140px]">Wohnvorteil:</p>
                                 <p id="vater-wohnvorteil-result" class="text-lg text-gray-800 tabular-nums">0,00 €</p>
                             </div>
+                            <div class="flex justify-between items-baseline">
+                                <p class="text-sm text-gray-600 min-w-[140px]">Aufwand Schulden:</p>
+                                <p id="vater-schulden-result" class="text-lg text-red-600 tabular-nums">-0,00 €</p>
+                            </div>
                             <div class="border-t border-gray-200 pt-3 flex justify-between items-baseline">
                                 <p class="text-sm text-gray-600 min-w-[140px]">Bereinigtes Einkommen:</p>
                                 <p id="vater-bereinigt-result" class="text-lg font-semibold text-gray-800 tabular-nums">0,00 €</p>
@@ -289,6 +331,10 @@
                             <div class="flex justify-between items-baseline">
                                 <p class="text-sm text-gray-600 min-w-[140px]">Wohnvorteil:</p>
                                 <p id="mutter-wohnvorteil-result" class="text-lg text-gray-800 tabular-nums">0,00 €</p>
+                            </div>
+                            <div class="flex justify-between items-baseline">
+                                <p class="text-sm text-gray-600 min-w-[140px]">Aufwand Schulden:</p>
+                                <p id="mutter-schulden-result" class="text-lg text-red-600 tabular-nums">-0,00 €</p>
                             </div>
                             <div class="border-t border-gray-200 pt-3 flex justify-between items-baseline">
                                 <p class="text-sm text-gray-600 min-w-[140px]">Bereinigtes Einkommen:</p>
@@ -345,12 +391,16 @@
         const mutterSonstigeInput = document.getElementById('mutter-sonstige');
         const vaterWohnvorteilInput = document.getElementById('vater-wohnvorteil');
         const mutterWohnvorteilInput = document.getElementById('mutter-wohnvorteil');
+        const vaterSchuldenInput = document.getElementById('vater-schulden');
+        const mutterSchuldenInput = document.getElementById('mutter-schulden');
         const vaterNettoResult = document.getElementById('vater-netto-result');
         const mutterNettoResult = document.getElementById('mutter-netto-result');
         const vaterSonstigeResult = document.getElementById('vater-sonstige-result');
         const mutterSonstigeResult = document.getElementById('mutter-sonstige-result');
         const vaterWohnvorteilResult = document.getElementById('vater-wohnvorteil-result');
         const mutterWohnvorteilResult = document.getElementById('mutter-wohnvorteil-result');
+        const vaterSchuldenResult = document.getElementById('vater-schulden-result');
+        const mutterSchuldenResult = document.getElementById('mutter-schulden-result');
         const vaterAufwändeResult = document.getElementById('vater-aufwände-result');
         const mutterAufwändeResult = document.getElementById('mutter-aufwände-result');
         const vaterBereinigtResult = document.getElementById('vater-bereinigt-result');
@@ -373,6 +423,8 @@
                 const mutterSonstigeValue = mutterSonstigeInput.value;
                 const vaterWohnvorteilValue = vaterWohnvorteilInput.value;
                 const mutterWohnvorteilValue = mutterWohnvorteilInput.value;
+                const vaterSchuldenValue = vaterSchuldenInput.value;
+                const mutterSchuldenValue = mutterSchuldenInput.value;
                 
                 const url = new URL(window.location.href);
                 // Remove any existing parameters
@@ -384,6 +436,8 @@
                 if (mutterSonstigeValue) url.searchParams.set('mutter-sonstige', mutterSonstigeValue);
                 if (vaterWohnvorteilValue) url.searchParams.set('vater-wohnvorteil', vaterWohnvorteilValue);
                 if (mutterWohnvorteilValue) url.searchParams.set('mutter-wohnvorteil', mutterWohnvorteilValue);
+                if (vaterSchuldenValue) url.searchParams.set('vater-schulden', vaterSchuldenValue);
+                if (mutterSchuldenValue) url.searchParams.set('mutter-schulden', mutterSchuldenValue);
                 
                 shareUrlInput.value = url.toString();
             } catch (err) {
@@ -401,6 +455,8 @@
                 const mutterSonstigeValue = url.searchParams.get('mutter-sonstige');
                 const vaterWohnvorteilValue = url.searchParams.get('vater-wohnvorteil');
                 const mutterWohnvorteilValue = url.searchParams.get('mutter-wohnvorteil');
+                const vaterSchuldenValue = url.searchParams.get('vater-schulden');
+                const mutterSchuldenValue = url.searchParams.get('mutter-schulden');
 
                 // Only set values if they are valid numbers
                 if (vaterValue !== null && !isNaN(vaterValue)) {
@@ -421,13 +477,21 @@
                 if (mutterWohnvorteilValue !== null && !isNaN(mutterWohnvorteilValue)) {
                     mutterWohnvorteilInput.value = mutterWohnvorteilValue;
                 }
+                if (vaterSchuldenValue !== null && !isNaN(vaterSchuldenValue)) {
+                    vaterSchuldenInput.value = vaterSchuldenValue;
+                }
+                if (mutterSchuldenValue !== null && !isNaN(mutterSchuldenValue)) {
+                    mutterSchuldenInput.value = mutterSchuldenValue;
+                }
 
                 if ((vaterValue !== null && !isNaN(vaterValue)) || 
                     (mutterValue !== null && !isNaN(mutterValue)) ||
                     (vaterSonstigeValue !== null && !isNaN(vaterSonstigeValue)) ||
                     (mutterSonstigeValue !== null && !isNaN(mutterSonstigeValue)) ||
                     (vaterWohnvorteilValue !== null && !isNaN(vaterWohnvorteilValue)) ||
-                    (mutterWohnvorteilValue !== null && !isNaN(mutterWohnvorteilValue))) {
+                    (mutterWohnvorteilValue !== null && !isNaN(mutterWohnvorteilValue)) ||
+                    (vaterSchuldenValue !== null && !isNaN(vaterSchuldenValue)) ||
+                    (mutterSchuldenValue !== null && !isNaN(mutterSchuldenValue))) {
                     updateResults();
                 }
             } catch (err) {
@@ -460,19 +524,22 @@
             const mutterSonstigeValue = parseFloat(mutterSonstigeInput.value) || 0;
             const vaterWohnvorteilValue = parseFloat(vaterWohnvorteilInput.value) || 0;
             const mutterWohnvorteilValue = parseFloat(mutterWohnvorteilInput.value) || 0;
+            const vaterSchuldenValue = parseFloat(vaterSchuldenInput.value) || 0;
+            const mutterSchuldenValue = parseFloat(mutterSchuldenInput.value) || 0;
 
             const vaterAufwände = calculateBerufsbedingteAufwände(vaterValue);
             const mutterAufwände = calculateBerufsbedingteAufwände(mutterValue);
 
             // Calculate bereinigtes Einkommen (will always be 0 or positive since Aufwände can't exceed income)
-            const vaterBereinigt = vaterValue + vaterSonstigeValue + vaterWohnvorteilValue - vaterAufwände;
-            const mutterBereinigt = mutterValue + mutterSonstigeValue + mutterWohnvorteilValue - mutterAufwände;
+            const vaterBereinigt = vaterValue + vaterSonstigeValue + vaterWohnvorteilValue - vaterAufwände - vaterSchuldenValue;
+            const mutterBereinigt = mutterValue + mutterSonstigeValue + mutterWohnvorteilValue - mutterAufwände - mutterSchuldenValue;
 
             // Update Vater results
             const vaterNettoElement = document.querySelector('#vater-netto-result').parentElement;
             const vaterAufwändeElement = document.querySelector('#vater-aufwände-result').parentElement;
             const vaterSonstigeElement = document.querySelector('#vater-sonstige-result').parentElement;
             const vaterWohnvorteilElement = document.querySelector('#vater-wohnvorteil-result').parentElement;
+            const vaterSchuldenElement = document.querySelector('#vater-schulden-result').parentElement;
             const vaterBereinigtElement = document.querySelector('#vater-bereinigt-result').parentElement;
 
             // Hide all elements first
@@ -480,6 +547,7 @@
             vaterAufwändeElement.style.display = 'none';
             vaterSonstigeElement.style.display = 'none';
             vaterWohnvorteilElement.style.display = 'none';
+            vaterSchuldenElement.style.display = 'none';
             vaterBereinigtElement.style.display = 'none';
 
             // Show only non-zero values
@@ -499,6 +567,10 @@
                 vaterWohnvorteilElement.style.display = 'flex';
                 vaterWohnvorteilResult.textContent = formatCurrency(vaterWohnvorteilValue);
             }
+            if (vaterSchuldenValue !== 0) {
+                vaterSchuldenElement.style.display = 'flex';
+                vaterSchuldenResult.textContent = `-${formatCurrency(vaterSchuldenValue)}`;
+            }
             // Always show bereinigtes Einkommen
             vaterBereinigtElement.style.display = 'flex';
             vaterBereinigtResult.textContent = formatCurrency(vaterBereinigt);
@@ -508,6 +580,7 @@
             const mutterAufwändeElement = document.querySelector('#mutter-aufwände-result').parentElement;
             const mutterSonstigeElement = document.querySelector('#mutter-sonstige-result').parentElement;
             const mutterWohnvorteilElement = document.querySelector('#mutter-wohnvorteil-result').parentElement;
+            const mutterSchuldenElement = document.querySelector('#mutter-schulden-result').parentElement;
             const mutterBereinigtElement = document.querySelector('#mutter-bereinigt-result').parentElement;
 
             // Hide all elements first
@@ -515,6 +588,7 @@
             mutterAufwändeElement.style.display = 'none';
             mutterSonstigeElement.style.display = 'none';
             mutterWohnvorteilElement.style.display = 'none';
+            mutterSchuldenElement.style.display = 'none';
             mutterBereinigtElement.style.display = 'none';
 
             // Show only non-zero values
@@ -534,6 +608,10 @@
                 mutterWohnvorteilElement.style.display = 'flex';
                 mutterWohnvorteilResult.textContent = formatCurrency(mutterWohnvorteilValue);
             }
+            if (mutterSchuldenValue !== 0) {
+                mutterSchuldenElement.style.display = 'flex';
+                mutterSchuldenResult.textContent = `-${formatCurrency(mutterSchuldenValue)}`;
+            }
             // Always show bereinigtes Einkommen
             mutterBereinigtElement.style.display = 'flex';
             mutterBereinigtResult.textContent = formatCurrency(mutterBereinigt);
@@ -552,6 +630,8 @@
         mutterSonstigeInput.addEventListener('input', updateResults);
         vaterWohnvorteilInput.addEventListener('input', updateResults);
         mutterWohnvorteilInput.addEventListener('input', updateResults);
+        vaterSchuldenInput.addEventListener('input', updateResults);
+        mutterSchuldenInput.addEventListener('input', updateResults);
 
         // Load values from URL parameters if they exist
         loadFromUrl();
