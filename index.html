@@ -38,6 +38,15 @@
         .mobile-menu-button.active .hamburger-line:nth-child(3) {
             transform: translateY(-8px) rotate(-45deg);
         }
+        input[type="number"] {
+            appearance: none;
+            -moz-appearance: textfield;
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -92,19 +101,87 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Left Column - Input Form -->
             <div class="bg-white rounded-lg shadow-lg p-6">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">Eingabe</h2>
-                <div class="space-y-4">
-                    <!-- Placeholder for form - will be added later -->
-                    <p class="text-gray-600">Formular wird hier eingefügt...</p>
-                </div>
+                <h2 class="text-xl font-semibold text-gray-800 mb-6">Eingabe</h2>
+                <form id="unterhaltsForm" class="space-y-6">
+                    <div class="grid grid-cols-2 gap-6">
+                        <!-- Vater Column -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-medium text-gray-700 mb-4">Vater</h3>
+                            <div>
+                                <label for="vater-netto" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Netto-Einkommen
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="number"
+                                        id="vater-netto"
+                                        name="vater-netto"
+                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="0.00"
+                                        step="0.01"
+                                        min="0"
+                                        autofocus
+                                    >
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500">€</span>
+                                    </div>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500">
+                                    <span class="font-medium">Einkommensgruppe:</span>
+                                    <span id="vater-netto-range"></span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Mutter Column -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-medium text-gray-700 mb-4">Mutter</h3>
+                            <div>
+                                <label for="mutter-netto" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Netto-Einkommen
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="number"
+                                        id="mutter-netto"
+                                        name="mutter-netto"
+                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="0.00"
+                                        step="0.01"
+                                        min="0"
+                                    >
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500">€</span>
+                                    </div>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500">
+                                    <span class="font-medium">Einkommensgruppe:</span>
+                                    <span id="mutter-netto-range"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
 
             <!-- Right Column - Results -->
             <div class="bg-white rounded-lg shadow-lg p-6">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">Ergebnis</h2>
+                <h2 class="text-xl font-semibold text-gray-800 mb-6">Ergebnis</h2>
                 <div class="space-y-4">
-                    <!-- Placeholder for results - will be added later -->
-                    <p class="text-gray-600">Berechnungsergebnisse werden hier angezeigt...</p>
+                    <div class="grid grid-cols-2 gap-6">
+                        <!-- Vater Results -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-700 mb-4">Vater</h3>
+                            <p class="text-sm text-gray-600">Netto-Einkommen:</p>
+                            <p id="vater-netto-result" class="text-lg font-semibold text-gray-800">0,00 €</p>
+                        </div>
+                        <!-- Mutter Results -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-700 mb-4">Mutter</h3>
+                            <p class="text-sm text-gray-600">Netto-Einkommen:</p>
+                            <p id="mutter-netto-result" class="text-lg font-semibold text-gray-800">0,00 €</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -119,6 +196,64 @@
             menu.classList.toggle("show");
             btn.classList.toggle("active");
         });
+
+        // Form handling
+        const vaterNettoInput = document.getElementById('vater-netto');
+        const mutterNettoInput = document.getElementById('mutter-netto');
+        const vaterNettoResult = document.getElementById('vater-netto-result');
+        const mutterNettoResult = document.getElementById('mutter-netto-result');
+        const vaterNettoRange = document.getElementById('vater-netto-range');
+        const mutterNettoRange = document.getElementById('mutter-netto-range');
+
+        // Define income brackets from Düsseldorfer Tabelle
+        const incomeBrackets = [
+            { min: 0, max: 2100, display: "0 bis 2.100 €" },
+            { min: 2101, max: 2500, display: "2.101 - 2.500 €" },
+            { min: 2501, max: 2900, display: "2.501 - 2.900 €" },
+            { min: 2901, max: 3300, display: "2.901 - 3.300 €" },
+            { min: 3301, max: 3700, display: "3.301 - 3.700 €" },
+            { min: 3701, max: 4100, display: "3.701 - 4.100 €" },
+            { min: 4101, max: 4500, display: "4.101 - 4.500 €" },
+            { min: 4501, max: 4900, display: "4.501 - 4.900 €" },
+            { min: 4901, max: 5300, display: "4.901 - 5.300 €" },
+            { min: 5301, max: 5700, display: "5.301 - 5.700 €" },
+            { min: 5701, max: 6400, display: "5.701 - 6.400 €" },
+            { min: 6401, max: 7200, display: "6.401 - 7.200 €" },
+            { min: 7201, max: 8200, display: "7.201 - 8.200 €" },
+            { min: 8201, max: 9700, display: "8.201 - 9.700 €" },
+            { min: 9701, max: 11200, display: "9.701 - 11.200 €" }
+        ];
+
+        function getIncomeBracket(income) {
+            if (!income) return "0 bis 2.100 €";
+            const bracket = incomeBrackets.find(b => income >= b.min && income <= b.max);
+            return bracket ? bracket.display : "Über 11.200 €";
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('de-DE', {
+                style: 'currency',
+                currency: 'EUR'
+            }).format(value || 0);
+        }
+
+        function updateResults() {
+            const vaterValue = parseFloat(vaterNettoInput.value);
+            const mutterValue = parseFloat(mutterNettoInput.value);
+
+            vaterNettoResult.textContent = formatCurrency(vaterValue);
+            mutterNettoResult.textContent = formatCurrency(mutterValue);
+
+            vaterNettoRange.textContent = getIncomeBracket(vaterValue);
+            mutterNettoRange.textContent = getIncomeBracket(mutterValue);
+        }
+
+        // Add event listeners for real-time updates
+        vaterNettoInput.addEventListener('input', updateResults);
+        mutterNettoInput.addEventListener('input', updateResults);
+
+        // Trigger initial calculation
+        updateResults();
     </script>
 </body>
 </html> 
