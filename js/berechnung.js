@@ -23,7 +23,7 @@ const incomeBrackets = [
  * @returns {string} The display text for the income bracket
  */
 function getIncomeBracket(income) {
-    if (!income) return "0 bis 2.100 €";
+    if (!income || isNaN(income) || income <= 0) return "0 bis 2.100 €";
     const bracket = incomeBrackets.find(b => income >= b.min && income <= b.max);
     return bracket ? bracket.display : "Über 11.200 €";
 }

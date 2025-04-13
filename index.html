@@ -542,9 +542,12 @@
             // Add event listener to the remove button
             const removeButton = childElement.querySelector('.remove-child');
             removeButton.addEventListener('click', () => {
-                childElement.remove();
-                updateChildNumbers();
-                updateShareUrl();
+                // Only allow removal if there's more than one child
+                if (document.querySelectorAll('.child-form').length > 1) {
+                    childElement.remove();
+                    updateChildNumbers();
+                    updateShareUrl();
+                }
             });
 
             // Add event listeners for child form changes
@@ -752,6 +755,10 @@
             const mutterWohnvorteilValue = parseFloat(mutterWohnvorteilInput.value) || 0;
             const vaterSchuldenValue = parseFloat(vaterSchuldenInput.value) || 0;
             const mutterSchuldenValue = parseFloat(mutterSchuldenInput.value) || 0;
+
+            // Update income groups
+            vaterNettoRange.textContent = getIncomeBracket(vaterValue);
+            mutterNettoRange.textContent = getIncomeBracket(mutterValue);
 
             // Save values to localStorage
             localStorage.setItem('vater-netto', vaterValue || '');
@@ -976,6 +983,11 @@
 
         // Add event listener for page load
         document.addEventListener('DOMContentLoaded', () => {
+            // Add initial child if none exists
+            if (document.querySelectorAll('.child-form').length === 0) {
+                addChild();
+            }
+            
             loadFromUrl();
             loadFromStorage();
             updateResults();
