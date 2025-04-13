@@ -325,21 +325,21 @@
                 </div>
 
                 <!-- Kinder Card -->
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-semibold text-gray-800">Kinder</h2>
+                <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                    <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
+                        <h2 class="text-2xl font-semibold text-gray-800">Kinder</h2>
                         <button
                             type="button"
                             id="add-child-button"
-                            class="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors shadow-sm"
                         >
-                            <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
                             Kind hinzufügen
                         </button>
                     </div>
-                    <div id="children-container" class="space-y-4">
+                    <div id="children-container" class="space-y-6">
                         <!-- Children will be added here dynamically -->
                     </div>
                 </div>
@@ -449,77 +449,77 @@
 
         // Template for child form fields
         const childTemplate = (index) => `
-            <div class="child-form bg-gray-50 rounded-lg p-4" data-child-index="${index}">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium text-gray-700">Kind ${index + 1}</h3>
-                    <button type="button" class="remove-child text-red-600 hover:text-red-800 focus:outline-none" style="display: none;">
+            <div class="child-form bg-white rounded-lg p-6 border border-gray-100 shadow-md hover:shadow-lg transition-shadow duration-300" data-child-index="${index}">
+                <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-4">
+                    <h3 class="text-xl font-semibold text-gray-800">Kind ${index + 1}</h3>
+                    <button type="button" class="remove-child p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-200" style="display: none;">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                     </button>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="child-age-${index}" class="block text-sm font-medium text-gray-700 mb-1">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <div class="md:col-span-4">
+                        <label for="child-age-${index}" class="block text-sm font-medium text-gray-700 mb-2">
                             Alter
                         </label>
                         <select
                             id="child-age-${index}"
                             name="child-age-${index}"
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            class="block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white"
                         >
                             ${Array.from({length: 26}, (_, i) => `<option value="${i}">${i} Jahre</option>`).join('')}
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <div class="md:col-span-8">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
                             Lebensmittelpunkt
                         </label>
-                        <div class="space-y-2">
-                            <div class="flex items-center">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="flex items-center px-3 py-2 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
                                 <input
                                     type="radio"
                                     id="child-residence-vater-${index}"
                                     name="child-residence-${index}"
                                     value="vater"
-                                    class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-full"
+                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                                 >
                                 <label for="child-residence-vater-${index}" class="ml-3 block text-sm text-gray-700">
                                     Vater
                                 </label>
                             </div>
-                            <div class="flex items-center">
+                            <div class="flex items-center px-3 py-2 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
                                 <input
                                     type="radio"
                                     id="child-residence-mutter-${index}"
                                     name="child-residence-${index}"
                                     value="mutter"
-                                    class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-full"
+                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                                     checked
                                 >
                                 <label for="child-residence-mutter-${index}" class="ml-3 block text-sm text-gray-700">
                                     Mutter
                                 </label>
                             </div>
-                            <div class="flex items-center">
+                            <div class="flex items-center px-3 py-2 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
                                 <input
                                     type="radio"
                                     id="child-residence-5050-${index}"
                                     name="child-residence-${index}"
                                     value="5050"
-                                    class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-full"
+                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                                 >
                                 <label for="child-residence-5050-${index}" class="ml-3 block text-sm text-gray-700">
                                     Wechselmodell (50:50)
                                 </label>
                             </div>
-                            <div class="flex items-center">
+                            <div class="flex items-center px-3 py-2 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
                                 <input
                                     type="radio"
                                     id="child-residence-other-${index}"
                                     name="child-residence-${index}"
                                     value="other"
-                                    class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-full"
+                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                                 >
                                 <label for="child-residence-other-${index}" class="ml-3 block text-sm text-gray-700">
                                     Anderer Ort
@@ -528,59 +528,62 @@
                         </div>
                     </div>
                 </div>
-                <div class="mt-4 additional-fields-14 hidden">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="child-status-${index}" class="block text-sm font-medium text-gray-700 mb-1">
-                                Status
-                            </label>
-                            <select
-                                id="child-status-${index}"
-                                name="child-status-${index}"
-                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                            >
-                                <option value="schueler">Schüler</option>
-                                <option value="azubi">Azubi</option>
-                                <option value="student">Student</option>
-                                <option value="arbeitssuchend">Arbeitssuchend</option>
-                                <option value="sonstiges">Sonstiges</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="child-netto-${index}" class="block text-sm font-medium text-gray-700 mb-1">
-                                Netto Einkommen
-                            </label>
-                            <div class="relative">
-                                <input
-                                    type="number"
-                                    id="child-netto-${index}"
-                                    name="child-netto-${index}"
-                                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="0.00"
-                                    step="0.01"
-                                    min="0"
+                <div class="mt-6 additional-fields-14 hidden">
+                    <div class="border-t border-gray-100 pt-5 mt-2">
+                        <h4 class="font-medium text-gray-700 mb-4">Zusätzliche Informationen</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                            <div class="md:col-span-4">
+                                <label for="child-status-${index}" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Status
+                                </label>
+                                <select
+                                    id="child-status-${index}"
+                                    name="child-status-${index}"
+                                    class="block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white"
                                 >
-                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                    <span class="text-gray-500">€</span>
+                                    <option value="schueler">Schüler</option>
+                                    <option value="azubi">Azubi</option>
+                                    <option value="student">Student</option>
+                                    <option value="arbeitssuchend">Arbeitssuchend</option>
+                                    <option value="sonstiges">Sonstiges</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-4">
+                                <label for="child-netto-${index}" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Netto Einkommen
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="number"
+                                        id="child-netto-${index}"
+                                        name="child-netto-${index}"
+                                        class="block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="0.00"
+                                        step="0.01"
+                                        min="0"
+                                    >
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500">€</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div>
-                            <label for="child-sonstige-${index}" class="block text-sm font-medium text-gray-700 mb-1">
-                                Sonstige Einkommen
-                            </label>
-                            <div class="relative">
-                                <input
-                                    type="number"
-                                    id="child-sonstige-${index}"
-                                    name="child-sonstige-${index}"
-                                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="0.00"
-                                    step="0.01"
-                                    min="0"
-                                >
-                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                    <span class="text-gray-500">€</span>
+                            <div class="md:col-span-4">
+                                <label for="child-sonstige-${index}" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Sonstige Einkommen
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="number"
+                                        id="child-sonstige-${index}"
+                                        name="child-sonstige-${index}"
+                                        class="block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="0.00"
+                                        step="0.01"
+                                        min="0"
+                                    >
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500">€</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
