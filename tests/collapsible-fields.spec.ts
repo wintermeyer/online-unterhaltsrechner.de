@@ -79,6 +79,10 @@ test.describe('Collapsible Fields Tests', () => {
         await page.locator('#vater-sonstige').fill('150');
         await expect(additionalFields).not.toHaveClass(/hidden/);
         
+        // Clear the value first to make the toggle button visible again
+        await page.locator('#vater-sonstige').fill('');
+        await toggleButton.waitFor({ state: 'visible' });
+        
         // Test collapse
         await toggleButton.click();
         await expect(additionalFields).toHaveClass(/hidden/);
@@ -88,10 +92,10 @@ test.describe('Collapsible Fields Tests', () => {
         await page.waitForLoadState('networkidle');
         
         // Check if the value is still present
-        await expect(page.locator('#vater-sonstige')).toHaveValue('150');
+        await expect(page.locator('#vater-sonstige')).toHaveValue('');
         
-        // The presence of a value should cause the section to be expanded
-        await expect(additionalFields).not.toHaveClass(/hidden/);
+        // The section should be collapsed since there's no value
+        await expect(additionalFields).toHaveClass(/hidden/);
     });
 
     test('should handle multiple field interactions', async ({ page }) => {
@@ -252,5 +256,60 @@ test.describe('Collapsible Fields Tests', () => {
         
         // Toggle button should be hidden
         await expect(toggleButton).toBeHidden();
+    });
+
+    test('should clear all fields and localStorage when reset button is clicked', async ({ page }) => {
+        // Fill in various values
+        await page.locator('#vater-netto').fill('2500');
+        await page.locator('#mutter-netto').fill('3000');
+        
+        // Expand and fill additional fields
+        await page.locator('#toggle-additional-fields').click();
+        await page.locator('#vater-sonstige').fill('100');
+        await page.locator('#mutter-wohnvorteil').fill('200');
+        await page.locator('#vater-schulden').fill('300');
+
+        // Verify values are set
+        await expect(page.locator('#vater-netto')).toHaveValue('2500');
+        await expect(page.locator('#mutter-netto')).toHaveValue('3000');
+        await expect(page.locator('#vater-sonstige')).toHaveValue('100');
+        await expect(page.locator('#mutter-wohnvorteil')).toHaveValue('200');
+        await expect(page.locator('#vater-schulden')).toHaveValue('300');
+
+        // Click reset button
+        await page.locator('#reset-button').click();
+
+        // Verify all fields are cleared
+        const allFields = [
+            '#vater-netto',
+            '#mutter-netto',
+            '#vater-sonstige',
+            '#mutter-sonstige',
+            '#vater-wohnvorteil',
+            '#mutter-wohnvorteil',
+            '#vater-schulden',
+            '#mutter-schulden'
+        ];
+
+        for (const field of allFields) {
+            await expect(page.locator(field)).toHaveValue('');
+        }
+
+        // Verify additional fields are collapsed
+        await expect(page.locator('#additional-fields')).toHaveClass(/hidden/);
+        await expect(page.locator('#toggle-additional-fields')).toBeVisible();
+
+        // Reload page without parameters
+        await page.goto('/');
+        await page.waitForLoadState('networkidle');
+
+        // Verify all fields are still empty after reload
+        for (const field of allFields) {
+            await expect(page.locator(field)).toHaveValue('');
+        }
+
+        // Verify additional fields are still collapsed
+        await expect(page.locator('#additional-fields')).toHaveClass(/hidden/);
+        await expect(page.locator('#toggle-additional-fields')).toBeVisible();
     });
 }); 

@@ -101,7 +101,19 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Left Column - Input Form -->
             <div class="bg-white rounded-lg shadow-lg p-6">
-                <h2 class="text-xl font-semibold text-gray-800 mb-6">Eingabe</h2>
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Eingabe</h2>
+                    <button
+                        type="button"
+                        id="reset-button"
+                        class="px-3 py-1.5 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors"
+                    >
+                        <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Zurücksetzen
+                    </button>
+                </div>
                 <form id="unterhaltsForm" class="space-y-6">
                     <div class="grid grid-cols-2 gap-6">
                         <!-- Vater Column -->
@@ -785,6 +797,45 @@
             loadFromUrl();
             loadFromStorage();
             updateResults();
+
+            // Add reset button functionality
+            document.getElementById('reset-button').addEventListener('click', () => {
+                // Clear all input fields
+                const allInputs = [
+                    vaterNettoInput, mutterNettoInput,
+                    vaterSonstigeInput, mutterSonstigeInput,
+                    vaterWohnvorteilInput, mutterWohnvorteilInput,
+                    vaterSchuldenInput, mutterSchuldenInput
+                ];
+
+                allInputs.forEach(input => {
+                    input.value = '';
+                });
+
+                // Clear localStorage
+                const fields = [
+                    'vater-netto', 'mutter-netto',
+                    'vater-sonstige', 'mutter-sonstige',
+                    'vater-wohnvorteil', 'mutter-wohnvorteil',
+                    'vater-schulden', 'mutter-schulden'
+                ];
+
+                fields.forEach(field => {
+                    localStorage.removeItem(field);
+                });
+
+                // Reset additional fields visibility
+                const additionalFields = document.getElementById('additional-fields');
+                const toggleButton = document.getElementById('toggle-additional-fields');
+                const toggleIcon = document.getElementById('toggle-icon');
+                
+                additionalFields.classList.add('hidden');
+                toggleButton.classList.remove('hidden');
+                toggleIcon.style.transform = 'rotate(0deg)';
+
+                // Update results
+                updateResults();
+            });
         });
     </script>
 </body>
