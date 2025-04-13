@@ -452,7 +452,7 @@
             <div class="child-form bg-gray-50 rounded-lg p-4" data-child-index="${index}">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-medium text-gray-700">Kind ${index + 1}</h3>
-                    <button type="button" class="remove-child text-red-600 hover:text-red-800 focus:outline-none">
+                    <button type="button" class="remove-child text-red-600 hover:text-red-800 focus:outline-none" style="display: none;">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
@@ -531,6 +531,16 @@
             </div>
         `;
 
+        // Function to update delete buttons visibility
+        function updateDeleteButtonsVisibility() {
+            const childForms = document.querySelectorAll('.child-form');
+            const deleteButtons = document.querySelectorAll('.remove-child');
+            
+            deleteButtons.forEach(button => {
+                button.style.display = childForms.length > 1 ? 'block' : 'none';
+            });
+        }
+
         // Function to add a new child
         function addChild() {
             const container = document.getElementById('children-container');
@@ -541,14 +551,17 @@
 
             // Add event listener to the remove button
             const removeButton = childElement.querySelector('.remove-child');
-            removeButton.addEventListener('click', () => {
-                // Only allow removal if there's more than one child
-                if (document.querySelectorAll('.child-form').length > 1) {
-                    childElement.remove();
-                    updateChildNumbers();
-                    updateShareUrl();
-                }
-            });
+            if (removeButton) {
+                removeButton.addEventListener('click', () => {
+                    // Only allow removal if there's more than one child
+                    if (document.querySelectorAll('.child-form').length > 1) {
+                        childElement.remove();
+                        updateChildNumbers();
+                        updateShareUrl();
+                        updateDeleteButtonsVisibility();
+                    }
+                });
+            }
 
             // Add event listeners for child form changes
             const ageSelect = childElement.querySelector(`#child-age-${childCount - 1}`);
@@ -559,6 +572,8 @@
                 input.addEventListener('change', updateShareUrl);
             });
 
+            // Update delete buttons visibility
+            updateDeleteButtonsVisibility();
             // Update share URL immediately after adding a child
             updateShareUrl();
         }
@@ -986,6 +1001,9 @@
             // Add initial child if none exists
             if (document.querySelectorAll('.child-form').length === 0) {
                 addChild();
+            } else {
+                // Update delete buttons visibility for existing children
+                updateDeleteButtonsVisibility();
             }
             
             loadFromUrl();
