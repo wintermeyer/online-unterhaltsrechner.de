@@ -99,227 +99,250 @@
         
         <!-- Two Column Layout -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Left Column - Input Form -->
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-semibold text-gray-800">Eingabe</h2>
-                    <button
-                        type="button"
-                        id="reset-button"
-                        class="px-3 py-1.5 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors"
-                    >
-                        <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        Zurücksetzen
-                    </button>
-                </div>
-                <form id="unterhaltsForm" class="space-y-6">
-                    <div class="grid grid-cols-2 gap-6">
-                        <!-- Vater Column -->
-                        <div class="space-y-4">
-                            <h3 class="text-lg font-medium text-gray-700 mb-4">Vater</h3>
-                            <div>
-                                <label for="vater-netto" class="block text-sm font-medium text-gray-700 mb-1">
-                                    Netto-Einkommen
-                                </label>
-                                <div class="relative">
-                                    <input
-                                        type="number"
-                                        id="vater-netto"
-                                        name="vater-netto"
-                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="0.00"
-                                        step="0.01"
-                                        min="0"
-                                        autofocus
-                                        tabindex="1"
-                                    >
-                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                        <span class="text-gray-500">€</span>
-                                    </div>
-                                </div>
-                                <p class="mt-1 text-xs text-gray-500">
-                                    <span class="font-medium block md:inline">Einkommensgruppe:</span>
-                                    <span id="vater-netto-range" class="block md:inline"></span>
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Mutter Column -->
-                        <div class="space-y-4">
-                            <h3 class="text-lg font-medium text-gray-700 mb-4">Mutter</h3>
-                            <div>
-                                <label for="mutter-netto" class="block text-sm font-medium text-gray-700 mb-1">
-                                    Netto-Einkommen
-                                </label>
-                                <div class="relative">
-                                    <input
-                                        type="number"
-                                        id="mutter-netto"
-                                        name="mutter-netto"
-                                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="0.00"
-                                        step="0.01"
-                                        min="0"
-                                        tabindex="2"
-                                    >
-                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                        <span class="text-gray-500">€</span>
-                                    </div>
-                                </div>
-                                <p class="mt-1 text-xs text-gray-500">
-                                    <span class="font-medium block md:inline">Einkommensgruppe:</span>
-                                    <span id="mutter-netto-range" class="block md:inline"></span>
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Additional Fields Toggle Button -->
-                        <div class="col-span-2 mt-4">
-                            <button
-                                type="button"
-                                id="toggle-additional-fields"
-                                class="w-full flex justify-between items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-                            >
-                                <span>Weitere Einkommensarten</span>
-                                <svg id="toggle-icon" class="h-5 w-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                </svg>
-                            </button>
-                        </div>
-
-                        <!-- Collapsible Section -->
-                        <div id="additional-fields" class="col-span-2 grid grid-cols-2 gap-6 mt-4 hidden">
-                            <!-- Vater Additional Fields -->
-                            <div class="space-y-4">
-                                <div>
-                                    <label for="vater-sonstige" class="block text-sm font-medium text-gray-700 mb-1">
-                                        Sonstige Einkommen
-                                    </label>
-                                    <div class="relative">
-                                        <input
-                                            type="number"
-                                            id="vater-sonstige"
-                                            name="vater-sonstige"
-                                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="0.00"
-                                            step="0.01"
-                                            min="0"
-                                            tabindex="3"
-                                        >
-                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                            <span class="text-gray-500">€</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label for="vater-wohnvorteil" class="block text-sm font-medium text-gray-700 mb-1">
-                                        Wohnvorteil
-                                    </label>
-                                    <div class="relative">
-                                        <input
-                                            type="number"
-                                            id="vater-wohnvorteil"
-                                            name="vater-wohnvorteil"
-                                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="0.00"
-                                            step="0.01"
-                                            min="0"
-                                            tabindex="5"
-                                        >
-                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                            <span class="text-gray-500">€</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label for="vater-schulden" class="block text-sm font-medium text-gray-700 mb-1">
-                                        Aufwand Schulden
-                                    </label>
-                                    <div class="relative">
-                                        <input
-                                            type="number"
-                                            id="vater-schulden"
-                                            name="vater-schulden"
-                                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="0.00"
-                                            step="0.01"
-                                            min="0"
-                                            tabindex="7"
-                                        >
-                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                            <span class="text-gray-500">€</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Mutter Additional Fields -->
-                            <div class="space-y-4">
-                                <div>
-                                    <label for="mutter-sonstige" class="block text-sm font-medium text-gray-700 mb-1">
-                                        Sonstige Einkommen
-                                    </label>
-                                    <div class="relative">
-                                        <input
-                                            type="number"
-                                            id="mutter-sonstige"
-                                            name="mutter-sonstige"
-                                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="0.00"
-                                            step="0.01"
-                                            min="0"
-                                            tabindex="4"
-                                        >
-                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                            <span class="text-gray-500">€</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label for="mutter-wohnvorteil" class="block text-sm font-medium text-gray-700 mb-1">
-                                        Wohnvorteil
-                                    </label>
-                                    <div class="relative">
-                                        <input
-                                            type="number"
-                                            id="mutter-wohnvorteil"
-                                            name="mutter-wohnvorteil"
-                                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="0.00"
-                                            step="0.01"
-                                            min="0"
-                                            tabindex="6"
-                                        >
-                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                            <span class="text-gray-500">€</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label for="mutter-schulden" class="block text-sm font-medium text-gray-700 mb-1">
-                                        Aufwand Schulden
-                                    </label>
-                                    <div class="relative">
-                                        <input
-                                            type="number"
-                                            id="mutter-schulden"
-                                            name="mutter-schulden"
-                                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="0.00"
-                                            step="0.01"
-                                            min="0"
-                                            tabindex="8"
-                                        >
-                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                            <span class="text-gray-500">€</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Left Column -->
+            <div class="space-y-6">
+                <!-- Eingabe Card -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-gray-800">Eingabe</h2>
+                        <button
+                            type="button"
+                            id="reset-button"
+                            class="px-3 py-1.5 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors"
+                        >
+                            <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            Zurücksetzen
+                        </button>
                     </div>
-                </form>
+                    <form id="unterhaltsForm" class="space-y-6">
+                        <div class="grid grid-cols-2 gap-6">
+                            <!-- Vater Column -->
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium text-gray-700 mb-4">Vater</h3>
+                                <div>
+                                    <label for="vater-netto" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Netto-Einkommen
+                                    </label>
+                                    <div class="relative">
+                                        <input
+                                            type="number"
+                                            id="vater-netto"
+                                            name="vater-netto"
+                                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="0.00"
+                                            step="0.01"
+                                            min="0"
+                                            autofocus
+                                            tabindex="1"
+                                        >
+                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500">€</span>
+                                        </div>
+                                    </div>
+                                    <p class="mt-1 text-xs text-gray-500">
+                                        <span class="font-medium block md:inline">Einkommensgruppe:</span>
+                                        <span id="vater-netto-range" class="block md:inline"></span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Mutter Column -->
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium text-gray-700 mb-4">Mutter</h3>
+                                <div>
+                                    <label for="mutter-netto" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Netto-Einkommen
+                                    </label>
+                                    <div class="relative">
+                                        <input
+                                            type="number"
+                                            id="mutter-netto"
+                                            name="mutter-netto"
+                                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="0.00"
+                                            step="0.01"
+                                            min="0"
+                                            tabindex="2"
+                                        >
+                                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500">€</span>
+                                        </div>
+                                    </div>
+                                    <p class="mt-1 text-xs text-gray-500">
+                                        <span class="font-medium block md:inline">Einkommensgruppe:</span>
+                                        <span id="mutter-netto-range" class="block md:inline"></span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Additional Fields Toggle Button -->
+                            <div class="col-span-2 mt-4">
+                                <button
+                                    type="button"
+                                    id="toggle-additional-fields"
+                                    class="w-full flex justify-between items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                                >
+                                    <span>Weitere Einkommensarten</span>
+                                    <svg id="toggle-icon" class="h-5 w-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Collapsible Section -->
+                            <div id="additional-fields" class="col-span-2 grid grid-cols-2 gap-6 mt-4 hidden">
+                                <!-- Vater Additional Fields -->
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="vater-sonstige" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Sonstige Einkommen
+                                        </label>
+                                        <div class="relative">
+                                            <input
+                                                type="number"
+                                                id="vater-sonstige"
+                                                name="vater-sonstige"
+                                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                placeholder="0.00"
+                                                step="0.01"
+                                                min="0"
+                                                tabindex="3"
+                                            >
+                                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500">€</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="vater-wohnvorteil" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Wohnvorteil
+                                        </label>
+                                        <div class="relative">
+                                            <input
+                                                type="number"
+                                                id="vater-wohnvorteil"
+                                                name="vater-wohnvorteil"
+                                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                placeholder="0.00"
+                                                step="0.01"
+                                                min="0"
+                                                tabindex="5"
+                                            >
+                                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500">€</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="vater-schulden" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Aufwand Schulden
+                                        </label>
+                                        <div class="relative">
+                                            <input
+                                                type="number"
+                                                id="vater-schulden"
+                                                name="vater-schulden"
+                                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                placeholder="0.00"
+                                                step="0.01"
+                                                min="0"
+                                                tabindex="7"
+                                            >
+                                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500">€</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Mutter Additional Fields -->
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="mutter-sonstige" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Sonstige Einkommen
+                                        </label>
+                                        <div class="relative">
+                                            <input
+                                                type="number"
+                                                id="mutter-sonstige"
+                                                name="mutter-sonstige"
+                                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                placeholder="0.00"
+                                                step="0.01"
+                                                min="0"
+                                                tabindex="4"
+                                            >
+                                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500">€</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="mutter-wohnvorteil" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Wohnvorteil
+                                        </label>
+                                        <div class="relative">
+                                            <input
+                                                type="number"
+                                                id="mutter-wohnvorteil"
+                                                name="mutter-wohnvorteil"
+                                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                placeholder="0.00"
+                                                step="0.01"
+                                                min="0"
+                                                tabindex="6"
+                                            >
+                                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500">€</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="mutter-schulden" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Aufwand Schulden
+                                        </label>
+                                        <div class="relative">
+                                            <input
+                                                type="number"
+                                                id="mutter-schulden"
+                                                name="mutter-schulden"
+                                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                placeholder="0.00"
+                                                step="0.01"
+                                                min="0"
+                                                tabindex="8"
+                                            >
+                                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500">€</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Kinder Card -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-gray-800">Kinder</h2>
+                        <button
+                            type="button"
+                            id="add-child-button"
+                            class="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                        >
+                            <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Kind hinzufügen
+                        </button>
+                    </div>
+                    <div id="children-container" class="space-y-4">
+                        <!-- Children will be added here dynamically -->
+                    </div>
+                </div>
             </div>
 
             <!-- Right Column - Results -->
@@ -422,6 +445,145 @@
         const menu = document.querySelector(".mobile-menu");
         const shareUrlInput = document.getElementById('share-url');
         const copyButton = document.getElementById('copy-button');
+        let childCount = 0;
+
+        // Template for child form fields
+        const childTemplate = (index) => `
+            <div class="child-form bg-gray-50 rounded-lg p-4" data-child-index="${index}">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium text-gray-700">Kind ${index + 1}</h3>
+                    <button type="button" class="remove-child text-red-600 hover:text-red-800 focus:outline-none">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="child-age-${index}" class="block text-sm font-medium text-gray-700 mb-1">
+                            Alter
+                        </label>
+                        <select
+                            id="child-age-${index}"
+                            name="child-age-${index}"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        >
+                            ${Array.from({length: 26}, (_, i) => `<option value="${i}">${i} Jahre</option>`).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Lebensmittelpunkt
+                        </label>
+                        <div class="space-y-2">
+                            <div class="flex items-center">
+                                <input
+                                    type="radio"
+                                    id="child-residence-vater-${index}"
+                                    name="child-residence-${index}"
+                                    value="vater"
+                                    class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-full"
+                                >
+                                <label for="child-residence-vater-${index}" class="ml-3 block text-sm text-gray-700">
+                                    Vater
+                                </label>
+                            </div>
+                            <div class="flex items-center">
+                                <input
+                                    type="radio"
+                                    id="child-residence-mutter-${index}"
+                                    name="child-residence-${index}"
+                                    value="mutter"
+                                    class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-full"
+                                    checked
+                                >
+                                <label for="child-residence-mutter-${index}" class="ml-3 block text-sm text-gray-700">
+                                    Mutter
+                                </label>
+                            </div>
+                            <div class="flex items-center">
+                                <input
+                                    type="radio"
+                                    id="child-residence-5050-${index}"
+                                    name="child-residence-${index}"
+                                    value="5050"
+                                    class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-full"
+                                >
+                                <label for="child-residence-5050-${index}" class="ml-3 block text-sm text-gray-700">
+                                    Wechselmodell (50:50)
+                                </label>
+                            </div>
+                            <div class="flex items-center">
+                                <input
+                                    type="radio"
+                                    id="child-residence-other-${index}"
+                                    name="child-residence-${index}"
+                                    value="other"
+                                    class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-full"
+                                >
+                                <label for="child-residence-other-${index}" class="ml-3 block text-sm text-gray-700">
+                                    Anderer Ort
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Function to add a new child
+        function addChild() {
+            const container = document.getElementById('children-container');
+            const childElement = document.createElement('div');
+            childElement.innerHTML = childTemplate(childCount);
+            container.appendChild(childElement);
+            childCount++;
+
+            // Add event listener to the remove button
+            const removeButton = childElement.querySelector('.remove-child');
+            removeButton.addEventListener('click', () => {
+                childElement.remove();
+                updateChildNumbers();
+                updateShareUrl();
+            });
+
+            // Add event listeners for child form changes
+            const ageSelect = childElement.querySelector(`#child-age-${childCount - 1}`);
+            const residenceInputs = childElement.querySelectorAll(`input[name="child-residence-${childCount - 1}"]`);
+
+            ageSelect.addEventListener('change', updateShareUrl);
+            residenceInputs.forEach(input => {
+                input.addEventListener('change', updateShareUrl);
+            });
+
+            // Update share URL immediately after adding a child
+            updateShareUrl();
+        }
+
+        // Function to update child numbers after removal
+        function updateChildNumbers() {
+            const children = document.querySelectorAll('.child-form');
+            children.forEach((child, index) => {
+                child.setAttribute('data-child-index', index);
+                child.querySelector('h3').textContent = `Kind ${index + 1}`;
+                
+                // Update all IDs and names
+                const ageSelect = child.querySelector('select');
+                const radioInputs = child.querySelectorAll('input[type="radio"]');
+                
+                ageSelect.id = `child-age-${index}`;
+                ageSelect.name = `child-age-${index}`;
+                
+                radioInputs.forEach(radio => {
+                    radio.id = `child-residence-${radio.value}-${index}`;
+                    radio.name = `child-residence-${index}`;
+                });
+            });
+            childCount = children.length;
+        }
+
+        // Add event listener for the add child button
+        document.getElementById('add-child-button').addEventListener('click', addChild);
 
         btn.addEventListener("click", () => {
             menu.classList.toggle("show");
@@ -457,6 +619,46 @@
                 style: 'currency',
                 currency: 'EUR'
             }).format(value || 0);
+        }
+
+        function updateShareUrl() {
+            try {
+                const url = new URL(window.location.href);
+                url.search = '';
+                
+                // Helper function to add parameter if value exists and is not zero
+                const addParam = (paramName, value) => {
+                    const numValue = parseFloat(value);
+                    if (!isNaN(numValue) && numValue > 0) {
+                        url.searchParams.set(paramName, value);
+                    }
+                };
+
+                // Add all non-zero values to URL
+                addParam('vater-netto', vaterNettoInput.value);
+                addParam('mutter-netto', mutterNettoInput.value);
+                addParam('vater-sonstige', vaterSonstigeInput.value);
+                addParam('mutter-sonstige', mutterSonstigeInput.value);
+                addParam('vater-wohnvorteil', vaterWohnvorteilInput.value);
+                addParam('mutter-wohnvorteil', mutterWohnvorteilInput.value);
+                addParam('vater-schulden', vaterSchuldenInput.value);
+                addParam('mutter-schulden', mutterSchuldenInput.value);
+
+                // Add children data to URL
+                const children = document.querySelectorAll('.child-form');
+                children.forEach((child, index) => {
+                    const age = child.querySelector(`#child-age-${index}`).value;
+                    const residence = child.querySelector(`input[name="child-residence-${index}"]:checked`).value;
+                    url.searchParams.set(`child-${index}-age`, age);
+                    url.searchParams.set(`child-${index}-residence`, residence);
+                });
+
+                // Only update the share URL input field, not the browser URL
+                shareUrlInput.value = url.toString();
+            } catch (err) {
+                console.error('Failed to update share URL: ', err);
+                shareUrlInput.value = window.location.href;
+            }
         }
 
         function loadFromUrl() {
@@ -499,6 +701,24 @@
                     }
                 }
 
+                // Load children data
+                let childIndex = 0;
+                while (params.has(`child-${childIndex}-age`)) {
+                    // Add child form if it doesn't exist
+                    if (childIndex >= document.querySelectorAll('.child-form').length) {
+                        addChild();
+                    }
+
+                    // Set age and residence
+                    const age = params.get(`child-${childIndex}-age`);
+                    const residence = params.get(`child-${childIndex}-residence`);
+                    
+                    document.querySelector(`#child-age-${childIndex}`).value = age;
+                    document.querySelector(`#child-residence-${residence}-${childIndex}`).checked = true;
+                    
+                    childIndex++;
+                }
+
                 // If we have additional values, expand the section and hide toggle button
                 if (hasAdditionalValues) {
                     const additionalFields = document.getElementById('additional-fields');
@@ -520,36 +740,6 @@
                 }
             } catch (err) {
                 console.error('Failed to load from URL: ', err);
-            }
-        }
-
-        function updateShareUrl() {
-            try {
-                const url = new URL(window.location.href);
-                url.search = '';
-                
-                // Helper function to add parameter if value exists
-                const addParam = (paramName, value) => {
-                    if (value) {
-                        url.searchParams.set(paramName, value);
-                    }
-                };
-
-                // Add all non-zero values to URL
-                addParam('vater-netto', vaterNettoInput.value);
-                addParam('mutter-netto', mutterNettoInput.value);
-                addParam('vater-sonstige', vaterSonstigeInput.value);
-                addParam('mutter-sonstige', mutterSonstigeInput.value);
-                addParam('vater-wohnvorteil', vaterWohnvorteilInput.value);
-                addParam('mutter-wohnvorteil', mutterWohnvorteilInput.value);
-                addParam('vater-schulden', vaterSchuldenInput.value);
-                addParam('mutter-schulden', mutterSchuldenInput.value);
-
-                // Only update the share URL input field, not the browser URL
-                shareUrlInput.value = url.toString();
-            } catch (err) {
-                console.error('Failed to update share URL: ', err);
-                shareUrlInput.value = window.location.href;
             }
         }
 
@@ -596,7 +786,7 @@
             vaterSchuldenElement.style.display = 'none';
             vaterBereinigtElement.style.display = 'none';
 
-            // Show only non-zero values
+            // Show only non-zero values for father
             if (vaterValue !== 0) {
                 vaterNettoElement.style.display = 'flex';
                 vaterNettoResult.textContent = formatCurrency(vaterValue);
@@ -617,9 +807,10 @@
                 vaterSchuldenElement.style.display = 'flex';
                 vaterSchuldenResult.textContent = `-${formatCurrency(vaterSchuldenValue)}`;
             }
-            // Always show bereinigtes Einkommen
-            vaterBereinigtElement.style.display = 'flex';
-            vaterBereinigtResult.textContent = formatCurrency(vaterBereinigt);
+            if (vaterBereinigt !== 0) {
+                vaterBereinigtElement.style.display = 'flex';
+                vaterBereinigtResult.textContent = formatCurrency(vaterBereinigt);
+            }
 
             // Update Mutter results
             const mutterNettoElement = document.querySelector('#mutter-netto-result').parentElement;
@@ -637,7 +828,7 @@
             mutterSchuldenElement.style.display = 'none';
             mutterBereinigtElement.style.display = 'none';
 
-            // Show only non-zero values
+            // Show only non-zero values for mother
             if (mutterValue !== 0) {
                 mutterNettoElement.style.display = 'flex';
                 mutterNettoResult.textContent = formatCurrency(mutterValue);
@@ -658,57 +849,75 @@
                 mutterSchuldenElement.style.display = 'flex';
                 mutterSchuldenResult.textContent = `-${formatCurrency(mutterSchuldenValue)}`;
             }
-            // Always show bereinigtes Einkommen
-            mutterBereinigtElement.style.display = 'flex';
-            mutterBereinigtResult.textContent = formatCurrency(mutterBereinigt);
-
-            vaterNettoRange.textContent = getIncomeBracket(vaterValue);
-            mutterNettoRange.textContent = getIncomeBracket(mutterValue);
+            if (mutterBereinigt !== 0) {
+                mutterBereinigtElement.style.display = 'flex';
+                mutterBereinigtResult.textContent = formatCurrency(mutterBereinigt);
+            }
 
             // Update share URL whenever results are updated
             updateShareUrl();
-        }
 
-        function updateAdditionalFieldsVisibility() {
-            const vaterSonstigeValue = parseFloat(vaterSonstigeInput.value) || 0;
-            const mutterSonstigeValue = parseFloat(mutterSonstigeInput.value) || 0;
-            const vaterWohnvorteilValue = parseFloat(vaterWohnvorteilInput.value) || 0;
-            const mutterWohnvorteilValue = parseFloat(mutterWohnvorteilInput.value) || 0;
-            const vaterSchuldenValue = parseFloat(vaterSchuldenInput.value) || 0;
-            const mutterSchuldenValue = parseFloat(mutterSchuldenInput.value) || 0;
-
-            const hasNonZeroValues = vaterSonstigeValue !== 0 || 
-                                   mutterSonstigeValue !== 0 || 
-                                   vaterWohnvorteilValue !== 0 || 
-                                   mutterWohnvorteilValue !== 0 || 
-                                   vaterSchuldenValue !== 0 || 
-                                   mutterSchuldenValue !== 0;
+            // Check if we should show/hide the toggle button
+            const hasNonZeroAdditionalValues = 
+                vaterSonstigeValue > 0 || 
+                mutterSonstigeValue > 0 || 
+                vaterWohnvorteilValue > 0 || 
+                mutterWohnvorteilValue > 0 || 
+                vaterSchuldenValue > 0 || 
+                mutterSchuldenValue > 0;
 
             const additionalFields = document.getElementById('additional-fields');
             const toggleButton = document.getElementById('toggle-additional-fields');
-            const toggleIcon = document.getElementById('toggle-icon');
 
-            // Only auto-expand and hide toggle button if there are non-zero values
-            if (hasNonZeroValues && !additionalFields.classList.contains('hidden')) {
+            if (hasNonZeroAdditionalValues) {
                 additionalFields.classList.remove('hidden');
                 toggleButton.classList.add('hidden');
-                toggleIcon.style.transform = 'rotate(180deg)';
-            } else if (!hasNonZeroValues) {
+            } else if (!additionalFields.classList.contains('hidden')) {
                 toggleButton.classList.remove('hidden');
             }
-
-            // Update URL whenever values change
-            updateShareUrl();
         }
+
+        copyButton.addEventListener('click', async () => {
+            try {
+                const shareUrl = shareUrlInput.value;
+                await navigator.clipboard.writeText(shareUrl);
+                
+                // Store original state
+                const originalText = copyButton.textContent;
+                const originalClasses = copyButton.className;
+                
+                // Update button state
+                copyButton.textContent = 'Kopiert!';
+                copyButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                copyButton.classList.add('bg-green-600', 'hover:bg-green-700');
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    copyButton.textContent = originalText;
+                    copyButton.className = originalClasses;
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy URL: ', err);
+            }
+        });
 
         function toggleAdditionalFields() {
             const additionalFields = document.getElementById('additional-fields');
             const toggleIcon = document.getElementById('toggle-icon');
-            const toggleButton = document.getElementById('toggle-additional-fields');
             
             const isHidden = additionalFields.classList.contains('hidden');
             additionalFields.classList.toggle('hidden');
             toggleIcon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+
+            // If we're showing the fields, wait a bit to ensure they're visible before focusing
+            if (isHidden) {
+                setTimeout(() => {
+                    const firstInput = additionalFields.querySelector('input');
+                    if (firstInput) {
+                        firstInput.focus();
+                    }
+                }, 100);
+            }
         }
 
         // Add event listeners
@@ -725,32 +934,9 @@
         allInputs.forEach(input => {
             input.addEventListener('input', () => {
                 updateResults();
-                updateAdditionalFieldsVisibility();
             });
         });
 
-        copyButton.addEventListener('click', async () => {
-            try {
-                await navigator.clipboard.writeText(shareUrlInput.value);
-                const originalText = copyButton.innerText?.trim() || 'Kopieren';
-                const originalClasses = copyButton.className;
-                
-                // Show success feedback immediately
-                copyButton.innerText = 'Kopiert!';
-                copyButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-                copyButton.classList.add('bg-green-600', 'hover:bg-green-700');
-                
-                // Reset after 2 seconds
-                setTimeout(() => {
-                    copyButton.innerText = originalText;
-                    copyButton.className = originalClasses;
-                }, 2000);
-            } catch (err) {
-                console.error('Failed to copy URL: ', err);
-            }
-        });
-
-        // Add loadFromStorage function
         function loadFromStorage() {
             // Load values from localStorage
             const fields = {
@@ -767,7 +953,7 @@
             let hasAdditionalValues = false;
             for (const [key, input] of Object.entries(fields)) {
                 const value = localStorage.getItem(key);
-                if (value) {
+                if (value && !isNaN(parseFloat(value)) && parseFloat(value) > 0) {
                     input.value = value;
                     if (key.includes('sonstige') || key.includes('wohnvorteil') || key.includes('schulden')) {
                         hasAdditionalValues = true;
@@ -779,13 +965,9 @@
             if (hasAdditionalValues) {
                 const additionalFields = document.getElementById('additional-fields');
                 const toggleButton = document.getElementById('toggle-additional-fields');
-                const toggleIcon = document.getElementById('toggle-icon');
-                if (additionalFields) {
+                if (additionalFields && toggleButton) {
                     additionalFields.classList.remove('hidden');
                     toggleButton.classList.add('hidden');
-                    if (toggleIcon) {
-                        toggleIcon.style.transform = 'rotate(180deg)';
-                    }
                 }
             }
 
@@ -833,10 +1015,11 @@
                 toggleButton.classList.remove('hidden');
                 toggleIcon.style.transform = 'rotate(0deg)';
 
-                // Update results
+                // Update results and share URL
                 updateResults();
+                updateShareUrl();
             });
         });
     </script>
 </body>
-</html> 
+</html>
