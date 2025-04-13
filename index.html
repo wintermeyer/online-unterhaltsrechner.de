@@ -922,7 +922,10 @@
             vaterSonstigeElement.style.display = 'none';
             vaterWohnvorteilElement.style.display = 'none';
             vaterSchuldenElement.style.display = 'none';
-            vaterBereinigtElement.style.display = 'none';
+            
+            // Always display Bereinigtes Einkommen
+            vaterBereinigtElement.style.display = 'flex';
+            vaterBereinigtResult.textContent = formatCurrency(vaterBereinigt);
 
             // Show only non-zero values for father
             if (vaterValue !== 0) {
@@ -945,10 +948,6 @@
                 vaterSchuldenElement.style.display = 'flex';
                 vaterSchuldenResult.textContent = `-${formatCurrency(vaterSchuldenValue)}`;
             }
-            if (vaterBereinigt !== 0) {
-                vaterBereinigtElement.style.display = 'flex';
-                vaterBereinigtResult.textContent = formatCurrency(vaterBereinigt);
-            }
 
             // Update Mutter results
             const mutterNettoElement = document.querySelector('#mutter-netto-result').parentElement;
@@ -964,7 +963,10 @@
             mutterSonstigeElement.style.display = 'none';
             mutterWohnvorteilElement.style.display = 'none';
             mutterSchuldenElement.style.display = 'none';
-            mutterBereinigtElement.style.display = 'none';
+            
+            // Always display Bereinigtes Einkommen
+            mutterBereinigtElement.style.display = 'flex';
+            mutterBereinigtResult.textContent = formatCurrency(mutterBereinigt);
 
             // Show only non-zero values for mother
             if (mutterValue !== 0) {
@@ -986,10 +988,6 @@
             if (mutterSchuldenValue !== 0) {
                 mutterSchuldenElement.style.display = 'flex';
                 mutterSchuldenResult.textContent = `-${formatCurrency(mutterSchuldenValue)}`;
-            }
-            if (mutterBereinigt !== 0) {
-                mutterBereinigtElement.style.display = 'flex';
-                mutterBereinigtResult.textContent = formatCurrency(mutterBereinigt);
             }
 
             // Update share URL whenever results are updated
