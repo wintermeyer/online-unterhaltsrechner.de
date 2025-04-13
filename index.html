@@ -528,6 +528,64 @@
                         </div>
                     </div>
                 </div>
+                <div class="mt-4 additional-fields-14 hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="child-status-${index}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Status
+                            </label>
+                            <select
+                                id="child-status-${index}"
+                                name="child-status-${index}"
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="schueler">Schüler</option>
+                                <option value="azubi">Azubi</option>
+                                <option value="student">Student</option>
+                                <option value="arbeitssuchend">Arbeitssuchend</option>
+                                <option value="sonstiges">Sonstiges</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="child-netto-${index}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Netto Einkommen
+                            </label>
+                            <div class="relative">
+                                <input
+                                    type="number"
+                                    id="child-netto-${index}"
+                                    name="child-netto-${index}"
+                                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="0.00"
+                                    step="0.01"
+                                    min="0"
+                                >
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500">€</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="child-sonstige-${index}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Sonstige Einkommen
+                            </label>
+                            <div class="relative">
+                                <input
+                                    type="number"
+                                    id="child-sonstige-${index}"
+                                    name="child-sonstige-${index}"
+                                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="0.00"
+                                    step="0.01"
+                                    min="0"
+                                >
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500">€</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
 
@@ -566,11 +624,36 @@
             // Add event listeners for child form changes
             const ageSelect = childElement.querySelector(`#child-age-${childCount - 1}`);
             const residenceInputs = childElement.querySelectorAll(`input[name="child-residence-${childCount - 1}"]`);
+            const additionalFields = childElement.querySelector('.additional-fields-14');
 
-            ageSelect.addEventListener('change', updateShareUrl);
+            ageSelect.addEventListener('change', () => {
+                const age = parseInt(ageSelect.value);
+                if (age >= 14) {
+                    additionalFields.classList.remove('hidden');
+                } else {
+                    additionalFields.classList.add('hidden');
+                }
+                updateShareUrl();
+            });
+
             residenceInputs.forEach(input => {
                 input.addEventListener('change', updateShareUrl);
             });
+
+            // Add event listeners for the new fields
+            const statusSelect = childElement.querySelector(`#child-status-${childCount - 1}`);
+            const nettoInput = childElement.querySelector(`#child-netto-${childCount - 1}`);
+            const sonstigeInput = childElement.querySelector(`#child-sonstige-${childCount - 1}`);
+
+            if (statusSelect) {
+                statusSelect.addEventListener('change', updateShareUrl);
+            }
+            if (nettoInput) {
+                nettoInput.addEventListener('input', updateShareUrl);
+            }
+            if (sonstigeInput) {
+                sonstigeInput.addEventListener('input', updateShareUrl);
+            }
 
             // Update delete buttons visibility
             updateDeleteButtonsVisibility();
@@ -669,6 +752,16 @@
                     const residence = child.querySelector(`input[name="child-residence-${index}"]:checked`).value;
                     url.searchParams.set(`child-${index}-age`, age);
                     url.searchParams.set(`child-${index}-residence`, residence);
+                    
+                    // Add new fields for children 14 or older
+                    if (parseInt(age) >= 14) {
+                        const status = child.querySelector(`#child-status-${index}`).value;
+                        const netto = child.querySelector(`#child-netto-${index}`).value;
+                        const sonstige = child.querySelector(`#child-sonstige-${index}`).value;
+                        url.searchParams.set(`child-${index}-status`, status);
+                        url.searchParams.set(`child-${index}-netto`, netto);
+                        url.searchParams.set(`child-${index}-sonstige`, sonstige);
+                    }
                 });
 
                 // Only update the share URL input field, not the browser URL
@@ -733,6 +826,29 @@
                     
                     document.querySelector(`#child-age-${childIndex}`).value = age;
                     document.querySelector(`#child-residence-${residence}-${childIndex}`).checked = true;
+                    
+                    // Load additional fields for children 14 or older
+                    if (parseInt(age) >= 14) {
+                        const status = params.get(`child-${childIndex}-status`);
+                        const netto = params.get(`child-${childIndex}-netto`);
+                        const sonstige = params.get(`child-${childIndex}-sonstige`);
+                        
+                        if (status) {
+                            document.querySelector(`#child-status-${childIndex}`).value = status;
+                        }
+                        if (netto) {
+                            document.querySelector(`#child-netto-${childIndex}`).value = netto;
+                        }
+                        if (sonstige) {
+                            document.querySelector(`#child-sonstige-${childIndex}`).value = sonstige;
+                        }
+                        
+                        // Show additional fields
+                        const additionalFields = document.querySelector(`.child-form[data-child-index="${childIndex}"] .additional-fields-14`);
+                        if (additionalFields) {
+                            additionalFields.classList.remove('hidden');
+                        }
+                    }
                     
                     childIndex++;
                 }

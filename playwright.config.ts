@@ -4,14 +4,13 @@ export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: 1,
-  workers: 1,
-  reporter: process.env.CI ? 'dot' : [['html', { open: 'never' }], ['list']],
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: 'html',
   use: {
     baseURL: 'http://localhost:3000',
-    headless: true,
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    trace: 'on-first-retry',
+    headless: true
   },
   projects: [
     {
@@ -20,10 +19,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npx serve -s',
-    port: 3000,
+    command: 'npm start',
+    url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
-    stdout: 'ignore',
-    stderr: 'pipe',
   },
 }); 

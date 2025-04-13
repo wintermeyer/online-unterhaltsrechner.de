@@ -8,6 +8,95 @@ function formatCurrency(value) {
     }).format(value || 0);
 }
 
+// Convert to Jest tests
+describe('Berufsbedingte Aufwände Tests', () => {
+    const testCases = [
+        {
+            name: "No income",
+            income: 0,
+            expectedAufwände: 0,
+            expectedBereinigt: 0
+        },
+        {
+            name: "Very low income (40€)",
+            income: 40,
+            expectedAufwände: 40,  // Should be capped at income amount
+            expectedBereinigt: 0
+        },
+        {
+            name: "Low income (500€)",
+            income: 500,
+            expectedAufwände: 50,  // Minimum applies
+            expectedBereinigt: 450
+        },
+        {
+            name: "Medium income (2000€)",
+            income: 2000,
+            expectedAufwände: 100,  // 5% of 2000
+            expectedBereinigt: 1900
+        },
+        {
+            name: "High income (4000€)",
+            income: 4000,
+            expectedAufwände: 150,  // Maximum applies
+            expectedBereinigt: 3850
+        }
+    ];
+
+    testCases.forEach(testCase => {
+        test(`Calculates aufwände correctly for ${testCase.name}`, () => {
+            const aufwände = calculateBerufsbedingteAufwände(testCase.income);
+            const bereinigt = testCase.income - aufwände;
+            
+            expect(Math.abs(aufwände - testCase.expectedAufwände)).toBeLessThan(0.01);
+            expect(Math.abs(bereinigt - testCase.expectedBereinigt)).toBeLessThan(0.01);
+        });
+    });
+});
+
+describe('Income Bracket Tests', () => {
+    const testCases = [
+        {
+            name: "No income",
+            income: 0,
+            expectedBracket: "0 bis 2.100 €"
+        },
+        {
+            name: "First bracket",
+            income: 1500,
+            expectedBracket: "0 bis 2.100 €"
+        },
+        {
+            name: "Exact bracket boundary",
+            income: 2101,
+            expectedBracket: "2.101 - 2.500 €"
+        },
+        {
+            name: "Middle of bracket",
+            income: 4300,
+            expectedBracket: "4.101 - 4.500 €"
+        },
+        {
+            name: "High income",
+            income: 5000,
+            expectedBracket: "4.901 - 5.300 €"
+        },
+        {
+            name: "Very high income",
+            income: 24234,
+            expectedBracket: "Über 11.200 €"
+        }
+    ];
+
+    testCases.forEach(testCase => {
+        test(`Returns correct bracket for ${testCase.name}`, () => {
+            const actualBracket = getIncomeBracket(testCase.income);
+            expect(actualBracket).toBe(testCase.expectedBracket);
+        });
+    });
+});
+
+// Keep the original functions for compatibility
 function runAufwändeTests() {
     const testCases = [
         {
@@ -137,7 +226,6 @@ function runIncomeBracketTests() {
     return allTestsPassed;
 }
 
-// Run all test suites
 function runTests() {
     const aufwändeTestsPassed = runAufwändeTests();
     const bracketTestsPassed = runIncomeBracketTests();
